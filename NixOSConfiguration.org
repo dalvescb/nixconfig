@@ -256,8 +256,8 @@ multiple systems
     imports =
       [ 
         ./hardware-configuration.nix
-        ./user-configuration.nix
         ../common-configuration.nix
+        ./user-configuration.nix
       ];
 
     networking.hostName = "<hostname>"; # replace with actual hostname
@@ -355,8 +355,8 @@ Use the command ~locale -a~ to see a list of valid locales
 #+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
 i18n.defaultLocale = "en_US.UTF-8";
 console = {
-  font = "Lat2-Terminus16";
-  keyMap = "us";
+  font = pkgs.lib.mkForce "Lat2-Terminus16";
+  keyMap = pkgs.lib.mkForce "us";
 };
 #+END_SRC
 
@@ -384,6 +384,7 @@ fonts = {
 Don't question it it's better this way ok??!?!?
 #+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
 services.xserver.xkbOptions = "ctrl:swapcaps";
+console.useXkbConfig = true;
 #+END_SRC
 
 * Networking
@@ -434,7 +435,7 @@ services.xserver.desktopManager.gnome3.enable = true;
 #+END_SRC
 
 ** KDE Plasma5
-#+BEGIN_SRC emacs-lisp :tangle no :noweb-ref insert-config-here
+#+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
 services.xserver.enable = true;
 services.xserver.displayManager.sddm.enable = true;
 services.xserver.desktopManager.plasma5.enable = true;

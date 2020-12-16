@@ -22,8 +22,8 @@
   time.timeZone = "America/Toronto";
   i18n.defaultLocale = "en_US.UTF-8";
   console = {
-    font = "Lat2-Terminus16";
-    keyMap = "us";
+    font = pkgs.lib.mkForce "Lat2-Terminus16";
+    keyMap = pkgs.lib.mkForce "us";
   };
   nixpkgs.config.allowUnfree = true;
   fonts = {
@@ -34,6 +34,7 @@
       ];
   };
   services.xserver.xkbOptions = "ctrl:swapcaps";
+  console.useXkbConfig = true;
   networking.networkmanager.enable = true;
   services.xserver.videoDrivers = [ "nvidia" ];
   nixpkgs.config.packageOverrides = pkgs: {

@@ -8,8 +8,8 @@
   imports =
     [
       ./hardware-configuration.nix
-      ./user-configuration.nix
       /home/dalvescb/nixconfig/common-configuration.nix
+      ./user-configuration.nix
     ];
 
   networking.hostName = "NixBot";
