@@ -1,0 +1,707 @@
+* Header                                                             :ignore:
+# -*- mode: org; -*-
+# (my/execute-startup-blocks)
+
+#+TITLE: My NixOS Config Setup
+#+AUTHOR: Curtis D'Alves
+#+EMAIL: curtis.dalves@gmail.com
+#+DESCRIPTION: My NixOS Configuration File, Written in Org-mode.
+#+STARTUP: indent lognoteclock-out
+#+OPTIONS: html-postamble:nil toc:nil d:nil num:nil :results nil
+#+PROPERTY: header-args :tangle init.el :comments link :results none
+
+* Abstract :ignore:
+  :PROPERTIES:
+  :CUSTOM_ID: Abstract
+  :END:
+
+  This is my literate [[nixos.org/manual/nixos/stable][NixOS]] configuration.
+
+* Table of Contents                                        :Github:TOC_4:
+  :PROPERTIES:
+  :CUSTOM_ID: Table-of-Contents
+  :END:
+- [[#header][Header]]
+- [[#abstract][Abstract]]
+- [[#installing-nixos][Installing NixOS]]
+  - [[#formatting-for-luks-encryption-on-btrfs][Formatting for LUKS Encryption on BTRFS]]
+  - [[#generate-config][Generate Config]]
+  - [[#install][Install]]
+  - [[#post-install][Post-Install]]
+- [[#setting-up-your-config-files][Setting Up Your Config Files]]
+  - [[#multi-system-file-layout][Multi-System File Layout]]
+  - [[#building-this-document][Building This Document]]
+- [[#template][Template]]
+- [[#boot-loader][Boot loader]]
+  - [[#supporting-btrfs-file-system][Supporting BTRFS File System]]
+- [[#virtual-box][Virtual Box]]
+- [[#system-settings][System Settings]]
+  - [[#timezone][TimeZone]]
+  - [[#locale][Locale]]
+  - [[#allow-proprietary-software][Allow Proprietary Software]]
+  - [[#fonts][Fonts]]
+  - [[#switch-caps-and-ctrl][Switch Caps and Ctrl]]
+- [[#networking][Networking]]
+- [[#graphics][Graphics]]
+  - [[#nvidia-drivers][Nvidia Drivers]]
+  - [[#gpu-acceleration][GPU Acceleration]]
+- [[#desktop-environment][Desktop Environment]]
+  - [[#gnome-3][Gnome 3]]
+  - [[#kde-plasma5][KDE Plasma5]]
+- [[#sounds-settings][Sounds Settings]]
+- [[#touchpad-support][Touchpad support]]
+- [[#shell-environment][Shell Environment]]
+- [[#users-management][Users Management]]
+- [[#system-packages][System Packages]]
+- [[#openssh][OpenSSH]]
+- [[#system-upgrades][System Upgrades]]
+- [[#opt-in-state][Opt-In State]]
+  - [[#figuring-out-what-to-persist][Figuring out what to Persist]]
+  - [[#persisting-files][Persisting Files]]
+  - [[#root-rollback][Root Rollback]]
+  - [[#copying-files-to-persist][Copying Files to Persist]]
+
+* Installing NixOS 
+The installation part of the [[https://nixos.org/manual/nixos/stable/index.html#ch-installation][NixOS Manual]] describes how to perform a standard
+installation better than I can
+
+** Formatting for LUKS Encryption on BTRFS
+There's a pretty good [[https://mt-caret.github.io/blog/posts/2020-06-29-optin-state.html][blog post on Encrypted BTRFS Root with Opt-in State in
+NixOS]] covering how to do this. 
+
+- First partition an EFI partition, swap and root
+  partition (where ~/dev/sda~ is the disk you've chosen to install on, you can
+  check your disks with ~fdisk -l~)
+  #+BEGIN_SRC shell :tangle no
+  parted /dev/sda -- mklabel gpt
+    # make root
+  parted /dev/sda -- mkpart primary 512MiB -8GiB
+    # make swap
+  parted /dev/sda -- mkpart primary linux-swap -8GiB 100%
+    # make boot
+  parted /dev/sda -- mkpart ESP fat32 1MiB 512MiB
+  parted /dev/sda -- set 3 esp on
+  #+END_SRC
+- Then encrypt the root partition (~/dev/sda1~ in this example)  with [[https://wiki.archlinux.org/index.php/Dm-crypt][dm-crypt]]
+  #+BEGIN_SRC shell :tangle no
+  cryptsetup --verify-passphrase -v luksFormat /dev/sda1
+  cryptestup open /dev/sda1 enc
+  #+END_SRC
+- Then format each partition (assuming ~/dev/sda2~ is swap and ~/dev/sda3~ is boot)
+  #+BEGIN_SRC shell :tangle no
+  mkfs.vfat -n boot /dev/sda3 
+  mkswap /dev/sda2
+  swapon /dev/sda2
+  mkfs.btrfs /dev/mapper/enc
+  #+END_SRC
+- Next, create the btrfs subvolumes. You can play around with this, this example
+  creates a persist subvolume and makes blank snapshot of root to do *Opt-In
+  State* (see the section [[#opt-in-state][Opt-In State]])
+  #+BEGIN_SRC shell :tangle no
+  mount -t btrfs /dev/mapper/enc /mnt
+
+  btrfs subvolume create /mnt/root
+  btrfs subvolume create /mnt/home
+  btrfs subvolume create /mnt/nix
+  btrfs subvolume create /mnt/persist
+  btrfs subvolume create /mnt/log
+
+  # We then take an empty *readonly* snapshot of the root subvolume,
+  # which we'll eventually rollback to on every boot.
+  btrfs subvolume snapshot -r /mnt/root /mnt/root-blank
+
+  umount /mnt
+  #+END_SRC
+- Now we need to mount all our subvolumes so that a proper fstab gets generated
+  for when we finally run ~nixos-build~
+  #+BEGIN_SRC shell :tangle no
+  mount -o subvol=root,compress=zstd,noatime /dev/mapper/enc /mnt
+
+  mkdir /mnt/home
+  mount -o subvol=home,compress=zstd,noatime /dev/mapper/enc /mnt/home
+
+  mkdir /mnt/nix
+  mount -o subvol=nix,compress=zstd,noatime /dev/mapper/enc /mnt/nix
+
+  mkdir /mnt/persist
+  mount -o subvol=persist,compress=zstd,noatime /dev/mapper/enc /mnt/persist
+
+  mkdir -p /mnt/var/log
+  mount -o subvol=log,compress=zstd,noatime /dev/mapper/enc /mnt/var/log
+  #+END_SRC
+- Also don't forget to mount your boot partition (assuming ~/dev/sda3~ is boot
+  partition)
+  #+BEGIN_SRC shell :tangle no
+  mkdir /mnt/boot
+  mount /dev/sda3 /mnt/boot
+  #+END_SRC
+  
+** Generate Config
+After you're done partitioning, formatting and everythings mounted (with root at ~/mnt~ of course)
+- Generate a default nixos configuration file int ~/mnt/etc/nixos~ with
+  #+BEGIN_SRC shell :tangle no
+  nixos-generate-config --root /mnt
+  #+END_SRC
+- Then edit ~/mnt/etc/nixos/configuration~ to configure your system, I recommend
+  starting with a minimalist install until you can actually boot into your
+  system
+- The [[https://nixos.org/manual/nixos/stable/index.html#ch-installation][NixOS Manual]] gives a good overview of the essentials you should configure,
+  but here's a good sample inital configuration for an EFI system with a btrfs root
+  #+BEGIN_SRC nix :tangle no
+  { config, pkgs, ... }:
+
+  {
+    imports =
+      [ # Include the results of the hardware scan.
+        ./hardware-configuration.nix
+      ];
+
+    boot.supportedFilesystems = [ "btrfs" ];
+    boot.loader.systemd-boot.enable = true;
+    boot.loader.efi.canTouchEfiVariables = true;
+
+    hardware.enableAllFirmware = true;
+    nixpkgs.config.allowUnfree = true;
+
+    networking.hostName = "NixBoot"; # Define your hostname.
+    networking.networkmanager.enable = true;
+
+    time.timeZone = "America/Toronto";
+
+    networking.useDHCP = false;
+    networking.interfaces.enp0s31f6.useDHCP = true; # this should be generated for you
+    networking.interfaces.wlp82s0.useDHCP = true;   # need to manually turn on any network interfaces
+
+    i18n.defaultLocale = "en_US.UTF-8";
+    console = {
+      font = "Lat2-Terminus16";
+      keyMap = "us";
+    };
+
+    services.xserver.enable = true;
+    services.xserver.displayManager.sddm.enable = true;
+    services.xserver.desktopManager.plasma5.enable = true;
+
+    sound.enable = true;
+    hardware.pulseaudio.enable = true;
+
+    services.xserver.libinput.enable = true;
+
+    users.users.dalvescb = {
+      isNormalUser = true;
+      extraGroups = [ "wheel" ]; # Enable ‘sudo’ for the user.
+    };
+
+    environment.systemPackages = with pkgs; [
+      wget 
+      vim
+      emacs
+      chromium
+      git
+    ];
+  
+    services.openssh.enable = true;
+    system.stateVersion = "20.09"; # Did you read the comment?
+
+    }
+    #+END_SRC
+  - Also make sure everything in ~/mnt/etc/nixos/hardware-configuration.nix~ is
+    correct, in particular if you followed the btrfs file layout in the previous
+    section make sure ~/var/log~ subvolume is mounted early enough in the boot
+    process by adding ~neededForBoot = true~, i.e.
+    #+BEGIN_SRC nix :tangle no
+    fileSystems."/var/log" =
+      { device = "/dev/disk/by-uuid/f73c53b7-ae6c-4240-89c3-511ad918edcc";
+        fsType = "btrfs";
+        options = [ "subvol=log" "compress=zstd" "noatime" ];
+        neededForBoot = true;
+      };
+  #+END_SRC
+  
+** Install
+Finally, after you've you have generated and edited your configuration, simply
+run
+#+BEGIN_SRC shell :tangle no
+nixos-install
+reboot
+#+END_SRC
+
+** Post-Install
+After a successful installation you should 
+- begin properly configuring ~/mnt/etc/nixos/configuration~
+- if you followed the btrfs subvolume setup in [[#formatting-for-luks-encryption-on-btrfs][Formatting for LUKS Encryption on
+  BTRFS]] optionally enable [[#opt-in-state][Opt-In State]]
+  
+* Setting Up Your Config Files
+[[#building-this-document][Building This Document]] will generate a file ~common-configuration.nix~, which is
+designed to be imported by your main ~configuration.nix~ that will contain any
+system specific information so that the majority of your config can be shared by
+multiple systems 
+ 
+** Multi-System File Layout
+- Clone this repository to your home, i.e. if ~<user>~ is your username:
+  ~/home/<user>/nixconfig~
+- Create a new directory in the repo to store system specific configuration
+  files, i.e. if <hostname> is your hostname create the directory:
+  ~/home/<user>/nixconfig/<hostname>~
+- Copy your generated ~/etc/nixos/hardware-configuration.nix~ into
+  ~/home/<user>/nixconfig/<hostname>~
+- Create a main configuration file
+  ~/home/<user>/nixconfig/<hostname>/configuration.nix~ which will import the
+  other configurations and contain any system specific config, for example:
+  #+BEGIN_SRC nix :tangle no
+  { config, pkgs, ... }:
+
+  {
+    imports =
+      [ 
+        ./hardware-configuration.nix
+        ./user-configuration.nix
+        ../common-configuration.nix
+      ];
+
+    networking.hostName = "<hostname>"; # replace with actual hostname
+    nix.nixPath = [
+      "nixos-config=/home/<user>/nixconfig/${config.networking.hostName}/configuration.nix"
+    ];
+
+
+    networking.useDHCP = false;
+    networking.interfaces.<interface>.useDHCP = true; # replace wiht actual networking interfaces
+  }
+  #+END_SRC
+- Create a ~/home/<user>/nixconfig/<hostname>/user-configuration.nix~ and setup
+  your user configuration (see [[#users-management][Users Management]])
+
+- ~nix.nixPath~ will change your default ~nixo-config~ path from ~/etc/nixos~,
+  but the first time you rebuild you'll have to specify this manually, i.e.
+  #+BEGIN_SRC shell :tangle no
+  nixos-rebuild -I /home/<user>/nixconfig/<hostname>/configuration.nix switch
+  #+END_SRC
+  
+** Building This Document
+This is an Emacs [[https://orgmode.org][Org Mode]] document, and thus needs emacs to be
+built. However, on a fresh NixOS installation you can build this from a
+temporary shell environment via
+#+BEGIN_SRC sh :tangle no :results output silent 
+nix-shell -p emacs
+emacs --file NixOSConfiguration.org --eval '(progn (org-babel-tangle) (kill-emacs))'
+#+END_SRC
+However, I recommend you first do a basic install as laid out in [[#installing-nixos][Installing
+NixOS]], then using ~org-babel-tangle~ from within emacs.
+
+* Template
+  - The NixOS configuration file is actually a /Nix expression/, which is the Nix
+    package manager's purely functional language for describing how to build
+    packages.
+  - The first line (~{ config, pkgs, ... }~) denotes that  this is actually a
+    function that takes at least two arguments ~config~ and ~pkgs~. The function
+    returns a set of *option definitions* ~{ <<insert-config-here>> }~ (i.e. where
+    the entirety of the configuration code in this document is inserted)
+    
+    #+BEGIN_SRC nix :tangle common-configuration.nix :noweb yes
+    # Edit this configuration file to include configuration common between hosts
+    # NOTE this was generated from the org file NixOSConfiguration.org
+    { config, pkgs, ... }:
+
+    {
+      <<insert-config-here>>
+    }
+    #+END_SRC
+
+* Boot loader
+ Configure the GRUB 2 bootloader on UEFI with
+ #+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
+ # Use the GRUB 2 boot loader (with EFI support)
+ boot.loader.grub.enable = true;
+ boot.loader.grub.version = 2;
+ boot.loader.grub.device = "nodev";
+ boot.loader.grub.efiSupport = true;
+ boot.loader.grub.useOSProber = true;
+ boot.loader.grub.fsIdentifier = "label";
+ boot.loader.grub.efiInstallAsRemovable = true;
+ boot.loader.efi.efiSysMountPoint = "/boot";
+
+ # Use the systemd-boot EFI boot loader.
+ # boot.loader.systemd-boot.enable = true;
+ # boot.loader.efi.canTouchEfiVariables = true;
+ #+END_SRC
+
+** Supporting BTRFS File System
+If using a BTRFS filesystem add it to ~boot.supportedFilesystems~ and enable
+~boot.hardware.enableAllFirmware~
+#+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
+boot.supportedFilesystems = [ "btrfs" ];
+hardware.enableAllFirmware = true;
+#+END_SRC
+
+* Virtual Box
+If installing NixOS inside of a virtual box (which is a great way to develop a
+config) make sure to enable Guest Additions to get some nice extra features
+including much better video support (add this to your hosts ~configuration.nix~)
+  #+BEGIN_SRC nix :tangle no 
+  virtualisation.virtualbox.guest.enable = true;
+  #+END_SRC
+
+* System Settings
+** TimeZone
+See [[https://en.wikipedia.org/wiki/List_of_tz_database_time_zones][list of tz database time zones]] for possible options
+#+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
+time.timeZone = "America/Toronto";
+#+END_SRC
+
+** Locale
+Use the command ~locale -a~ to see a list of valid locales
+#+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
+i18n.defaultLocale = "en_US.UTF-8";
+console = {
+  font = "Lat2-Terminus16";
+  keyMap = "us";
+};
+#+END_SRC
+
+** Allow Proprietary Software
+Because NixOS is high and mighty Open Source software you need to manually specify
+the installation of propriety (unfree) software is allowed (see the
+[[https://nixos.wiki/wiki/FAQ/How_can_I_install_a_proprietary_or_unfree_package%3F][NixOS Wiki on Proprietary Packages]])
+#+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
+nixpkgs.config.allowUnfree = true;
+#+END_SRC
+
+** Fonts
+Install fonts by adding them to ~fonts.fonts.pkgs~ (use override to select fonts
+from a big package) see [[https://nixos.wiki/wiki/Fonts][NixOS Wiki Fonts]] for details
+#+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
+fonts = {
+  fonts = with pkgs; [
+      dejavu_fonts
+      (nerdfonts.override { fonts = [ "DejaVuSansMono" ]; } )
+      emacs-all-the-icons-fonts
+    ];
+};
+#+END_SRC
+** Switch Caps and Ctrl
+Don't question it it's better this way ok??!?!?
+#+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
+services.xserver.xkbOptions = "ctrl:swapcaps";
+#+END_SRC
+
+* Networking
+- The hostname and DHCP settings should already be set in your
+  ~configuration.nix~ (see [[#multi-system-file-layout][Multi-System File Layout]])
+- Enable network manager with
+#+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
+networking.networkmanager.enable = true;
+#+END_SRC
+
+* Graphics
+** Nvidia Drivers
+The propriety Nvidia driver is installed with
+#+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
+services.xserver.videoDrivers = [ "nvidia" ];
+#+END_SRC
+*NOTE* it requires ~nixpkgs.config.allowUnfree~ enabled (see [[#allow-proprietary-software][Allow Proprietary Software]])
+
+** GPU Acceleration
+See the NixOS Wiki on [[https://nixos.wiki/wiki/Accelerated_Video_Playback][Accelerated Video Playback]].
+- First install ~libva~, ~libva-utils~ in [[#system-packages][System Packages]]
+- Then configure ~libva~ packages for Intel
+  #+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
+  nixpkgs.config.packageOverrides = pkgs: {
+    vaapiIntel = pkgs.vaapiIntel.override { enableHybridCodec = true; };
+  };
+  hardware.opengl = {
+    enable = true;
+    extraPackages = with pkgs; [
+      # intel-media-driver # LIBVA_DRIVER_NAME=iHD
+      vaapiIntel         # LIBVA_DRIVER_NAME=i965 (older but works better for Firefox/Chromium)
+      # vaapiVdpau
+      # libvdpau-va-gl
+    ];
+  };
+  #+END_SRC
+*NOTE* you test your configuration with
+#+BEGIN_SRC shell :tangle no
+nix-shell -p libva-utils --run vainfo
+#+END_SRC
+
+* Desktop Environment
+** Gnome 3
+#+BEGIN_SRC nix :tangle no 
+services.xserver.enable = true;
+services.xserver.displayManager.gdm.enable = true;
+services.xserver.desktopManager.gnome3.enable = true;
+#+END_SRC
+
+** KDE Plasma5
+#+BEGIN_SRC emacs-lisp :tangle no :noweb-ref insert-config-here
+services.xserver.enable = true;
+services.xserver.displayManager.sddm.enable = true;
+services.xserver.desktopManager.plasma5.enable = true;
+#+END_SRC
+
+Global Theme doesn't seem to work (for downloading/installing new themes) but
+- You can download new themes from the [[https://store.kde.org][KDE Store]] (say ~Sweet.tar.xz~) and
+  install them (mutably) with
+  #+BEGIN_SRC shell :tangle no
+  kpackagetool5 -t Plasma/LookAndFeel -i Sweet.tar.xz
+  #+END_SRC
+- This installs the theme in ~$HOME/.local/share/plasma/look-and-feel~
+- To switch the theme on, either edit ~$HOME/.config/plasmarc~ manually or do so
+  with 
+  #+BEGIN_SRC shell :tangle no
+  kwriteconfig5 --key Theme Sweet
+  #+END_SRC
+  
+* Sounds Settings
+ #+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
+ # Enable sound.
+ sound.enable = true;
+ hardware.pulseaudio.enable = true;
+ #+END_SRC
+ 
+* Touchpad support
+To enable touchpad support through [[https://wiki.archlinux.org/index.php/Libinput][LibInput]] add
+#+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
+services.xserver.libinput.enable = true;
+#+END_SRC
+
+* Shell Environment
+Enable the default shell (i.e. bash,zhs,fish,etc) here
+#+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
+# add zsh shell
+programs.zsh.enable = true;
+#+END_SRC
+
+* Users Management
+I like to declaretively set my user configurations, including their password via
+a ~hashedPassword~. Because of this, I keep my user configuration in a seperate
+file ~user-configuration.nix~ that I import and do not include in this document
+or GitHub repo.
+
+An example of this file is
+#+BEGIN_SRC nix :tangle no 
+{ config, pkgs, ... }:
+
+{
+  users.mutableUsers = false;
+
+  users.users.dalvescb = {
+    isNormalUser = true;
+    home = "/home/dalvescb";
+    extraGroups = [ "wheel" "networkmanager" ]; # Enable ‘sudo’ for the user.
+    shell = pkgs.zsh;
+    hashedPassword = "asdl;fkjasdfnamsdcoimalkamxzcOIUZlknasdfkdf";
+          # generate me with mkpasswd -m sha-512
+  };
+
+  # disable root password
+  users.users.root.hashedPassword = "*";
+}
+#+END_SRC
+
+* System Packages
+Install packages system-wide by adding them to ~environment.systemPackages~.
+*NOTE* multiple declarations (between modules) will result in /merging/ of this
+list, so not necessarily all installed system packages need to be located here
+#+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
+environment.systemPackages = with pkgs; [
+  wget
+  ispell
+  vim
+  emacs
+  git
+  imagemagick
+  subversion
+  firefox
+  chromium
+  nix-index
+  libva
+  libva-utils
+  arc-kde-theme
+  haskellPackages.stack
+  haskellPackages.haskell-language-server
+  haskellPackages.Agda
+  python3Full
+  snapper
+  python38Packages.snapperGUI
+  emacs26Packages.agda2-mode
+  texlive.combined.scheme-full
+];
+#+END_SRC
+
+* OpenSSH
+Enable OpenSSH
+#+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
+# Enable the OpenSSH daemon.
+services.openssh.enable = true;
+#+END_SRC
+
+* System Upgrades
+Configure how System Upgrades are performed here
+#+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
+# enables auto-updating
+system.autoUpgrade.enable = true;
+system.autoUpgrade.allowReboot = true;
+
+# This value determines the NixOS release from which the default
+# settings for stateful data, like file locations and database versions
+# on your system were taken. It‘s perfectly fine and recommended to leave
+# this value at the release version of the first install of this system.
+# Before changing this value read the documentation for this option
+# (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
+system.stateVersion = "20.09"; # Did you read the comment?
+#+END_SRC
+
+* Opt-In State
+If you followed the formatting laid out in [[#formatting-for-luks-encryption-on-btrfs][Formatting for LUKS Encryption on
+BTRFS]],
+(i.e. you should have a BTRFS filesystem with the following subvolumes)
+ - root ~/~
+ - home ~/home~
+ - nix ~/nix~
+ - persist ~/persist~
+ - log ~/var/log~
+then it's possible to setup the root subvolume to restore to a snapshot
+automatically each boot. This gives you a nice "clean OS smell" each time you
+boot. The article [[https://mt-caret.github.io/blog/posts/2020-06-29-optin-state.html][Encypted Btrfs Root with Opt-in State on NixOS]] gives a good
+overview of how to go about this.
+
+Of course this comes at a cost, mainly sometimes you'll want certain files to
+persist which will require extra work copying and symlinking to the ~persist~
+subvolume
+
+** Figuring out what to Persist
+To figure out which files you may want to persist, you'll probably want to take a
+diff of files that have changes from your current (in use) root partition and
+the blank snapshot. To do this:
+- First mount the root subvolume with
+  #+BEGIN_SRC sh :tangle no
+  sudo mkdir /mnt
+  sudo mount -o subvol=/ /dev/mapper/enc /mnt
+  ./fs-diff.sh
+  #+END_SRC
+- Then execute the following script
+  #+BEGIN_SRC sh :tangle no
+  #!/usr/bin/env bash
+  # fs-diff.sh
+  set -euo pipefail
+
+  OLD_TRANSID=$(sudo btrfs subvolume find-new /mnt/root-blank 9999999)
+  OLD_TRANSID=${OLD_TRANSID#transid marker was }
+
+  sudo btrfs subvolume find-new "/mnt/root" "$OLD_TRANSID" |
+  sed '$d' |
+  cut -f17- -d' ' |
+  sort |
+  uniq |
+  while read path; do
+    path="/$path"
+    if [ -L "$path" ]; then
+      : # The path is a symbolic link, so is probably handled by NixOS already
+    elif [ -d "$path" ]; then
+      : # The path is a directory, ignore
+    else
+      echo "$path"
+    fi
+  done
+  #+END_SRC
+
+** Persisting Files
+We copy files/directories in ~/etc/~ to their own spot in ~/persist/etc/~ to
+make them persist (~/etc/nixos~ is a good example of a directory we need to do
+this with) and use systemd's [[https://www.freedesktop.org/software/systemd/man/tmpfiles.d.html][tmpfiles.d]] to symlink files as necessary 
+#+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
+environment.etc = {
+  # persist /etc/nixos
+  nixos.source = "/persist/etc/nixos";
+  NIXOS.source = "/persist/etc/NIXOS";
+  # persist NetworkManager 
+  "NetworkManager/system-connections".source = "/persist/etc/NetworkManager/system-connections";
+  # persist adjtime
+  adjtime.source = "/persist/etc/adjtime";
+};
+
+systemd.tmpfiles.rules = [
+ "L /var/lib/NetworkManager/secret_key - - - - /persist/var/lib/NetworkManager/secret_key"
+ "L /var/lib/NetworkManager/seen-bssids - - - - /persist/var/lib/NetworkManager/seen-bssids"
+ "L /var/lib/NetworkManager/timestamps - - - - /persist/var/lib/NetworkManager/timestamps"
+];
+
+security.sudo.extraConfig = ''
+  # rollback results in sudo lectures after each reboot
+  Defaults lecture = never
+'';
+#+END_SRC
+
+*NOTE* the first time you add something to ~/persist~ you still need to manually
+ copy them (see [[#copying-files-to-persist][Copying Files to Persist]])
+  
+** Root Rollback
+Finally, we need to configure NixOS to rollback the root subvolume (to our
+root-blank snapshot) on boot
+#+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
+# Note `lib.mkBefore` is used instead of `lib.mkAfter` here.
+boot.initrd.postDeviceCommands = pkgs.lib.mkBefore ''
+  mkdir -p /mnt
+
+  # We first mount the btrfs root to /mnt
+  # so we can manipulate btrfs subvolumes.
+  mount -o subvol=/ /dev/mapper/enc /mnt
+
+  # While we're tempted to just delete /root and create
+  # a new snapshot from /root-blank, /root is already
+  # populated at this point with a number of subvolumes,
+  # which makes `btrfs subvolume delete` fail.
+  # So, we remove them first.
+  #
+  # /root contains subvolumes:
+  # - /root/var/lib/portables
+  # - /root/var/lib/machines
+  #
+  # I suspect these are related to systemd-nspawn, but
+  # since I don't use it I'm not 100% sure.
+  # Anyhow, deleting these subvolumes hasn't resulted
+  # in any issues so far, except for fairly
+  # benign-looking errors from systemd-tmpfiles.
+  btrfs subvolume list -o /mnt/root |
+  cut -f9 -d' ' |
+  while read subvolume; do
+    echo "deleting /$subvolume subvolume..."
+    btrfs subvolume delete "/mnt/$subvolume"
+  done &&
+  echo "deleting /root subvolume..." &&
+  btrfs subvolume delete /mnt/root
+
+  echo "restoring blank /root subvolume..."
+  btrfs subvolume snapshot /mnt/root-blank /mnt/root
+
+  # Once we're done rolling back to a blank snapshot,
+  # we can unmount /mnt and continue on the boot process.
+  umount /mnt
+'';
+#+END_SRC
+
+** Copying Files to Persist
+NixOS will take care of creating the specified symlinks, but we still need to
+manually move relevant files we adding them to ~/persist~ for the first time,
+i.e. after the previous steps run
+#+BEGIN_SRC shell :tangle no 
+sudo nixos-rebuild boot
+
+# persist NetworkManager
+sudo mkdir -p /persist/etc/NetworkManager
+sudo cp -r {,/persist}/etc/NetworkManager/system-connections
+sudo mkdir -p /persist/var/lib/NetworkManager
+sudo cp /var/lib/NetworkManager/{secret_key,seen-bssids,timestamps} /persist/var/lib/NetworkManager/
+# persist nixos
+sudo cp -r {,/persist}/etc/nixos
+sudo cp -r {,/persist}/etc/NIXOS
+# persist adjtime
+sudo cp {,/persist}/etc/adjtime
+#+END_SRC
+
+
+
+#  LocalWords:  UEFI unfree NixOS OpenSSH BTRFS subvolume subvolumes WiFi GPU
+#  LocalWords:  systemd's Nvidia VA API KDE mutably
