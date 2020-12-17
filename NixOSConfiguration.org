@@ -43,7 +43,7 @@
   - [[#switch-caps-and-ctrl][Switch Caps and Ctrl]]
 - [[#networking][Networking]]
 - [[#graphics][Graphics]]
-  - [[#nvidia-drivers][Nvidia Drivers]]
+  - [[#nvidia-prime][Nvidia Prime]]
   - [[#gpu-acceleration][GPU Acceleration]]
 - [[#desktop-environment][Desktop Environment]]
   - [[#gnome-3][Gnome 3]]
@@ -262,6 +262,7 @@ multiple systems
 
     networking.hostName = "<hostname>"; # replace with actual hostname
     nix.nixPath = [
+      "nixpkgs=/nix/var/nix/profiles/per-user/root/channels/nixos/nixpkgs"
       "nixos-config=/home/<user>/nixconfig/${config.networking.hostName}/configuration.nix"
     ];
 
@@ -396,18 +397,46 @@ networking.networkmanager.enable = true;
 #+END_SRC
 
 * Graphics
-** Nvidia Drivers
-The propriety Nvidia driver is installed with
-#+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
-services.xserver.videoDrivers = [ "nvidia" ];
+Because graphics drivers vary from system to system, I put the configuration for
+them in their own modules (separate from the ~common-configuration.nix~ file the
+rest of this document generates. The two main configurations I have are
+- ~nvidia.nix~ standard proprietary nvidia driver that uses just a discrete gpu
+- ~nvidiaprime.nix~ 
+** Nvidia Prime
+Because drivers vary from system to system, I put 
+#+BEGIN_SRC nix :tangle nvidiaprime.nix
+{pkgs, ... }:
+
+# let
+#    nvidia-offload = pkgs.writeShellScriptBin "nvidia-offload" ''
+#     export __NV_PRIME_RENDER_OFFLOAD=1
+#     export __NV_PRIME_RENDER_OFFLOAD_PROVIDER=NVIDIA-G0
+#     export __GLX_VENDOR_LIBRARY_NAME=nvidia
+#     export __VK_LAYER_NV_optimus=NVIDIA_only
+#     exec -a "$0" "$@"
+#   '';
+# in
+{
+  # environment.systemPackages = [ nvidia-offload ]; 
+  services.xserver.videoDrivers = [ "modesetting" "nvidia" ];
+  hardware.nvidia.prime = {
+    # offload.enable = true;
+    sync.enable = true;
+    # Bus ID of the Intel GPU. You can find it using lspci, either under 3D or VGA
+    intelBusId = "PCI:0:2:0";
+
+    # Bus ID of the NVIDIA GPU. You can find it using lspci, either under 3D or VGA
+    nvidiaBusId = "PCI:1:0:0";
+  };
+}
 #+END_SRC
 *NOTE* it requires ~nixpkgs.config.allowUnfree~ enabled (see [[#allow-proprietary-software][Allow Proprietary Software]])
 
-** GPU Acceleration
+** TODO GPU Acceleration 
 See the NixOS Wiki on [[https://nixos.wiki/wiki/Accelerated_Video_Playback][Accelerated Video Playback]].
 - First install ~libva~, ~libva-utils~ in [[#system-packages][System Packages]]
 - Then configure ~libva~ packages for Intel
-  #+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
+  #+BEGIN_SRC nix :tangle no 
   nixpkgs.config.packageOverrides = pkgs: {
     vaapiIntel = pkgs.vaapiIntel.override { enableHybridCodec = true; };
   };
@@ -519,6 +548,7 @@ environment.systemPackages = with pkgs; [
   nix-index
   libva
   libva-utils
+  pciutils
   arc-kde-theme
   haskellPackages.stack
   haskellPackages.haskell-language-server
@@ -620,7 +650,7 @@ environment.etc = {
   # persist NetworkManager 
   "NetworkManager/system-connections".source = "/persist/etc/NetworkManager/system-connections";
   # persist adjtime
-  adjtime.source = "/persist/etc/adjtime";
+  # adjtime.source = "/persist/etc/adjtime";
 };
 
 systemd.tmpfiles.rules = [

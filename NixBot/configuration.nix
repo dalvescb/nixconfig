@@ -9,11 +9,13 @@
     [
       ./hardware-configuration.nix
       /home/dalvescb/nixconfig/common-configuration.nix
+      /home/dalvescb/nixconfig/nvidiaprime.nix
       ./user-configuration.nix
     ];
 
   networking.hostName = "NixBot";
   nix.nixPath = [
+    "nixpkgs=/nix/var/nix/profiles/per-user/root/channels/nixos/nixpkgs"
     "nixos-config=/home/dalvescb/nixconfig/${config.networking.hostName}/configuration.nix"
   ];
 

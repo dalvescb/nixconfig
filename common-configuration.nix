@@ -36,19 +36,6 @@
   services.xserver.xkbOptions = "ctrl:swapcaps";
   console.useXkbConfig = true;
   networking.networkmanager.enable = true;
-  services.xserver.videoDrivers = [ "nvidia" ];
-  nixpkgs.config.packageOverrides = pkgs: {
-    vaapiIntel = pkgs.vaapiIntel.override { enableHybridCodec = true; };
-  };
-  hardware.opengl = {
-    enable = true;
-    extraPackages = with pkgs; [
-      # intel-media-driver # LIBVA_DRIVER_NAME=iHD
-      vaapiIntel         # LIBVA_DRIVER_NAME=i965 (older but works better for Firefox/Chromium)
-      # vaapiVdpau
-      # libvdpau-va-gl
-    ];
-  };
   services.xserver.enable = true;
   services.xserver.displayManager.sddm.enable = true;
   services.xserver.desktopManager.plasma5.enable = true;
@@ -71,6 +58,7 @@
     nix-index
     libva
     libva-utils
+    pciutils
     arc-kde-theme
     haskellPackages.stack
     haskellPackages.haskell-language-server
@@ -101,7 +89,7 @@
     # persist NetworkManager 
     "NetworkManager/system-connections".source = "/persist/etc/NetworkManager/system-connections";
     # persist adjtime
-    adjtime.source = "/persist/etc/adjtime";
+    # adjtime.source = "/persist/etc/adjtime";
   };
   
   systemd.tmpfiles.rules = [
