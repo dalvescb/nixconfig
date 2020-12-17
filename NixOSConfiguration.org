@@ -174,7 +174,7 @@ After you're done partitioning, formatting and everythings mounted (with root at
 
     i18n.defaultLocale = "en_US.UTF-8";
     console = {
-      font = "Lat2-Terminus16";
+      font = "sun12x22";
       keyMap = "us";
     };
 
@@ -356,7 +356,7 @@ Use the command ~locale -a~ to see a list of valid locales
 #+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
 i18n.defaultLocale = "en_US.UTF-8";
 console = {
-  font = pkgs.lib.mkForce "Lat2-Terminus16";
+  font = pkgs.lib.mkForce "sun12x22";
   keyMap = pkgs.lib.mkForce "us";
 };
 #+END_SRC
@@ -418,7 +418,9 @@ Because drivers vary from system to system, I put
 # in
 {
   # environment.systemPackages = [ nvidia-offload ]; 
-  services.xserver.videoDrivers = [ "modesetting" "nvidia" ];
+  # services.xserver.videoDrivers = [ "intel" "modesetting" "nvidia" ];
+  services.xserver.videoDrivers = [ "nvidia" ];
+  services.xserver.dpi = 96;
   hardware.nvidia.prime = {
     # offload.enable = true;
     sync.enable = true;
@@ -428,6 +430,8 @@ Because drivers vary from system to system, I put
     # Bus ID of the NVIDIA GPU. You can find it using lspci, either under 3D or VGA
     nvidiaBusId = "PCI:1:0:0";
   };
+  hardware.opengl.enable = true;
+  hardware.opengl.driSupport32Bit = true;
 }
 #+END_SRC
 *NOTE* it requires ~nixpkgs.config.allowUnfree~ enabled (see [[#allow-proprietary-software][Allow Proprietary Software]])

@@ -22,7 +22,7 @@
   time.timeZone = "America/Toronto";
   i18n.defaultLocale = "en_US.UTF-8";
   console = {
-    font = pkgs.lib.mkForce "Lat2-Terminus16";
+    font = pkgs.lib.mkForce "sun12x22";
     keyMap = pkgs.lib.mkForce "us";
   };
   nixpkgs.config.allowUnfree = true;
