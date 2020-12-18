@@ -48,8 +48,9 @@
 - [[#desktop-environment][Desktop Environment]]
   - [[#gnome-3][Gnome 3]]
   - [[#kde-plasma5][KDE Plasma5]]
+- [[#bluetooth][Bluetooth]]
 - [[#sounds-settings][Sounds Settings]]
-- [[#touchpad-support][Touchpad support]]
+- [[#touchpad-support][TouchPad support]]
 - [[#shell-environment][Shell Environment]]
 - [[#users-management][Users Management]]
 - [[#system-packages][System Packages]]
@@ -430,7 +431,14 @@ Because drivers vary from system to system, I put
     # Bus ID of the NVIDIA GPU. You can find it using lspci, either under 3D or VGA
     nvidiaBusId = "PCI:1:0:0";
   };
-  hardware.opengl.enable = true;
+  hardware.opengl = {
+    enable = true;
+    extraPackages = with pkgs; [
+        vaapiIntel
+        vaapiVdpau
+        libvdpau-va-gl
+      ];
+  };
   hardware.opengl.driSupport32Bit = true;
 }
 #+END_SRC
@@ -486,15 +494,31 @@ Global Theme doesn't seem to work (for downloading/installing new themes) but
   #+BEGIN_SRC shell :tangle no
   kwriteconfig5 --key Theme Sweet
   #+END_SRC
-  
+
+* Bluetooth
+Enable bluetooth support with one simple line (see
+[[https://nixos.wiki/wiki/Bluetooth][NixOS Wiki Bluetooth]] for further details)
+#+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
+hardware.bluetooth.enable = true;
+#+END_SRC
+
 * Sounds Settings
+Sound should be enabled through [[https://nixos.wiki/wiki/PulseAudio][Pulse Audio]]. The default install is a
+lightweight version, to build a fully install (needed for some bluetooth
+headsets) you'll need to specify ~pkgs.pulseaudioFull~
  #+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
- # Enable sound.
  sound.enable = true;
- hardware.pulseaudio.enable = true;
+ hardware.pulseaudio = {
+    enable = true;
+
+    # NixOS allows either a lightweight build (default) or full build of PulseAudio to be installed.
+    # Only the full build has Bluetooth support, so it must be selected here.
+    package = pkgs.pulseaudioFull;
+ };
  #+END_SRC
+ You may also need to add users to the ~audio~ group (see [[#users-management][Users Management]])
  
-* Touchpad support
+* TouchPad support
 To enable touchpad support through [[https://wiki.archlinux.org/index.php/Libinput][LibInput]] add
 #+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
 services.xserver.libinput.enable = true;
@@ -523,7 +547,7 @@ An example of this file is
   users.users.dalvescb = {
     isNormalUser = true;
     home = "/home/dalvescb";
-    extraGroups = [ "wheel" "networkmanager" ]; # Enable ‘sudo’ for the user.
+    extraGroups = [ "wheel" "networkmanager" "audio" ]; 
     shell = pkgs.zsh;
     hashedPassword = "asdl;fkjasdfnamsdcoimalkamxzcOIUZlknasdfkdf";
           # generate me with mkpasswd -m sha-512
@@ -548,12 +572,17 @@ environment.systemPackages = with pkgs; [
   imagemagick
   subversion
   firefox
-  chromium
+  (chromium.override { enableVaapi = true; })
+  discord
   nix-index
   libva
   libva-utils
+  razergenie
+  linuxPackages.openrazer
   pciutils
   arc-kde-theme
+  plasma5.kwallet-pam
+  plasma5.sddm-kcm
   haskellPackages.stack
   haskellPackages.haskell-language-server
   haskellPackages.Agda
@@ -739,4 +768,5 @@ sudo cp {,/persist}/etc/adjtime
 
 
 #  LocalWords:  UEFI unfree NixOS OpenSSH BTRFS subvolume subvolumes WiFi GPU
-#  LocalWords:  systemd's Nvidia VA API KDE mutably
+#  LocalWords:  systemd's Nvidia VA API KDE mutably Bluetooth bluetooth
+#  LocalWords:  TouchPad

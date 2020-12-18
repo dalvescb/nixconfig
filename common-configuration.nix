@@ -39,9 +39,15 @@
   services.xserver.enable = true;
   services.xserver.displayManager.sddm.enable = true;
   services.xserver.desktopManager.plasma5.enable = true;
-  # Enable sound.
+  hardware.bluetooth.enable = true;
   sound.enable = true;
-  hardware.pulseaudio.enable = true;
+  hardware.pulseaudio = {
+     enable = true;
+  
+     # NixOS allows either a lightweight build (default) or full build of PulseAudio to be installed.
+     # Only the full build has Bluetooth support, so it must be selected here.
+     package = pkgs.pulseaudioFull;
+  };
   services.xserver.libinput.enable = true;
   # add zsh shell
   programs.zsh.enable = true;
@@ -54,12 +60,17 @@
     imagemagick
     subversion
     firefox
-    chromium
+    (chromium.override { enableVaapi = true; })
+    discord
     nix-index
     libva
     libva-utils
+    razergenie
+    linuxPackages.openrazer
     pciutils
     arc-kde-theme
+    plasma5.kwallet-pam
+    plasma5.sddm-kcm
     haskellPackages.stack
     haskellPackages.haskell-language-server
     haskellPackages.Agda
