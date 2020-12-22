@@ -61,6 +61,7 @@
     subversion
     firefox
     (chromium.override { enableVaapi = true; })
+    brave
     discord
     nix-index
     libva
