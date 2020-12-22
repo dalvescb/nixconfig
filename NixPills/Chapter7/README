@@ -1,0 +1,9 @@
+# Chapter 7 Nix Pills
+Run this with the command
+    nix-build simple.nix
+
+nix-build does two jobs
+   - nix-instantiate : parse and evaluate simple.nix and return the .drv file corresponding to the parsed derivation set
+   - nix-store -r : realise the .drv file, which actually builds it.
+
+This'll generate the *result* directory with the ocmpiled executable inside it
