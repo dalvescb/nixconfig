@@ -1,0 +1,10 @@
+# Chapter 8 Nix Pills
+
+Before building download the tar for GNU Hello http://ftp.gnu.org/gnu/hello/hello-2.10.tar.gz
+into the current directory
+
+Then build with
+     nix-build hello.nix
+
+## hello.nix
+Super simple nix file that calls ./hello_builder.sh 

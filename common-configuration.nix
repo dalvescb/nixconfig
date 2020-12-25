@@ -49,8 +49,8 @@
      package = pkgs.pulseaudioFull;
   };
   services.xserver.libinput.enable = true;
-  # add zsh shell
   programs.zsh.enable = true;
+  programs.fish.enable = true;
   environment.systemPackages = with pkgs; [
     wget
     ispell
@@ -80,6 +80,7 @@
     python38Packages.snapperGUI
     emacs26Packages.agda2-mode
     texlive.combined.scheme-full
+    alacritty
   ];
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
