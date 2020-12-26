@@ -62,6 +62,7 @@
     - [[#persisting-machine-id][Persisting Machine-ID]]
   - [[#root-rollback][Root Rollback]]
   - [[#copying-files-to-persist][Copying Files to Persist]]
+- [[#emacs-daemon][Emacs Daemon]]
 
 * Installing NixOS 
 The installation part of the [[https://nixos.org/manual/nixos/stable/index.html#ch-installation][NixOS Manual]] describes how to perform a standard
@@ -784,6 +785,12 @@ sudo cp -r {,/persist}/etc/NIXOS
 sudo cp {,/persist}/etc/adjtime
 #+END_SRC
 
+* Emacs Daemon
+To install and enable the *systemd* user service for Emacs daemon, add the
+following
+#+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
+services.emacs.enable = true;
+#+END_SRC
 
 
 #  LocalWords:  UEFI unfree NixOS OpenSSH BTRFS subvolume subvolumes WiFi GPU

@@ -155,5 +155,6 @@
     # we can unmount /mnt and continue on the boot process.
     umount /mnt
   '';
+  services.emacs.enable = true;
 }
 # Template:1 ends here
