@@ -30,6 +30,7 @@
     fonts = with pkgs; [
         dejavu_fonts
         (nerdfonts.override { fonts = [ "DejaVuSansMono" ]; } )
+        source-code-pro
         emacs-all-the-icons-fonts
       ];
   };
