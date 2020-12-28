@@ -84,6 +84,7 @@
     alacritty
     kdeApplications.ark
     zip
+    unzip
     unrar
   ];
   # Enable the OpenSSH daemon.
