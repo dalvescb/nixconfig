@@ -82,6 +82,9 @@
     emacs26Packages.agda2-mode
     texlive.combined.scheme-full
     alacritty
+    kdeApplications.ark
+    zip
+    unrar
   ];
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
