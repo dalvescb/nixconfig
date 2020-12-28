@@ -52,6 +52,7 @@
 - [[#sounds-settings][Sounds Settings]]
 - [[#touchpad-support][TouchPad support]]
 - [[#shell-environment][Shell Environment]]
+  - [[#shell-aliases][Shell Aliases]]
 - [[#users-management][Users Management]]
 - [[#system-packages][System Packages]]
 - [[#openssh][OpenSSH]]
@@ -534,6 +535,15 @@ programs.zsh.enable = true;
 programs.fish.enable = true;
 #+END_SRC
 To set the default shell see the next section ([[#users-management][Users Management]])
+
+** Shell Aliases
+Instead of in .profile, .bash, etc create aliases declaratively here 
+#+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
+programs.fish.shellAliases = { 
+  e = "emacsclient";
+  ec ="emacsclient -c";
+};
+#+END_SRC
 
 * Users Management
 I like to declaretively set my user configurations, including their password via

@@ -52,6 +52,10 @@
   services.xserver.libinput.enable = true;
   programs.zsh.enable = true;
   programs.fish.enable = true;
+  programs.fish.shellAliases = { 
+    e = "emacsclient";
+    ec ="emacsclient -c";
+  };
   environment.systemPackages = with pkgs; [
     wget
     ispell
