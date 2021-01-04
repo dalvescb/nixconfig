@@ -91,6 +91,7 @@
     unzip
     unrar
   ];
+  hardware.openrazer.enable = true;
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
   # enables auto-updating

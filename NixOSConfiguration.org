@@ -17,7 +17,7 @@
 
   This is my literate [[nixos.org/manual/nixos/stable][NixOS]] configuration.
 
-* Table of Contents                                        :Github:TOC_4:
+* TODO Table of Contents                                       :Github:TOC_4:
   :PROPERTIES:
   :CUSTOM_ID: Table-of-Contents
   :END:
@@ -55,6 +55,7 @@
   - [[#shell-aliases][Shell Aliases]]
 - [[#users-management][Users Management]]
 - [[#system-packages][System Packages]]
+- [[#open-razer][Open Razer]]
 - [[#openssh][OpenSSH]]
 - [[#system-upgrades][System Upgrades]]
 - [[#opt-in-state][Opt-In State]]
@@ -612,6 +613,13 @@ environment.systemPackages = with pkgs; [
   unzip
   unrar
 ];
+#+END_SRC
+
+* Open Razer
+In order to use *razergenie* (installed in [[#system-packages][System Packages]]) to configure rgb for
+razer peripherals, you need to enable the open razer daemon with
+#+BEGIN_SRC nixos :tangle no :noweb-ref insert-config-here
+hardware.openrazer.enable = true;
 #+END_SRC
 
 * OpenSSH
