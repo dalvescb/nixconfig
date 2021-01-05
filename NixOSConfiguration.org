@@ -17,7 +17,7 @@
 
   This is my literate [[nixos.org/manual/nixos/stable][NixOS]] configuration.
 
-* TODO Table of Contents                                       :Github:TOC_4:
+* Table of Contents                                            :Github:TOC_4:
   :PROPERTIES:
   :CUSTOM_ID: Table-of-Contents
   :END:
@@ -621,6 +621,8 @@ razer peripherals, you need to enable the open razer daemon with
 #+BEGIN_SRC nixos :tangle no :noweb-ref insert-config-here
 hardware.openrazer.enable = true;
 #+END_SRC
+You also need to add your user to the ~plugdev~ group in your user configuration
+(see  [[#users-management][Users Management]])
 
 * OpenSSH
 Enable OpenSSH
