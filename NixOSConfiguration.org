@@ -274,6 +274,8 @@ multiple systems
 
     networking.useDHCP = false;
     networking.interfaces.<interface>.useDHCP = true; # replace wiht actual networking interfaces
+
+    fileSystems."/var/log".neededForBoot = true;
   }
   #+END_SRC
 - Create a ~/home/<user>/nixconfig/<hostname>/user-configuration.nix~ and setup
@@ -562,7 +564,7 @@ An example of this file is
   users.users.dalvescb = {
     isNormalUser = true;
     home = "/home/dalvescb";
-    extraGroups = [ "wheel" "networkmanager" "audio" ]; 
+    extraGroups = [ "wheel" "networkmanager" ]; 
     shell = pkgs.zsh;
     hashedPassword = "asdl;fkjasdfnamsdcoimalkamxzcOIUZlknasdfkdf";
           # generate me with mkpasswd -m sha-512
@@ -612,6 +614,12 @@ environment.systemPackages = with pkgs; [
   zip
   unzip
   unrar
+  mattermost-desktop
+  slack
+  teams
+  zoom-us
+  snapper
+  python38Packages.snapperGUI
 ];
 #+END_SRC
 

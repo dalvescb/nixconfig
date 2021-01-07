@@ -43,7 +43,6 @@
     { device = "/dev/disk/by-uuid/2f192c6d-5471-41ab-8593-c90bf144550c";
       fsType = "btrfs";
       options = [ "subvol=log" ];
-      neededForBoot = true;
     };
 
   fileSystems."/boot" =

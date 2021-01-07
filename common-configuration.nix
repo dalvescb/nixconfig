@@ -90,6 +90,12 @@
     zip
     unzip
     unrar
+    mattermost-desktop
+    slack
+    teams
+    zoom-us
+    snapper
+    python38Packages.snapperGUI
   ];
   hardware.openrazer.enable = true;
   # Enable the OpenSSH daemon.

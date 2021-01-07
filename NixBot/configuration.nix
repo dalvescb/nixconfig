@@ -19,11 +19,13 @@
     "nixos-config=/home/dalvescb/nixconfig/${config.networking.hostName}/configuration.nix"
   ];
 
-
   networking.useDHCP = false;
   networking.interfaces.enp0s31f6.useDHCP = true;
   networking.interfaces.wlp82s0.useDHCP = true;
 
   # need to set this statically when using opt-in state on a btrfs root subvolume
   environment.etc."machine-id".text = "b7665d1914cd41dc93406d8488004eb0";
+
+  # needed to persist logging during boot
+  fileSystems."/var/log".neededForBoot = true;
 }
