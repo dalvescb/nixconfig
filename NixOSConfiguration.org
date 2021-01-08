@@ -142,7 +142,8 @@ NixOS]] covering how to do this.
   #+END_SRC
   
 ** Generate Config
-After you're done partitioning, formatting and everythings mounted (with root at ~/mnt~ of course)
+After you're done partitioning, formatting and everything is mounted (with root
+at ~/mnt~ of course)
 - Generate a default nixos configuration file int ~/mnt/etc/nixos~ with
   #+BEGIN_SRC shell :tangle no
   nixos-generate-config --root /mnt
@@ -607,6 +608,7 @@ environment.systemPackages = with pkgs; [
   python3Full
   snapper
   python38Packages.snapperGUI
+  python38Packages.setuptools
   emacs26Packages.agda2-mode
   texlive.combined.scheme-full
   alacritty

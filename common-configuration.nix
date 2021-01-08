@@ -83,6 +83,7 @@
     python3Full
     snapper
     python38Packages.snapperGUI
+    python38Packages.setuptools
     emacs26Packages.agda2-mode
     texlive.combined.scheme-full
     alacritty
