@@ -97,6 +97,9 @@
     zoom-us
     snapper
     python38Packages.snapperGUI
+    steam
+    chntpw
+    ntfs3g
   ];
   hardware.openrazer.enable = true;
   # Enable the OpenSSH daemon.

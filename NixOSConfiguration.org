@@ -43,6 +43,7 @@
   - [[#switch-caps-and-ctrl][Switch Caps and Ctrl]]
 - [[#networking][Networking]]
 - [[#graphics][Graphics]]
+  - [[#nvidia][Nvidia]]
   - [[#nvidia-prime][Nvidia Prime]]
   - [[#gpu-acceleration][GPU Acceleration]]
 - [[#desktop-environment][Desktop Environment]]
@@ -410,21 +411,34 @@ Because graphics drivers vary from system to system, I put the configuration for
 them in their own modules (separate from the ~common-configuration.nix~ file the
 rest of this document generates. The two main configurations I have are
 - ~nvidia.nix~ standard proprietary nvidia driver that uses just a discrete gpu
-- ~nvidiaprime.nix~ 
+- ~nvidiaprime.nix~
+** Nvidia
+A simple setup for a dedicated nvidia MXM card can be done via the following
+configuration
+#+BEGIN_SRC nix :tangle nvidia.nix
+{pkgs, ... }:
+
+{
+  services.xserver.videoDrivers = [ "nvidia" ];
+  # services.xserver.dpi = 96;
+  hardware.opengl = {
+    enable = true;
+    extraPackages = with pkgs; [
+        vaapiIntel
+        vaapiVdpau
+        libvdpau-va-gl
+      ];
+  };
+  hardware.opengl.driSupport32Bit = true;
+}
+#+END_SRC
 ** Nvidia Prime
-Because drivers vary from system to system, I put 
+For a laptop with dedicated and integrated graphics, you can operate in hybrid
+mode (to get the power of the dedicated gpu when necessary and power saving with
+integrated) using Nvidia Optimus via the following configuration
 #+BEGIN_SRC nix :tangle nvidiaprime.nix
 {pkgs, ... }:
 
-# let
-#    nvidia-offload = pkgs.writeShellScriptBin "nvidia-offload" ''
-#     export __NV_PRIME_RENDER_OFFLOAD=1
-#     export __NV_PRIME_RENDER_OFFLOAD_PROVIDER=NVIDIA-G0
-#     export __GLX_VENDOR_LIBRARY_NAME=nvidia
-#     export __VK_LAYER_NV_optimus=NVIDIA_only
-#     exec -a "$0" "$@"
-#   '';
-# in
 {
   # environment.systemPackages = [ nvidia-offload ]; 
   # services.xserver.videoDrivers = [ "intel" "modesetting" "nvidia" ];
@@ -622,6 +636,9 @@ environment.systemPackages = with pkgs; [
   zoom-us
   snapper
   python38Packages.snapperGUI
+  steam
+  chntpw
+  ntfs3g
 ];
 #+END_SRC
 
