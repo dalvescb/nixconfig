@@ -28,4 +28,11 @@
 
   # needed to persist logging during boot
   fileSystems."/var/log".neededForBoot = true;
+
+  # mount secondary ntfs hdd
+  fileSystems."/mnt/HD4" =
+    { device = "/dev/disk/by-uuid/444227094226FF74";
+      fsType = "ntfs";
+      options = [ "rw" "uid=1000" ];
+    };
 }

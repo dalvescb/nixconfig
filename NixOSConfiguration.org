@@ -33,7 +33,7 @@
   - [[#building-this-document][Building This Document]]
 - [[#template][Template]]
 - [[#boot-loader][Boot loader]]
-  - [[#supporting-btrfs-file-system][Supporting BTRFS File System]]
+  - [[#supporting-btrfs-and-ntfs-file-system][Supporting BTRFS and NTFS File System]]
 - [[#virtual-box][Virtual Box]]
 - [[#system-settings][System Settings]]
   - [[#timezone][TimeZone]]
@@ -337,11 +337,11 @@ NixOS]], then using ~org-babel-tangle~ from within emacs.
  # boot.loader.efi.canTouchEfiVariables = true;
  #+END_SRC
 
-** Supporting BTRFS File System
+** Supporting BTRFS and NTFS File System
 If using a BTRFS filesystem add it to ~boot.supportedFilesystems~ and enable
 ~boot.hardware.enableAllFirmware~
 #+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
-boot.supportedFilesystems = [ "btrfs" ];
+boot.supportedFilesystems = [ "btrfs" "ntfs" ];
 hardware.enableAllFirmware = true;
 #+END_SRC
 
