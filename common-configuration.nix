@@ -4,58 +4,6 @@
 { config, pkgs, ... }:
 
 {
-  # Use the GRUB 2 boot loader (with EFI support)
-  boot.loader.grub.enable = true;
-  boot.loader.grub.version = 2;
-  boot.loader.grub.device = "nodev";
-  boot.loader.grub.efiSupport = true;
-  boot.loader.grub.useOSProber = true;
-  boot.loader.grub.fsIdentifier = "label";
-  boot.loader.grub.efiInstallAsRemovable = true;
-  boot.loader.efi.efiSysMountPoint = "/boot";
-  
-  # Use the systemd-boot EFI boot loader.
-  # boot.loader.systemd-boot.enable = true;
-  # boot.loader.efi.canTouchEfiVariables = true;
-  boot.supportedFilesystems = [ "btrfs" "ntfs" ];
-  hardware.enableAllFirmware = true;
-  time.timeZone = "America/Toronto";
-  i18n.defaultLocale = "en_US.UTF-8";
-  console = {
-    font = pkgs.lib.mkForce "sun12x22";
-    keyMap = pkgs.lib.mkForce "us";
-  };
-  nixpkgs.config.allowUnfree = true;
-  fonts = {
-    fonts = with pkgs; [
-        dejavu_fonts
-        (nerdfonts.override { fonts = [ "DejaVuSansMono" ]; } )
-        source-code-pro
-        emacs-all-the-icons-fonts
-      ];
-  };
-  services.xserver.xkbOptions = "ctrl:swapcaps";
-  console.useXkbConfig = true;
-  networking.networkmanager.enable = true;
-  services.xserver.enable = true;
-  services.xserver.displayManager.sddm.enable = true;
-  services.xserver.desktopManager.plasma5.enable = true;
-  hardware.bluetooth.enable = true;
-  sound.enable = true;
-  hardware.pulseaudio = {
-     enable = true;
-  
-     # NixOS allows either a lightweight build (default) or full build of PulseAudio to be installed.
-     # Only the full build has Bluetooth support, so it must be selected here.
-     package = pkgs.pulseaudioFull;
-  };
-  services.xserver.libinput.enable = true;
-  programs.zsh.enable = true;
-  programs.fish.enable = true;
-  programs.fish.shellAliases = { 
-    e = "emacsclient";
-    ec ="emacsclient -c";
-  };
   environment.systemPackages = with pkgs; [
     wget
     ispell
@@ -100,7 +48,63 @@
     steam
     chntpw
     ntfs3g
+    plasma5.plasma-integration
+    plasma5.plasma-browser-integration
+    kdeApplications.kdeconnect-kde
   ];
+  # Use the GRUB 2 boot loader (with EFI support)
+  boot.loader.grub.enable = true;
+  boot.loader.grub.version = 2;
+  boot.loader.grub.device = "nodev";
+  boot.loader.grub.efiSupport = true;
+  boot.loader.grub.useOSProber = true;
+  boot.loader.grub.fsIdentifier = "label";
+  boot.loader.grub.efiInstallAsRemovable = true;
+  boot.loader.efi.efiSysMountPoint = "/boot";
+  
+  # Use the systemd-boot EFI boot loader.
+  # boot.loader.systemd-boot.enable = true;
+  # boot.loader.efi.canTouchEfiVariables = true;
+  boot.supportedFilesystems = [ "btrfs" "ntfs" ];
+  hardware.enableAllFirmware = true;
+  time.timeZone = "America/Toronto";
+  i18n.defaultLocale = "en_US.UTF-8";
+  console = {
+    font = pkgs.lib.mkForce "sun12x22";
+    keyMap = pkgs.lib.mkForce "us";
+  };
+  nixpkgs.config.allowUnfree = true;
+  fonts = {
+    fonts = with pkgs; [
+        dejavu_fonts
+        (nerdfonts.override { fonts = [ "DejaVuSansMono" ]; } )
+        source-code-pro
+        emacs-all-the-icons-fonts
+      ];
+  };
+  services.xserver.xkbOptions = "ctrl:swapcaps";
+  console.useXkbConfig = true;
+  networking.networkmanager.enable = true;
+  services.xserver.enable = true;
+  # services.xserver.displayManager.sddm.enable = true;
+  services.xserver.displayManager.lightdm.enable = true;
+  services.xserver.desktopManager.plasma5.enable = true;
+  hardware.bluetooth.enable = true;
+  sound.enable = true;
+  hardware.pulseaudio = {
+     enable = true;
+     support32Bit = true;
+     # NixOS allows either a lightweight build (default) or full build of PulseAudio to be installed.
+     # Only the full build has Bluetooth support, so it must be selected here.
+     package = pkgs.pulseaudioFull;
+  };
+  services.xserver.libinput.enable = true;
+  programs.zsh.enable = true;
+  programs.fish.enable = true;
+  programs.fish.shellAliases = { 
+    e = "emacsclient";
+    ec ="emacsclient -c";
+  };
   hardware.openrazer.enable = true;
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;

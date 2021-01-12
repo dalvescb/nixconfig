@@ -32,6 +32,7 @@
   - [[#multi-system-file-layout][Multi-System File Layout]]
   - [[#building-this-document][Building This Document]]
 - [[#template][Template]]
+- [[#system-packages][System Packages]]
 - [[#boot-loader][Boot loader]]
   - [[#supporting-btrfs-and-ntfs-file-system][Supporting BTRFS and NTFS File System]]
 - [[#virtual-box][Virtual Box]]
@@ -55,7 +56,6 @@
 - [[#shell-environment][Shell Environment]]
   - [[#shell-aliases][Shell Aliases]]
 - [[#users-management][Users Management]]
-- [[#system-packages][System Packages]]
 - [[#open-razer][Open Razer]]
 - [[#openssh][OpenSSH]]
 - [[#system-upgrades][System Upgrades]]
@@ -319,6 +319,60 @@ NixOS]], then using ~org-babel-tangle~ from within emacs.
     }
     #+END_SRC
 
+* System Packages
+Install packages system-wide by adding them to ~environment.systemPackages~.
+*NOTE* multiple declarations (between modules) will result in /merging/ of this
+list, so not necessarily all installed system packages need to be located here
+#+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
+environment.systemPackages = with pkgs; [
+  wget
+  ispell
+  vim
+  emacs
+  git
+  imagemagick
+  subversion
+  firefox
+  (chromium.override { enableVaapi = true; })
+  brave
+  discord
+  nix-index
+  libva
+  libva-utils
+  razergenie
+  linuxPackages.openrazer
+  pciutils
+  arc-kde-theme
+  plasma5.kwallet-pam
+  plasma5.sddm-kcm
+  haskellPackages.stack
+  haskellPackages.haskell-language-server
+  haskellPackages.Agda
+  python3Full
+  snapper
+  python38Packages.snapperGUI
+  python38Packages.setuptools
+  emacs26Packages.agda2-mode
+  texlive.combined.scheme-full
+  alacritty
+  kdeApplications.ark
+  zip
+  unzip
+  unrar
+  mattermost-desktop
+  slack
+  teams
+  zoom-us
+  snapper
+  python38Packages.snapperGUI
+  steam
+  chntpw
+  ntfs3g
+  plasma5.plasma-integration
+  plasma5.plasma-browser-integration
+  kdeApplications.kdeconnect-kde
+];
+#+END_SRC
 * Boot loader
  Configure the GRUB 2 bootloader on UEFI with
  #+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
@@ -392,7 +446,7 @@ fonts = {
 };
 #+END_SRC
 ** Switch Caps and Ctrl
-Don't question it it's better this way ok??!?!?
+Don't question it, it's better this way ok??!?!?
 #+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
 services.xserver.xkbOptions = "ctrl:swapcaps";
 console.useXkbConfig = true;
@@ -500,7 +554,8 @@ services.xserver.desktopManager.gnome3.enable = true;
 ** KDE Plasma5
 #+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
 services.xserver.enable = true;
-services.xserver.displayManager.sddm.enable = true;
+# services.xserver.displayManager.sddm.enable = true;
+services.xserver.displayManager.lightdm.enable = true;
 services.xserver.desktopManager.plasma5.enable = true;
 #+END_SRC
 
@@ -532,7 +587,7 @@ headsets) you'll need to specify ~pkgs.pulseaudioFull~
  sound.enable = true;
  hardware.pulseaudio = {
     enable = true;
-
+    support32Bit = true;
     # NixOS allows either a lightweight build (default) or full build of PulseAudio to be installed.
     # Only the full build has Bluetooth support, so it must be selected here.
     package = pkgs.pulseaudioFull;
@@ -588,58 +643,6 @@ An example of this file is
   # disable root password
   users.users.root.hashedPassword = "*";
 }
-#+END_SRC
-
-* System Packages
-Install packages system-wide by adding them to ~environment.systemPackages~.
-*NOTE* multiple declarations (between modules) will result in /merging/ of this
-list, so not necessarily all installed system packages need to be located here
-#+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
-environment.systemPackages = with pkgs; [
-  wget
-  ispell
-  vim
-  emacs
-  git
-  imagemagick
-  subversion
-  firefox
-  (chromium.override { enableVaapi = true; })
-  brave
-  discord
-  nix-index
-  libva
-  libva-utils
-  razergenie
-  linuxPackages.openrazer
-  pciutils
-  arc-kde-theme
-  plasma5.kwallet-pam
-  plasma5.sddm-kcm
-  haskellPackages.stack
-  haskellPackages.haskell-language-server
-  haskellPackages.Agda
-  python3Full
-  snapper
-  python38Packages.snapperGUI
-  python38Packages.setuptools
-  emacs26Packages.agda2-mode
-  texlive.combined.scheme-full
-  alacritty
-  kdeApplications.ark
-  zip
-  unzip
-  unrar
-  mattermost-desktop
-  slack
-  teams
-  zoom-us
-  snapper
-  python38Packages.snapperGUI
-  steam
-  chntpw
-  ntfs3g
-];
 #+END_SRC
 
 * Open Razer
