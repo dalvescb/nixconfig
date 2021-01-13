@@ -838,6 +838,8 @@ sudo cp -r {,/persist}/etc/nixos
 sudo cp -r {,/persist}/etc/NIXOS
 # persist adjtime
 sudo cp {,/persist}/etc/adjtime
+# copy bluetooth
+sudo cp -r /var/lib/bluetooth /persist/var/lib/
 #+END_SRC
 
 * Emacs Daemon

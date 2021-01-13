@@ -24,7 +24,7 @@
   networking.interfaces.wlo1.useDHCP = true;
 
   # need to set this statically when using opt-in state on a btrfs root subvolume
-  environment.etc."machine-id".text = "679ae74c4f5b4adc9a3b5377595392f4";
+  environment.etc."machine-id".text = "b9c71693f16c41d2990fc03ed875ac77";
 
   # needed to persist logging during boot
   fileSystems."/var/log".neededForBoot = true;

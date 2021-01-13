@@ -8,50 +8,50 @@
     [ (modulesPath + "/installer/scan/not-detected.nix")
     ];
 
-  boot.initrd.availableKernelModules = [ "xhci_pci" "ahci" "nvme" "usb_storage" "usbhid" "sd_mod" ];
+  boot.initrd.availableKernelModules = [ "xhci_pci" "ahci" "nvme" "usbhid" "sd_mod" ];
   boot.initrd.kernelModules = [ ];
   boot.kernelModules = [ "kvm-intel" ];
   boot.extraModulePackages = [ ];
 
   fileSystems."/" =
-    { device = "/dev/disk/by-uuid/3d88bb4f-b2bf-4f08-9b8a-fdd121fad5ac";
+    { device = "/dev/disk/by-uuid/e86ce0d3-420e-484e-a59c-e0bdc9baa9a1";
       fsType = "btrfs";
       options = [ "subvol=root" ];
     };
 
-  boot.initrd.luks.devices."enc".device = "/dev/disk/by-uuid/25f9ed7f-1fe3-4d8e-9b69-8960daaf37a5";
-
-  fileSystems."/home" =
-    { device = "/dev/disk/by-uuid/3d88bb4f-b2bf-4f08-9b8a-fdd121fad5ac";
-      fsType = "btrfs";
-      options = [ "subvol=home" ];
-    };
+  boot.initrd.luks.devices."enc".device = "/dev/disk/by-uuid/e5d72a76-a1af-460e-ab62-ce367a576d00";
 
   fileSystems."/nix" =
-    { device = "/dev/disk/by-uuid/3d88bb4f-b2bf-4f08-9b8a-fdd121fad5ac";
+    { device = "/dev/disk/by-uuid/e86ce0d3-420e-484e-a59c-e0bdc9baa9a1";
       fsType = "btrfs";
       options = [ "subvol=nix" ];
     };
 
-  fileSystems."/persist" =
-    { device = "/dev/disk/by-uuid/3d88bb4f-b2bf-4f08-9b8a-fdd121fad5ac";
-      fsType = "btrfs";
-      options = [ "subvol=persist" ];
-    };
-
   fileSystems."/var/log" =
-    { device = "/dev/disk/by-uuid/3d88bb4f-b2bf-4f08-9b8a-fdd121fad5ac";
+    { device = "/dev/disk/by-uuid/e86ce0d3-420e-484e-a59c-e0bdc9baa9a1";
       fsType = "btrfs";
       options = [ "subvol=log" ];
     };
 
   fileSystems."/boot" =
-    { device = "/dev/disk/by-uuid/7E85-3AAD";
+    { device = "/dev/disk/by-uuid/27C2-E970";
       fsType = "vfat";
     };
 
+  fileSystems."/home" =
+    { device = "/dev/disk/by-uuid/e86ce0d3-420e-484e-a59c-e0bdc9baa9a1";
+      fsType = "btrfs";
+      options = [ "subvol=home" ];
+    };
+
+  fileSystems."/persist" =
+    { device = "/dev/disk/by-uuid/e86ce0d3-420e-484e-a59c-e0bdc9baa9a1";
+      fsType = "btrfs";
+      options = [ "subvol=persist" ];
+    };
+
   swapDevices =
-    [ { device = "/dev/disk/by-uuid/fa0388b2-cb0f-4b45-a581-5d511354eeec"; }
+    [ { device = "/dev/disk/by-uuid/b329eaca-b282-484b-b36a-5dce84af8168"; }
     ];
 
   powerManagement.cpuFreqGovernor = lib.mkDefault "powersave";
