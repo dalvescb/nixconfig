@@ -53,6 +53,7 @@
     kdeApplications.kdeconnect-kde
     xorg.xkill
     htop
+    linuxPackages.xpadneo
   ];
   # Use the GRUB 2 boot loader (with EFI support)
   boot.loader.grub.enable = true;
@@ -69,6 +70,8 @@
   # boot.loader.efi.canTouchEfiVariables = true;
   boot.supportedFilesystems = [ "btrfs" "ntfs" ];
   hardware.enableAllFirmware = true;
+  boot.extraModprobeConfig = '' options bluetooth disable_ertm=1 '';
+  boot.kernelPackages = pkgs.linuxPackages_5_10;
   time.timeZone = "America/Toronto";
   i18n.defaultLocale = "en_US.UTF-8";
   console = {
