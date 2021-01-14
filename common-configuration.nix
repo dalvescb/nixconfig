@@ -51,6 +51,8 @@
     plasma5.plasma-integration
     plasma5.plasma-browser-integration
     kdeApplications.kdeconnect-kde
+    xorg.xkill
+    htop
   ];
   # Use the GRUB 2 boot loader (with EFI support)
   boot.loader.grub.enable = true;
@@ -85,6 +87,21 @@
   services.xserver.xkbOptions = "ctrl:swapcaps";
   console.useXkbConfig = true;
   networking.networkmanager.enable = true;
+  networking.firewall.allowedTCPPortRanges = [
+    # KDE Connect
+    {
+      from = 1714;
+      to = 1764;
+    }
+  ];
+  
+  networking.firewall.allowedUDPPortRanges = [
+    # KDE Connect
+    {
+      from = 1714;
+      to = 1764;
+    }
+  ];
   services.xserver.enable = true;
   # services.xserver.displayManager.sddm.enable = true;
   services.xserver.displayManager.lightdm.enable = true;
@@ -124,7 +141,7 @@
     nixos.source = "/persist/etc/nixos";
     NIXOS.source = "/persist/etc/NIXOS";
     # persist NetworkManager 
-    "NetworkManager/system-connections".source = "/persist/etc/NetworkManager/system-connections";
+    # "NetworkManager/system-connections".source = "/persist/etc/NetworkManager/system-connections";
     # persist adjtime
     # adjtime.source = "/persist/etc/adjtime";
   };

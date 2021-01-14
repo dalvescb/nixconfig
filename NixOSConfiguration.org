@@ -43,6 +43,7 @@
   - [[#fonts][Fonts]]
   - [[#switch-caps-and-ctrl][Switch Caps and Ctrl]]
 - [[#networking][Networking]]
+  - [[#firewall][Firewall]]
 - [[#graphics][Graphics]]
   - [[#nvidia][Nvidia]]
   - [[#nvidia-prime][Nvidia Prime]]
@@ -371,8 +372,11 @@ environment.systemPackages = with pkgs; [
   plasma5.plasma-integration
   plasma5.plasma-browser-integration
   kdeApplications.kdeconnect-kde
+  xorg.xkill
+  htop
 ];
 #+END_SRC
+
 * Boot loader
  Configure the GRUB 2 bootloader on UEFI with
  #+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
@@ -459,6 +463,28 @@ console.useXkbConfig = true;
 #+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
 networking.networkmanager.enable = true;
 #+END_SRC
+
+** Firewall
+Open TCP/UDP ports on which incoming connects are accepted:
+  - *KDE Connect* ports: 1714-1764
+#+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
+networking.firewall.allowedTCPPortRanges = [
+  # KDE Connect
+  {
+    from = 1714;
+    to = 1764;
+  }
+];
+
+networking.firewall.allowedUDPPortRanges = [
+  # KDE Connect
+  {
+    from = 1714;
+    to = 1764;
+  }
+];
+#+END_SRC
+
 
 * Graphics
 Because graphics drivers vary from system to system, I put the configuration for
@@ -741,7 +767,7 @@ environment.etc = {
   nixos.source = "/persist/etc/nixos";
   NIXOS.source = "/persist/etc/NIXOS";
   # persist NetworkManager 
-  "NetworkManager/system-connections".source = "/persist/etc/NetworkManager/system-connections";
+  # "NetworkManager/system-connections".source = "/persist/etc/NetworkManager/system-connections";
   # persist adjtime
   # adjtime.source = "/persist/etc/adjtime";
 };
