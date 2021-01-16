@@ -44,6 +44,7 @@
   - [[#allow-proprietary-software][Allow Proprietary Software]]
   - [[#fonts][Fonts]]
   - [[#switch-caps-and-ctrl][Switch Caps and Ctrl]]
+  - [[#global-environment-variables][Global Environment Variables]]
 - [[#networking][Networking]]
   - [[#firewall][Firewall]]
 - [[#graphics][Graphics]]
@@ -472,6 +473,17 @@ services.xserver.xkbOptions = "ctrl:swapcaps";
 console.useXkbConfig = true;
 #+END_SRC
 
+** Global Environment Variables
+Set global environment variables (to be initialized in /etc/profile) here
+#+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
+environment.variables =
+  {
+    # In firefox in about:config I switched gfx.webrender.all to true to fix bug causing
+    # lag under high gpu load. 
+    # But this introduced a new bug! that is fixed by this environment variable
+    MOZ_X11_EGL = "1";
+  };
+#+END_SRC
 * Networking
 - The hostname and DHCP settings should already be set in your
   ~configuration.nix~ (see [[#multi-system-file-layout][Multi-System File Layout]])

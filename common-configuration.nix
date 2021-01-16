@@ -89,6 +89,13 @@
   };
   services.xserver.xkbOptions = "ctrl:swapcaps";
   console.useXkbConfig = true;
+  environment.variables =
+    {
+      # In firefox in about:config I switched gfx.webrender.all to true to fix bug causing
+      # lag under high gpu load. 
+      # But this introduced a new bug! that is fixed by this environment variable
+      MOZ_X11_EGL = "1";
+    };
   networking.networkmanager.enable = true;
   networking.firewall.allowedTCPPortRanges = [
     # KDE Connect
