@@ -336,7 +336,7 @@ environment.systemPackages = with pkgs; [
   git
   imagemagick
   subversion
-  firefox
+  firefox-bin
   (chromium.override { enableVaapi = true; })
   brave
   discord
@@ -378,6 +378,8 @@ environment.systemPackages = with pkgs; [
   xorg.xkill
   htop
   linuxPackages.xpadneo
+  gsmartcontrol
+  smartmontools
 ];
 #+END_SRC
 
