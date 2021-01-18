@@ -29,6 +29,7 @@
   - [[#install][Install]]
   - [[#post-install][Post-Install]]
 - [[#setting-up-your-config-files][Setting Up Your Config Files]]
+  - [[#choosing-a-channel][Choosing a Channel]]
   - [[#multi-system-file-layout][Multi-System File Layout]]
   - [[#building-this-document][Building This Document]]
 - [[#template][Template]]
@@ -248,7 +249,25 @@ After a successful installation you should
 designed to be imported by your main ~configuration.nix~ that will contain any
 system specific information so that the majority of your config can be shared by
 multiple systems 
- 
+
+** Choosing a Channel
+NixOS will default to the most recent stable channel (at the time of writing
+this 20.09). To list the current channel you're on
+#+BEGIN_SRC shell :tangle no
+sudo nix-channel --list
+  nixos https://nixos.org/channels/nixos-20.09
+#+END_SRC
+I use the nixos-unstable channel (it's not really that unstable, and makes NixOS
+more of a rolling-release distro like Arch). Switch channels with
+#+BEGIN_SRC shell :tangle no
+sudo nix-channel --add https://nixos.org/channels/nixos-unstable nixos
+sudo nix-channel --update
+#+END_SRC
+and then rebuild and upgrade (you should upgrade every time you do a nix-channel update)
+#+BEGIN_SRC shell :tangle no
+sudo nixos-rebuild switch --upgrade
+#+END_SRC
+
 ** Multi-System File Layout
 - Clone this repository to your home, i.e. if ~<user>~ is your username:
   ~/home/<user>/nixconfig~
@@ -906,5 +925,5 @@ services.emacs.enable = true;
 
 
 #  LocalWords:  UEFI unfree NixOS OpenSSH BTRFS subvolume subvolumes WiFi GPU
-#  LocalWords:  systemd's Nvidia VA API KDE mutably Bluetooth bluetooth
-#  LocalWords:  TouchPad
+#  LocalWords:  systemd's Nvidia VA API KDE mutably Bluetooth bluetooth distro
+#  LocalWords:  TouchPad nixos
