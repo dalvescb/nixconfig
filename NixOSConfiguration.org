@@ -33,6 +33,7 @@
   - [[#multi-system-file-layout][Multi-System File Layout]]
   - [[#building-this-document][Building This Document]]
 - [[#template][Template]]
+- [[#imports][Imports]]
 - [[#system-packages][System Packages]]
 - [[#boot-loader][Boot loader]]
   - [[#supporting-btrfs-and-ntfs-file-system][Supporting BTRFS and NTFS File System]]
@@ -55,6 +56,8 @@
 - [[#desktop-environment][Desktop Environment]]
   - [[#gnome-3][Gnome 3]]
   - [[#kde-plasma5][KDE Plasma5]]
+  - [[#none--xmonad][None + Xmonad]]
+- [[#home-manager][Home Manager]]
 - [[#bluetooth][Bluetooth]]
 - [[#sounds-settings][Sounds Settings]]
 - [[#touchpad-support][TouchPad support]]
@@ -280,7 +283,6 @@ sudo nixos-rebuild switch --upgrade
   ~/home/<user>/nixconfig/<hostname>/configuration.nix~ which will import the
   other configurations and contain any system specific config, for example:
   #+BEGIN_SRC nix :tangle no
-  { config, pkgs, ... }:
 
   {
     imports =
@@ -341,6 +343,12 @@ NixOS]], then using ~org-babel-tangle~ from within emacs.
       <<insert-config-here>>
     }
     #+END_SRC
+    
+* Imports
+Import other modules (and [[https://nix-community.github.io/home-manager/index.html#sec-install-nixos-module][Home Manager]]) here
+#+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
+imports = [ <home-manager/nixos> ];
+#+END_SRC
 
 * System Packages
 Install packages system-wide by adding them to ~environment.systemPackages~.
@@ -645,6 +653,39 @@ Global Theme doesn't seem to work (for downloading/installing new themes) but
   #+BEGIN_SRC shell :tangle no
   kwriteconfig5 --key Theme Sweet
   #+END_SRC
+
+** None + Xmonad
+#+BEGIN_SRC nix :tangle no
+services = {
+  gnome3.gnome-keyring.enable = true;
+  
+  dbus = {
+    enable = true;
+    socketActivated = true;
+    packages = [ pkgs.gnome3.dconf ];
+  };
+
+  services.xserver.enable = true;
+  services.xserver.startDbusSession = true;
+  services.xserver.layout = "us";
+
+  displayManager.defaultSession = "none+xmonad";
+  windowManager.xmonad = {
+    enable = true;
+    enableContribAndExtras = true;
+  };
+};
+#+END_SRC
+
+* Home Manager
+#+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
+home-manager.users.dalvescb = { pkgs, ... }: {
+  home.packages = [
+    pkgs.gimp
+  ];
+  programs.zsh.enable = true;
+};
+#+END_SRC
 
 * Bluetooth
 Enable bluetooth support with one simple line (see

@@ -4,6 +4,7 @@
 { config, pkgs, ... }:
 
 {
+  imports = [ <home-manager/nixos> ];
   environment.systemPackages = with pkgs; [
     wget
     ispell
@@ -118,6 +119,12 @@
   # services.xserver.displayManager.sddm.enable = true;
   services.xserver.displayManager.lightdm.enable = true;
   services.xserver.desktopManager.plasma5.enable = true;
+  home-manager.users.dalvescb = { pkgs, ... }: {
+    home.packages = [
+      pkgs.gimp
+    ];
+    programs.zsh.enable = true;
+  };
   hardware.bluetooth.enable = true;
   sound.enable = true;
   hardware.pulseaudio = {
