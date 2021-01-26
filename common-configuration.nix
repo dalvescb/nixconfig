@@ -24,19 +24,18 @@
     linuxPackages.openrazer
     pciutils
     arc-kde-theme
-    plasma5.kwallet-pam
-    plasma5.sddm-kcm
+    # plasma5.kwallet-pam
+    # plasma5.sddm-kcm
     haskellPackages.stack
     haskellPackages.haskell-language-server
     haskellPackages.Agda
     python3Full
     snapper
-    python38Packages.snapperGUI
     python38Packages.setuptools
     emacs26Packages.agda2-mode
     texlive.combined.scheme-full
     alacritty
-    kdeApplications.ark
+    libsForQt5.ark
     zip
     unzip
     unrar
@@ -45,13 +44,12 @@
     teams
     zoom-us
     snapper
-    python38Packages.snapperGUI
     steam
     chntpw
     ntfs3g
-    plasma5.plasma-integration
-    plasma5.plasma-browser-integration
-    kdeApplications.kdeconnect-kde
+    libsForQt5.plasma-integration
+    libsForQt5.plasma-browser-integration
+    libsForQt5.kdeconnect-kde
     xorg.xkill
     htop
     linuxPackages.xpadneo
@@ -119,12 +117,6 @@
   # services.xserver.displayManager.sddm.enable = true;
   services.xserver.displayManager.lightdm.enable = true;
   services.xserver.desktopManager.plasma5.enable = true;
-  home-manager.users.dalvescb = { pkgs, ... }: {
-    home.packages = [
-      pkgs.gimp
-    ];
-    programs.zsh.enable = true;
-  };
   hardware.bluetooth.enable = true;
   sound.enable = true;
   hardware.pulseaudio = {
@@ -144,6 +136,7 @@
   hardware.openrazer.enable = true;
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
+  services.emacs.enable = true;
   # enables auto-updating
   system.autoUpgrade.enable = true;
   system.autoUpgrade.allowReboot = true;
@@ -215,6 +208,50 @@
     # we can unmount /mnt and continue on the boot process.
     umount /mnt
   '';
-  services.emacs.enable = true;
+  home-manager.users.dalvescb = { pkgs, ... }: {
+    home.packages = [
+      pkgs.gimp
+      # pkgs.zsh-powerlevel10k
+    ];
+    
+    programs.zsh.enable = true;
+    programs.zsh.oh-my-zsh.enable = true;
+    programs.zsh.oh-my-zsh.plugins = [ "git" ];
+    programs.zsh.oh-my-zsh.theme = "agnoster";
+    
+    programs.zsh.plugins = let
+      # powerlevel10k = {
+      #    name = "powerlevel10k";
+      #    src = pkgs.fetchFromGitHub {
+      #      owner = "romkatv";
+      #      repo = "powerlevel10k";
+      #      rev = "v1.14.6";
+      #      sha256 = "1z6xipd7bgq7fc03x9j2dmg3yv59xyjf4ic5f1l6l6pw7w3q4sq7";
+      #    };
+      #  };
+      zsh-syntax-highlighting = {
+         name = "zsh-syntax-highlighting";
+         src = pkgs.fetchFromGitHub {
+           owner = "zsh-users";
+           repo = "zsh-syntax-highlighting";
+           rev = "0.7.1";
+           sha256 = "03r6hpb5fy4yaakqm3lbf4xcvd408r44jgpv4lnzl9asp4sb9qc0";
+         };
+       };
+      zsh-autosuggestions = {
+         name = "zsh-autosuggestions";
+         src = pkgs.fetchFromGitHub {
+           owner = "zsh-users";
+           repo = "zsh-autosuggestions";
+           rev = "v0.6.4";
+           sha256 = "0h52p2waggzfshvy1wvhj4hf06fmzd44bv6j18k3l9rcx6aixzn6";
+         };
+       };
+      in [ # powerlevel10k
+          zsh-syntax-highlighting
+          zsh-autosuggestions
+         ];
+    
+  };
 }
 # Template:1 ends here
