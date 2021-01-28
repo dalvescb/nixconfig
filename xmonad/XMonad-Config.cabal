@@ -1,0 +1,41 @@
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.34.3.
+--
+-- see: https://github.com/sol/hpack
+
+name:           XMonad-Config
+version:        0.1.0.0
+description:    Please see the README on GitHub at <https://github.com/githubuser/1JC3-Assign4#readme>
+homepage:       https://github.com/githubuser/Xmonad-Config#readme
+bug-reports:    https://github.com/githubuser/Xmonad-Config/issues
+author:         Author name here
+maintainer:     example@example.com
+copyright:      2020 Author name here
+license:        BSD3
+build-type:     Simple
+extra-source-files:
+    README.md
+    ChangeLog.md
+
+source-repository head
+  type: git
+  location: https://github.com/githubuser/Xmonad-Config
+
+library
+  other-modules:
+      Paths_XMonad_Config
+  hs-source-dirs:
+      ./
+  build-depends:
+      X11
+    , base
+    , containers
+    , dbus
+    , dbus-hslogger
+    , monad-logger
+    , utf8-string
+    , xmonad
+    , xmonad-contrib
+    , xmonad-extras
+  default-language: Haskell2010

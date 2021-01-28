@@ -55,6 +55,10 @@
     linuxPackages.xpadneo
     gsmartcontrol
     smartmontools
+    pkg-config
+    alsaLib
+    xorg.xrandr
+    arandr
   ];
   # Use the GRUB 2 boot loader (with EFI support)
   boot.loader.grub.enable = true;
@@ -88,8 +92,6 @@
         emacs-all-the-icons-fonts
       ];
   };
-  services.xserver.xkbOptions = "ctrl:swapcaps";
-  console.useXkbConfig = true;
   environment.variables =
     {
       # In firefox in about:config I switched gfx.webrender.all to true to fix bug causing
@@ -113,11 +115,32 @@
       to = 1764;
     }
   ];
-  services.xserver.enable = true;
-  # services.xserver.displayManager.sddm.enable = true;
-  services.xserver.displayManager.lightdm.enable = true;
-  services.xserver.desktopManager.plasma5.enable = true;
+  services = {
+    gnome3.gnome-keyring.enable = true;
+    upower.enable = true;
+    
+    dbus = {
+      enable = true;
+      packages = [ pkgs.gnome3.dconf ];
+    };
+  
+    xserver.enable = true;
+  
+    xserver.displayManager.defaultSession = "none+xmonad";
+  
+    xserver.windowManager.xmonad = {
+      enable = true;
+      enableContribAndExtras = true;
+    };
+    
+    xserver.layout = "us";
+    xserver.xkbOptions = "ctrl:swapcaps";
+  };
+  
+  console.useXkbConfig = true;
+  systemd.services.upower.enable = true;
   hardware.bluetooth.enable = true;
+  services.blueman.enable = true;
   sound.enable = true;
   hardware.pulseaudio = {
      enable = true;
@@ -138,8 +161,8 @@
   services.openssh.enable = true;
   services.emacs.enable = true;
   # enables auto-updating
-  system.autoUpgrade.enable = true;
-  system.autoUpgrade.allowReboot = true;
+  system.autoUpgrade.enable = false;
+  system.autoUpgrade.allowReboot = false;
   
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
@@ -211,24 +234,17 @@
   home-manager.users.dalvescb = { pkgs, ... }: {
     home.packages = [
       pkgs.gimp
+      pkgs.pavucontrol
+      pkgs.xorg.xmessage
       # pkgs.zsh-powerlevel10k
     ];
     
     programs.zsh.enable = true;
     programs.zsh.oh-my-zsh.enable = true;
     programs.zsh.oh-my-zsh.plugins = [ "git" ];
-    programs.zsh.oh-my-zsh.theme = "agnoster";
+    programs.zsh.oh-my-zsh.theme = "amuse";
     
     programs.zsh.plugins = let
-      # powerlevel10k = {
-      #    name = "powerlevel10k";
-      #    src = pkgs.fetchFromGitHub {
-      #      owner = "romkatv";
-      #      repo = "powerlevel10k";
-      #      rev = "v1.14.6";
-      #      sha256 = "1z6xipd7bgq7fc03x9j2dmg3yv59xyjf4ic5f1l6l6pw7w3q4sq7";
-      #    };
-      #  };
       zsh-syntax-highlighting = {
          name = "zsh-syntax-highlighting";
          src = pkgs.fetchFromGitHub {
@@ -247,10 +263,36 @@
            sha256 = "0h52p2waggzfshvy1wvhj4hf06fmzd44bv6j18k3l9rcx6aixzn6";
          };
        };
-      in [ # powerlevel10k
+      in [ 
           zsh-syntax-highlighting
           zsh-autosuggestions
          ];
+    xsession = let
+      extraCommands = ''
+                    ${pkgs.xorg.xrandr}/bin/xrandr --output DP-0 --primary --mode 2560x1440 --panning 2560x1440+1440+678 --rate 144.00 --output DP-2 --mode 2560x1440 --panning 2560x1440+4000+927 --rate 144.00 --right-of DP-0 --output DP-4 --rotate right --mode 2560x1440 --rate 60.00 --left-of DP-0
+      '';
+    in {
+      enable = true;
+      
+      initExtra = extraCommands;
+      
+      windowManager.xmonad = {
+        enable = true;
+        enableContribAndExtras = true;
+        extraPackages = hp: [
+          hp.dbus
+          hp.monad-logger
+          hp.xmonad-contrib
+          hp.xmobar
+        ];
+        config = ./xmonad/xmonad.hs;
+      };
+    };
+    programs.rofi = {
+      enable = true;
+      terminal = "${pkgs.alacritty}/bin/alacritty";
+      theme = ./rofi/theme.rafi;
+    };
     
   };
 }
