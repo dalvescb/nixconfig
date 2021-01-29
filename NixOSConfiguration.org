@@ -75,6 +75,7 @@
   - [[#shell-configuration][Shell Configuration]]
   - [[#xmonad][XMonad]]
   - [[#rofi][Rofi]]
+  - [[#polybar][Polybar]]
 
 * Installing NixOS 
 The installation part of the [[https://nixos.org/manual/nixos/stable/index.html#ch-installation][NixOS Manual]] describes how to perform a standard
@@ -418,6 +419,7 @@ environment.systemPackages = with pkgs; [
   alsaLib
   xorg.xrandr
   arandr
+  killall
 ];
 #+END_SRC
 
@@ -970,12 +972,16 @@ NixOS configurations aren't designed to generate user-specific configurations
 (i.e. user installed packages or config files located in ~$HOME~. To do this we
 need the [[https://rycee.gitlab.io/home-manager/][Home Manager]] add on
 #+BEGIN_SRC nix :tangle no :noweb yes :noweb-ref insert-config-here
-home-manager.users.dalvescb = { pkgs, ... }: {
+home-manager.users.dalvescb = { pkgs, config, ... }: {
   home.packages = [
     pkgs.gimp
     pkgs.pavucontrol
     pkgs.xorg.xmessage
-    # pkgs.zsh-powerlevel10k
+    pkgs.nitrogen
+    pkgs.font-awesome
+    pkgs.font-awesome-ttf      # used by polybar
+    pkgs.material-design-icons # used by polybar
+    pkgs.xmonad-log
   ];
   
   <<insert-home-here>>
@@ -1060,8 +1066,79 @@ programs.rofi = {
 };
 #+END_SRC
 
+** Polybar
+XMonad doesn't come with any sort of dock/bar by default, [[https://github.com/polybar/polybar][Polybar]] is a highly
+customizable status bar that integrates with many different desktop
+environments
+#+BEGIN_SRC nix :tangle no :noweb-ref insert-home-here
+services.polybar = let
+  
+  mypolybar = pkgs.polybar.override {
+    alsaSupport = true;
+    pulseSupport = true;
+  };
+  
+  bluetoothScript = pkgs.callPackage ./polybar/bluetooth.nix {};
+  bctl = ''
+  [module/bctl]
+  type = custom/script
+  exec = ${bluetoothScript}/bin/bluetooth-ctl
+  tail = true
+  click-left = ${bluetoothScript}/bin/bluetooth-ctl --toggle &
+  '';
+
+  xmonad = ''
+  [module/xmonad]
+  type = custom/script
+  exec = ${pkgs.xmonad-log}/bin/xmonad-log 
+
+  tail = true
+  '';
+
+  bars = builtins.readFile ./polybar/bars.ini;
+
+  polyConfig = {
+    "bar/top" = {
+      monitor = "\${env:MONITOR:DP-0}";
+      width = "100%";
+      height = "3%";
+      radius = 0;
+      modules-center = "date";
+      modules-right = "bctl";
+      modules-left = "xmonad";
+      font-0 = "misc fixed:pixelsize=12;1";
+      font-1 = "FontAwesome:size=12;1";
+      background = "#AD404040";
+      # foreground = "#f2f2f2";
+    };
+
+    "module/date" = {
+      type = "internal/date";
+      internal = 5;
+      date = "%d.%m.%y";
+      time = " %l:%M %p";
+      label = "%time%";
+      # label = "%time% %date%";
+    };
+
+    "global/wm" = {
+      margin-top = 0;
+      margin-bottom = 0;
+    };
+  };
+in {
+  enable = true;
+  package = mypolybar;
+  config = polyConfig;
+  extraConfig = xmonad + bctl;
+  script = ''
+         polybar top 2>/home/dalvescb/.polybar_error.log &
+  '';
+};
+#+END_SRC
+
 * FlySpell Local Words                                                    :ignore: :noexport:
 
 #  LocalWords:  UEFI unfree NixOS OpenSSH BTRFS subvolume subvolumes WiFi GPU
 #  LocalWords:  systemd's Nvidia VA API KDE mutably Bluetooth bluetooth distro
-#  LocalWords:  TouchPad nixos FlySpell XMonad
+#  LocalWords:  TouchPad nixos FlySpell XMonad Polybar

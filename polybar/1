@@ -1,0 +1,6 @@
+polybar|notice:  Parsing config file: /home/dalvescb/.config/polybar/config
+polybar|notice:  Parsing config file: /home/dalvescb/.config/polybar/config
+polybar|notice:  Loaded font "misc fixed:pixelsize=12" (name=DejaVu Sans, offset=1, file=/nix/store/v4db4f3mkllmfbzwmj4pdw3jdclmdn89-dejavu-fonts-2.37/share/fonts/truetype/DejaVuSans.ttf)
+polybar|notice:  Loaded font "misc fixed:pixelsize=12" (name=DejaVu Sans, offset=1, file=/nix/store/v4db4f3mkllmfbzwmj4pdw3jdclmdn89-dejavu-fonts-2.37/share/fonts/truetype/DejaVuSans.ttf)
+polybar|notice:  Loaded font "FontAwesome:size=12" (name=FontAwesome, offset=1, file=/nix/store/nl6mv0aymmla9c57bdpxg4yzf888qjlj-emacs-all-the-icons-fonts-3.2.0/share/fonts/all-the-icons/fontawesome.ttf)
+polybar|notice:  Loaded font "FontAwesome:size=12" (name=FontAwesome, offset=1, file=/nix/store/nl6mv0aymmla9c57bdpxg4yzf888qjlj-emacs-all-the-icons-fonts-3.2.0/share/fonts/all-the-icons/fontawesome.ttf)

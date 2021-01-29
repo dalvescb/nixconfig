@@ -59,6 +59,7 @@
     alsaLib
     xorg.xrandr
     arandr
+    killall
   ];
   # Use the GRUB 2 boot loader (with EFI support)
   boot.loader.grub.enable = true;
@@ -231,12 +232,16 @@
     # we can unmount /mnt and continue on the boot process.
     umount /mnt
   '';
-  home-manager.users.dalvescb = { pkgs, ... }: {
+  home-manager.users.dalvescb = { pkgs, config, ... }: {
     home.packages = [
       pkgs.gimp
       pkgs.pavucontrol
       pkgs.xorg.xmessage
-      # pkgs.zsh-powerlevel10k
+      pkgs.nitrogen
+      pkgs.font-awesome
+      pkgs.font-awesome-ttf      # used by polybar
+      pkgs.material-design-icons # used by polybar
+      pkgs.xmonad-log
     ];
     
     programs.zsh.enable = true;
@@ -292,6 +297,70 @@
       enable = true;
       terminal = "${pkgs.alacritty}/bin/alacritty";
       theme = ./rofi/theme.rafi;
+    };
+    services.polybar = let
+      
+      mypolybar = pkgs.polybar.override {
+        alsaSupport = true;
+        pulseSupport = true;
+      };
+      
+      bluetoothScript = pkgs.callPackage ./polybar/bluetooth.nix {};
+      bctl = ''
+      [module/bctl]
+      type = custom/script
+      exec = ${bluetoothScript}/bin/bluetooth-ctl
+      tail = true
+      click-left = ${bluetoothScript}/bin/bluetooth-ctl --toggle &
+      '';
+    
+      xmonad = ''
+      [module/xmonad]
+      type = custom/script
+      exec = ${pkgs.xmonad-log}/bin/xmonad-log 
+    
+      tail = true
+      '';
+    
+      bars = builtins.readFile ./polybar/bars.ini;
+    
+      polyConfig = {
+        "bar/top" = {
+          monitor = "\${env:MONITOR:DP-0}";
+          width = "100%";
+          height = "3%";
+          radius = 0;
+          modules-center = "date";
+          modules-right = "bctl";
+          modules-left = "xmonad";
+          font-0 = "misc fixed:pixelsize=12;1";
+          font-1 = "FontAwesome:size=12;1";
+          background = "#AD404040";
+          # foreground = "#f2f2f2";
+        };
+    
+        "module/date" = {
+          type = "internal/date";
+          internal = 5;
+          date = "%d.%m.%y";
+          time = " %l:%M %p";
+          label = "%time%";
+          # label = "%time% %date%";
+        };
+    
+        "global/wm" = {
+          margin-top = 0;
+          margin-bottom = 0;
+        };
+      };
+    in {
+      enable = true;
+      package = mypolybar;
+      config = polyConfig;
+      extraConfig = xmonad + bctl;
+      script = ''
+             polybar top 2>/home/dalvescb/.polybar_error.log &
+      '';
     };
     
   };

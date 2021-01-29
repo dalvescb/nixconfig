@@ -9,6 +9,33 @@
 
 import XMonad
 import XMonad.Layout.ResizableTile
+import XMonad.Util.SpawnOnce
+import XMonad.Util.WorkspaceCompare (getSortByXineramaRule)
+
+import XMonad.Config.Desktop (desktopConfig
+                             ,desktopLayoutModifiers)
+import XMonad.Layout.NoBorders (noBorders,smartBorders)
+import qualified XMonad.Layout.Fullscreen as FS
+
+import XMonad.Hooks.DynamicLog
+import XMonad.Hooks.EwmhDesktops ( ewmh
+                                 , ewmhDesktopsEventHook
+                                 , fullscreenEventHook )
+import XMonad.Hooks.ManageDocks ( Direction2D(..)
+                                , ToggleStruts (..)
+                                , avoidStruts
+                                , docks
+                                , docksEventHook )
+import XMonad.Hooks.ManageHelpers (isFullscreen)
+import XMonad.Hooks.FadeInactive ( fadeInactiveLogHook )
+
+import XMonad.Actions.GridSelect (goToSelected
+                                 ,bringSelected
+                                 ,defaultGSConfig)
+
+import qualified DBus as D
+import qualified DBus.Client as D
+import qualified Codec.Binary.UTF8.String as UTF8
 
 import Data.Monoid
 import System.Exit
@@ -54,7 +81,7 @@ myWorkspaces    = ["1","2","3","4","5","6","7","8","9"]
 -- Border colors for unfocused and focused windows, respectively.
 --
 myNormalBorderColor  = "#dddddd"
-myFocusedBorderColor = "#42f581"
+myFocusedBorderColor = "#bf00ff"
 
 ------------------------------------------------------------------------
 -- Key bindings. Add, modify or remove key bindings here.
@@ -139,6 +166,10 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     , ((modm, xK_Up),    sendMessage MirrorExpand)
     , ((modm, xK_Right), sendMessage MirrorShrink)
     , ((modm, xK_Down),  sendMessage MirrorShrink)
+
+    -- Grid Select
+    , ((modm, xK_g), goToSelected def)
+    , ((modm .|. shiftMask, xK_g), bringSelected  def)
     ]
     ++
 
@@ -156,7 +187,7 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     -- mod-shift-{w,e,r}, Move client to screen 1, 2, or 3
     --
     [((m .|. modm, key), screenWorkspace sc >>= flip whenJust (windows . f))
-        | (key, sc) <- zip [xK_w, xK_e, xK_r] [0..]
+        | (key, sc) <- zip [xK_i, xK_o, xK_u] [0..]
         , (f, m) <- [(W.view, 0), (W.shift, shiftMask)]]
 
 
@@ -190,7 +221,7 @@ myMouseBindings (XConfig {XMonad.modMask = modm}) = M.fromList $
 -- The available layouts.  Note that each layout is separated by |||,
 -- which denotes layout choice.
 --
-myLayout = Full ||| tall ||| Mirror tall
+myLayout = Mirror tall ||| tall ||| Full
   --tiled ||| Mirror tiled ||| Full
   where
      -- Two master panes, 1/10th resize increment, only show master
@@ -231,7 +262,10 @@ myManageHook = composeAll
     [ className =? "MPlayer"        --> doFloat
     , className =? "Gimp"           --> doFloat
     , resource  =? "desktop_window" --> doIgnore
-    , resource  =? "kdesktop"       --> doIgnore ]
+    , resource  =? "kdesktop"       --> doIgnore
+    , isFullscreen --> doFloat
+    , FS.fullscreenManageHook
+    ]
 
 ------------------------------------------------------------------------
 -- Event handling
@@ -242,15 +276,8 @@ myManageHook = composeAll
 -- return (All True) if the default handler is to be run afterwards. To
 -- combine event hooks use mappend or mconcat from Data.Monoid.
 --
-myEventHook = mempty
+myEventHook = fullscreenEventHook
 
-------------------------------------------------------------------------
--- Status bars and logging
-
--- Perform an arbitrary action on each internal state change or X event.
--- See the 'XMonad.Hooks.DynamicLog' extension for examples.
---
-myLogHook = return ()
 
 ------------------------------------------------------------------------
 -- Startup hook
@@ -260,14 +287,58 @@ myLogHook = return ()
 -- per-workspace layout choices.
 --
 -- By default, do nothing.
-myStartupHook = return ()
+myStartupHook = do
+  spawnOnce "nitrogen --restore &"
 
 ------------------------------------------------------------------------
 -- Now run xmonad with all the defaults we set up.
 
 -- Run xmonad with the settings you specify. No need to modify this.
 --
-main = xmonad defaults
+main :: IO ()
+main = mkDbusClient >>= main'
+
+main' dbus = xmonad . docks . ewmh $ defaults { logHook = myPolybarLogHook dbus }
+
+mkDbusClient :: IO D.Client
+mkDbusClient = do
+  dbus <- D.connectSession
+  D.requestName dbus (D.busName_ "org.xmonad.log") opts
+  return dbus
+ where
+  opts = [D.nameAllowReplacement, D.nameReplaceExisting, D.nameDoNotQueue]
+
+-- Emit a DBus signal on log updates
+dbusOutput :: D.Client -> String -> IO ()
+dbusOutput dbus str =
+  let opath  = D.objectPath_ "/org/xmonad/Log"
+      iname  = D.interfaceName_ "org.xmonad.Log"
+      mname  = D.memberName_ "Update"
+      signal = D.signal opath iname mname
+      body   = [D.toVariant $ UTF8.decodeString str]
+  in  D.emit dbus $ signal { D.signalBody = body }
+
+polybarHook :: D.Client -> PP
+polybarHook dbus =
+  let wrapper c s | s /= "NSP" = wrap ("%{F" <> c <> "} ") " %{F-}" s
+                  | otherwise  = mempty
+      blue   = "#2E9AFE"
+      gray   = "#7F7F7F"
+      orange = "#ea4300"
+      purple = "#9058c7"
+      red    = "#722222"
+  in  def { ppOutput          = dbusOutput dbus
+          , ppCurrent         = wrapper blue
+          , ppVisible         = wrap "[" "]" . wrapper gray
+          , ppUrgent          = wrapper orange
+          , ppHidden          = wrapper gray
+          , ppHiddenNoWindows = wrapper red
+          , ppTitle           = shorten 100 . wrapper purple
+          , ppSort            = getSortByXineramaRule
+          }
+
+myPolybarLogHook dbus = myLogHook <+> dynamicLogWithPP (polybarHook dbus)
+myLogHook = fadeInactiveLogHook 0.9
 
 -- A structure containing your configuration settings, overriding
 -- fields in the default config. Any you don't override, will
@@ -275,7 +346,7 @@ main = xmonad defaults
 --
 -- No need to modify this.
 --
-defaults = def {
+defaults = desktopConfig {
       -- simple stuff
         terminal           = myTerminal,
         focusFollowsMouse  = myFocusFollowsMouse,
@@ -291,11 +362,10 @@ defaults = def {
         mouseBindings      = myMouseBindings,
 
       -- hooks, layouts
-        layoutHook         = myLayout,
-        manageHook         = myManageHook,
-        handleEventHook    = myEventHook,
-        logHook            = myLogHook,
-        startupHook        = myStartupHook
+        layoutHook         = desktopLayoutModifiers $ smartBorders myLayout,
+        manageHook         = myManageHook <+> manageHook desktopConfig,
+        handleEventHook    = myEventHook <+> handleEventHook  desktopConfig,
+        startupHook        = myStartupHook <+> startupHook desktopConfig
     }
 
 -- | Finally, a copy of the default bindings in simple textual tabular format.
