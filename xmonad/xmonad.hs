@@ -289,6 +289,7 @@ myEventHook = fullscreenEventHook
 -- By default, do nothing.
 myStartupHook = do
   spawnOnce "nitrogen --restore &"
+  spawnOnce "systemctl --user restart polybar.service"
 
 ------------------------------------------------------------------------
 -- Now run xmonad with all the defaults we set up.

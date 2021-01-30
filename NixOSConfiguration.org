@@ -1095,42 +1095,19 @@ services.polybar = let
   tail = true
   '';
 
-  bars = builtins.readFile ./polybar/bars.ini;
-
-  polyConfig = {
-    "bar/top" = {
-      monitor = "\${env:MONITOR:DP-0}";
-      width = "100%";
-      height = "3%";
-      radius = 0;
-      modules-center = "date";
-      modules-right = "bctl";
-      modules-left = "xmonad";
-      font-0 = "misc fixed:pixelsize=12;1";
-      font-1 = "FontAwesome:size=12;1";
-      background = "#AD404040";
-      # foreground = "#f2f2f2";
-    };
-
-    "module/date" = {
-      type = "internal/date";
-      internal = 5;
-      date = "%d.%m.%y";
-      time = " %l:%M %p";
-      label = "%time%";
-      # label = "%time% %date%";
-    };
-
-    "global/wm" = {
-      margin-top = 0;
-      margin-bottom = 0;
-    };
-  };
+  topBar = ''
+  [bar/top]
+  inherit = bar/main
+  monitor = ''${env:MONITOR:DP-0}
+  modules-center = date
+  modules-left = xmonad
+  '';
+  
 in {
   enable = true;
   package = mypolybar;
-  config = polyConfig;
-  extraConfig = xmonad + bctl;
+  config = ./polybar/polybar.ini;
+  extraConfig = xmonad + bctl + topBar;
   script = ''
          polybar top 2>/home/dalvescb/.polybar_error.log &
   '';
