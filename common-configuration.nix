@@ -153,10 +153,6 @@
   services.xserver.libinput.enable = true;
   programs.zsh.enable = true;
   programs.fish.enable = true;
-  programs.fish.shellAliases = { 
-    e = "emacsclient";
-    ec ="emacsclient -c";
-  };
   hardware.openrazer.enable = true;
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
@@ -233,15 +229,19 @@
     umount /mnt
   '';
   home-manager.users.dalvescb = { pkgs, config, ... }: {
-    home.packages = [
-      pkgs.gimp
-      pkgs.pavucontrol
-      pkgs.xorg.xmessage
-      pkgs.nitrogen
-      pkgs.font-awesome
-      pkgs.font-awesome-ttf      # used by polybar
-      pkgs.material-design-icons # used by polybar
-      pkgs.xmonad-log
+    home.packages = with pkgs; [
+      gimp
+      pavucontrol
+      xorg.xmessage
+      nitrogen
+      font-awesome
+      font-awesome-ttf      # used by polybar
+      material-design-icons # used by polybar
+      xmonad-log
+      networkmanager_dmenu
+      pasystray
+      blueman
+      networkmanagerapplet
     ];
     
     programs.zsh.enable = true;
@@ -327,7 +327,8 @@
       inherit = bar/main
       monitor = ''${env:MONITOR:DP-0}
       modules-center = date
-      modules-left = xmonad
+      modules-left   = xmonad
+      tray-position  = right
       '';
       
     in {
@@ -339,7 +340,22 @@
              polybar top 2>/home/dalvescb/.polybar_error.log &
       '';
     };
+    gtk = {
+      enable = true;
+      iconTheme = {
+        name = "Adwaita-dark";
+        package = pkgs.gnome3.adwaita-icon-theme;
+      };
+      theme = {
+        name = "Adwaita-dark";
+        package = pkgs.gnome3.adwaita-icon-theme;
+      };
+    };
     
+  };
+  programs.zsh.shellAliases = { 
+    e = "emacsclient";
+    ec ="emacsclient -c";
   };
 }
 # Template:1 ends here

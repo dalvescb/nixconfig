@@ -59,7 +59,6 @@
 - [[#sounds-settings][Sounds Settings]]
 - [[#touchpad-support][TouchPad support]]
 - [[#shell-environment][Shell Environment]]
-  - [[#shell-aliases][Shell Aliases]]
 - [[#users-management][Users Management]]
 - [[#open-razer][Open Razer]]
 - [[#openssh][OpenSSH]]
@@ -73,9 +72,12 @@
   - [[#copying-files-to-persist][Copying Files to Persist]]
 - [[#home-manager][Home Manager]]
   - [[#shell-configuration][Shell Configuration]]
+    - [[#shell-aliases][Shell Aliases]]
   - [[#xmonad][XMonad]]
   - [[#rofi][Rofi]]
   - [[#polybar][Polybar]]
+  - [[#picom][Picom]]
+  - [[#gtk-theme][GTK Theme]]
 
 * Installing NixOS 
 The installation part of the [[https://nixos.org/manual/nixos/stable/index.html#ch-installation][NixOS Manual]] describes how to perform a standard
@@ -727,15 +729,6 @@ programs.fish.enable = true;
 #+END_SRC
 To set the default shell see the next section ([[#users-management][Users Management]])
 
-** Shell Aliases
-Instead of in .profile, .bash, etc create aliases declaratively here 
-#+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
-programs.fish.shellAliases = { 
-  e = "emacsclient";
-  ec ="emacsclient -c";
-};
-#+END_SRC
-
 * Users Management
 I like to declaretively set my user configurations, including their password via
 a ~hashedPassword~. Because of this, I keep my user configuration in a seperate
@@ -973,15 +966,19 @@ NixOS configurations aren't designed to generate user-specific configurations
 need the [[https://rycee.gitlab.io/home-manager/][Home Manager]] add on
 #+BEGIN_SRC nix :tangle no :noweb yes :noweb-ref insert-config-here
 home-manager.users.dalvescb = { pkgs, config, ... }: {
-  home.packages = [
-    pkgs.gimp
-    pkgs.pavucontrol
-    pkgs.xorg.xmessage
-    pkgs.nitrogen
-    pkgs.font-awesome
-    pkgs.font-awesome-ttf      # used by polybar
-    pkgs.material-design-icons # used by polybar
-    pkgs.xmonad-log
+  home.packages = with pkgs; [
+    gimp
+    pavucontrol
+    xorg.xmessage
+    nitrogen
+    font-awesome
+    font-awesome-ttf      # used by polybar
+    material-design-icons # used by polybar
+    xmonad-log
+    networkmanager_dmenu
+    pasystray
+    blueman
+    networkmanagerapplet
   ];
   
   <<insert-home-here>>
@@ -1026,6 +1023,15 @@ programs.zsh.plugins = let
       zsh-syntax-highlighting
       zsh-autosuggestions
      ];
+#+END_SRC
+
+*** Shell Aliases
+Instead of in .profile, .bash, etc create aliases declaratively here 
+#+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
+programs.zsh.shellAliases = { 
+  e = "emacsclient";
+  ec ="emacsclient -c";
+};
 #+END_SRC
 
 ** XMonad
@@ -1100,7 +1106,8 @@ services.polybar = let
   inherit = bar/main
   monitor = ''${env:MONITOR:DP-0}
   modules-center = date
-  modules-left = xmonad
+  modules-left   = xmonad
+  tray-position  = right
   '';
   
 in {
@@ -1114,8 +1121,44 @@ in {
 };
 #+END_SRC
 
+** Picom
+[[https://github.com/yshui/picom][Picom]] is a compositor. Wtf is a compositor?? Kind of a weird thing, according to
+[[https://en.wikipedia.org/wiki/Compositing_window_manager][Wikipedia]] a compositing window manager is a provides applications with an
+off-screen buffer for each window. In simpler terms, if you want fancy blurring
+and other window effects you need one
+#+BEGIN_SRC haskell :results value
+services.picom = {
+    enable = true;
+    activeOpacity = "1.0";
+    inactiveOpacity = "0.8";
+    backend = "glx";
+    fade = true;
+    fadeDelta = 5;
+    opacityRule = [ "100:name *= 'i3lock'" ];
+    shadow = true;
+    shadowOpacity = "0.75";
+};
+#+END_SRC
+
+** GTK Theme
+Even though gnome is not installed, you can still set the GTK theme for theme
+any application that uses GTK
+#+BEGIN_SRC nix :tangle no :noweb-ref insert-home-here
+gtk = {
+  enable = true;
+  iconTheme = {
+    name = "Adwaita-dark";
+    package = pkgs.gnome3.adwaita-icon-theme;
+  };
+  theme = {
+    name = "Adwaita-dark";
+    package = pkgs.gnome3.adwaita-icon-theme;
+  };
+};
+#+END_SRC
+
 * FlySpell Local Words                                                    :ignore: :noexport:
 
 #  LocalWords:  UEFI unfree NixOS OpenSSH BTRFS subvolume subvolumes WiFi GPU
 #  LocalWords:  systemd's Nvidia VA API KDE mutably Bluetooth bluetooth distro
-#  LocalWords:  TouchPad nixos FlySpell XMonad Polybar
+#  LocalWords:  TouchPad nixos FlySpell XMonad Polybar compositing GTK

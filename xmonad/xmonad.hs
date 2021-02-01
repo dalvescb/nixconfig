@@ -289,6 +289,9 @@ myEventHook = fullscreenEventHook
 -- By default, do nothing.
 myStartupHook = do
   spawnOnce "nitrogen --restore &"
+  spawnOnce "pasystray &"
+  spawnOnce "blueman-applet &"
+  spawnOnce "nm-applet --sm-disable --indicator &"
   spawnOnce "systemctl --user restart polybar.service"
 
 ------------------------------------------------------------------------
