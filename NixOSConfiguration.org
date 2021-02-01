@@ -1126,7 +1126,7 @@ in {
 [[https://en.wikipedia.org/wiki/Compositing_window_manager][Wikipedia]] a compositing window manager is a provides applications with an
 off-screen buffer for each window. In simpler terms, if you want fancy blurring
 and other window effects you need one
-#+BEGIN_SRC haskell :results value
+#+BEGIN_SRC nix :tangle no :noweb-ref insert-home-here
 services.picom = {
     enable = true;
     activeOpacity = "1.0";

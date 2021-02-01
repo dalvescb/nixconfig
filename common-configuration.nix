@@ -340,6 +340,17 @@
              polybar top 2>/home/dalvescb/.polybar_error.log &
       '';
     };
+    services.picom = {
+        enable = true;
+        activeOpacity = "1.0";
+        inactiveOpacity = "0.8";
+        backend = "glx";
+        fade = true;
+        fadeDelta = 5;
+        opacityRule = [ "100:name *= 'i3lock'" ];
+        shadow = true;
+        shadowOpacity = "0.75";
+    };
     gtk = {
       enable = true;
       iconTheme = {
