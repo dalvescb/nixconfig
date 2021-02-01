@@ -15,6 +15,9 @@ import XMonad.Util.WorkspaceCompare (getSortByXineramaRule)
 import XMonad.Config.Desktop (desktopConfig
                              ,desktopLayoutModifiers)
 import XMonad.Layout.NoBorders (noBorders,smartBorders)
+import XMonad.Layout.Gaps (gaps)
+import XMonad.Layout.Spacing (spacingRaw
+                             ,Border(..))
 import qualified XMonad.Layout.Fullscreen as FS
 
 import XMonad.Hooks.DynamicLog
@@ -221,9 +224,14 @@ myMouseBindings (XConfig {XMonad.modMask = modm}) = M.fromList $
 -- The available layouts.  Note that each layout is separated by |||,
 -- which denotes layout choice.
 --
-myLayout = Mirror tall ||| tall ||| Full
+myLayout = addSpaces $ addGaps $ tall ||| tiled ||| Full
   --tiled ||| Mirror tiled ||| Full
   where
+     -- add spaces (configurable amount of space around windows)
+     addSpaces = spacingRaw True (Border 0 5 5 5) True (Border 5 5 5 5) True
+     -- add gaps (adds space/gaps along edges of screen)
+     addGaps = gaps [(U,10),(R,10),(L,10),(D,10)]
+
      -- Two master panes, 1/10th resize increment, only show master
      -- panes by default. Unlike plain 'Tall', this also allows
      -- resizing the master panes, via the 'MirrorShrink' and

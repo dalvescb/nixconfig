@@ -347,7 +347,8 @@
         backend = "glx";
         fade = true;
         fadeDelta = 5;
-        opacityRule = [ "100:name *= 'i3lock'" ];
+        opacityRule = [ "100:name *= 'i3lock'"
+                        "99:fullscreen" ];
         shadow = true;
         shadowOpacity = "0.75";
     };
