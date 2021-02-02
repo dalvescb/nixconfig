@@ -224,7 +224,7 @@ myMouseBindings (XConfig {XMonad.modMask = modm}) = M.fromList $
 -- The available layouts.  Note that each layout is separated by |||,
 -- which denotes layout choice.
 --
-myLayout = addSpaces $ addGaps $ tall ||| tiled ||| Full
+myLayout = addSpaces $ addGaps $ tiled ||| tall ||| Full
   --tiled ||| Mirror tiled ||| Full
   where
      -- add spaces (configurable amount of space around windows)
@@ -284,7 +284,7 @@ myManageHook = composeAll
 -- return (All True) if the default handler is to be run afterwards. To
 -- combine event hooks use mappend or mconcat from Data.Monoid.
 --
-myEventHook = fullscreenEventHook
+myEventHook = fullscreenEventHook <+> ewmhDesktopsEventHook
 
 
 ------------------------------------------------------------------------

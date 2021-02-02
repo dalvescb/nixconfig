@@ -242,6 +242,10 @@
       pasystray
       blueman
       networkmanagerapplet
+      (pkgs.linkFarm "dmenu" [ {
+        name = "bin/dmenu";
+        path = "${pkgs.rofi}/bin/rofi";
+      } ])
     ];
     
     programs.zsh.enable = true;
@@ -342,15 +346,45 @@
     };
     services.picom = {
         enable = true;
-        activeOpacity = "1.0";
-        inactiveOpacity = "0.8";
-        backend = "glx";
+        # package = pkgs.picom.overrideDerivation (oldAttrs: {
+        #   name = "picom-v8";
+        #   src = pkgs.fetchurl {
+        #     url = https://github.com/yshui/picom/archive/v8.tar.gz;
+        #     sha256 = "03s8236jm9wfqaqqvrfhwwxyjbygh69km5z3x9iz946ab30a6fgq";
+        #   };
+        #   patches = [];
+        # });
+        package = pkgs.picom.overrideAttrs(o: {
+              src = pkgs.fetchFromGitHub {
+                repo = "picom";
+                owner = "ibhagwan";
+                rev = "44b4970f70d6b23759a61a2b94d9bfb4351b41b1";
+                sha256 = "0iff4bwpc00xbjad0m000midslgx12aihs33mdvfckr75r114ylh";
+              };
+        });
+        activeOpacity = "0.8";
+        inactiveOpacity = "1.0";
+        blur = true;
+        # backend = "glx";
+        experimentalBackends = true;
         fade = true;
         fadeDelta = 5;
-        opacityRule = [ "100:name *= 'i3lock'"
-                        "99:fullscreen" ];
+        vSync = true;
+        opacityRule = [ 
+                        "100:class_g   *?= 'Brave-browser'"
+                        "60:class_g    *?= 'Alacritty'"
+                      ];
+        
         shadow = true;
         shadowOpacity = "0.75";
+        extraOptions = ''
+                     xrender-sync-fence = true;
+                     inactive-opacity-override = true;
+                     detect-client-opacity = true;
+                     use-ewmh-active-win = true;
+                     mark-ovredir-focused = false;
+                     mark-wmwin-focused = true;
+        '';
     };
     gtk = {
       enable = true;
