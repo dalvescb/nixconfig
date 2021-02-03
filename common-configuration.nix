@@ -60,6 +60,7 @@
     xorg.xrandr
     arandr
     killall
+    libnotify
   ];
   # Use the GRUB 2 boot loader (with EFI support)
   boot.loader.grub.enable = true;
@@ -91,6 +92,8 @@
         (nerdfonts.override { fonts = [ "DejaVuSansMono" ]; } )
         source-code-pro
         emacs-all-the-icons-fonts
+        jetbrains-mono
+        font-awesome
       ];
   };
   environment.variables =
@@ -238,14 +241,18 @@
       font-awesome-ttf      # used by polybar
       material-design-icons # used by polybar
       xmonad-log
-      networkmanager_dmenu
       pasystray
       blueman
       networkmanagerapplet
-      (pkgs.linkFarm "dmenu" [ {
-        name = "bin/dmenu";
-        path = "${pkgs.rofi}/bin/rofi";
-      } ])
+      networkmanager_dmenu
+      dmenu
+      # (pkgs.linkFarm "dmenu" [ {
+      #   name = "bin/dmenu";
+      #   path = "${pkgs.rofi}/bin/rofi";
+      # } ])
+      gnome3.adwaita-icon-theme
+      dunst
+      arc-icon-theme
     ];
     
     programs.zsh.enable = true;
@@ -344,6 +351,28 @@
              polybar top 2>/home/dalvescb/.polybar_error.log &
       '';
     };
+    services.dunst = {
+      enable = true;
+      iconTheme = {
+        name = "Adwaita";
+        # package = pkgs.gnome3.adwaita-icon-theme;
+        package = pkgs.arc-icon-theme;
+        size = "16x16";
+      };
+      settings = {
+        global = {
+          monitor = 0;
+          geometry = "500x50-50+65";
+          shrink = "yes";
+          transparency = 10;
+          padding = 16;
+          horizontal_padding = 16;
+          font = "JetBrains Mono Medium 10";
+          line_height = 4;
+          format = ''<b>%s</b>\n%b'';
+        };
+      };
+    };
     services.picom = {
         enable = true;
         # package = pkgs.picom.overrideDerivation (oldAttrs: {
@@ -383,8 +412,9 @@
                      detect-client-opacity = true;
                      use-ewmh-active-win = true;
                      mark-ovredir-focused = false;
-                     mark-wmwin-focused = true;
         '';
+        #  mark-wmwin-focused = true;
+        # 
     };
     gtk = {
       enable = true;

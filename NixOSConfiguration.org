@@ -76,6 +76,7 @@
   - [[#xmonad][XMonad]]
   - [[#rofi][Rofi]]
   - [[#polybar][Polybar]]
+  - [[#dunst][Dunst]]
   - [[#picom][Picom]]
   - [[#gtk-theme][GTK Theme]]
 
@@ -422,6 +423,7 @@ environment.systemPackages = with pkgs; [
   xorg.xrandr
   arandr
   killall
+  libnotify
 ];
 #+END_SRC
 
@@ -507,6 +509,8 @@ fonts = {
       (nerdfonts.override { fonts = [ "DejaVuSansMono" ]; } )
       source-code-pro
       emacs-all-the-icons-fonts
+      jetbrains-mono
+      font-awesome
     ];
 };
 #+END_SRC
@@ -975,14 +979,18 @@ home-manager.users.dalvescb = { pkgs, config, ... }: {
     font-awesome-ttf      # used by polybar
     material-design-icons # used by polybar
     xmonad-log
-    networkmanager_dmenu
     pasystray
     blueman
     networkmanagerapplet
-    (pkgs.linkFarm "dmenu" [ {
-      name = "bin/dmenu";
-      path = "${pkgs.rofi}/bin/rofi";
-    } ])
+    networkmanager_dmenu
+    dmenu
+    # (pkgs.linkFarm "dmenu" [ {
+    #   name = "bin/dmenu";
+    #   path = "${pkgs.rofi}/bin/rofi";
+    # } ])
+    gnome3.adwaita-icon-theme
+    dunst
+    arc-icon-theme
   ];
   
   <<insert-home-here>>
@@ -1125,6 +1133,35 @@ in {
 };
 #+END_SRC
 
+** Dunst
+[[https://dunst-project.org/][Dunst]] is a lightweight replacement for notification daemons provided by most
+desktop environments. It's very customizable and isn't dependent on any toolkits
+so fits into window manager centric setups (like XMonad with no Desktop Environment)
+#+BEGIN_SRC nix :tangle no :noweb-ref insert-home-here
+services.dunst = {
+  enable = true;
+  iconTheme = {
+    name = "Adwaita";
+    # package = pkgs.gnome3.adwaita-icon-theme;
+    package = pkgs.arc-icon-theme;
+    size = "16x16";
+  };
+  settings = {
+    global = {
+      monitor = 0;
+      geometry = "500x50-50+65";
+      shrink = "yes";
+      transparency = 10;
+      padding = 16;
+      horizontal_padding = 16;
+      font = "JetBrains Mono Medium 10";
+      line_height = 4;
+      format = ''<b>%s</b>\n%b'';
+    };
+  };
+};
+#+END_SRC
+
 ** Picom
 [[https://github.com/yshui/picom][Picom]] is a compositor. Wtf is a compositor?? Kind of a weird thing, according to
 [[https://en.wikipedia.org/wiki/Compositing_window_manager][Wikipedia]] a compositing window manager is a provides applications with an
@@ -1170,8 +1207,9 @@ services.picom = {
                  detect-client-opacity = true;
                  use-ewmh-active-win = true;
                  mark-ovredir-focused = false;
-                 mark-wmwin-focused = true;
     '';
+    #  mark-wmwin-focused = true;
+    # 
 };
 #+END_SRC
 
@@ -1197,4 +1235,4 @@ gtk = {
 #  LocalWords:  UEFI unfree NixOS OpenSSH BTRFS subvolume subvolumes WiFi GPU
 #  LocalWords:  systemd's Nvidia VA API KDE mutably Bluetooth bluetooth distro
 #  LocalWords:  TouchPad nixos FlySpell XMonad Polybar compositing GTK Rofi
-#  LocalWords:  dmenu
+#  LocalWords:  dmenu Dunst centric
