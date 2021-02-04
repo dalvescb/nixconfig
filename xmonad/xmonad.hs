@@ -31,6 +31,7 @@ import XMonad.Hooks.ManageDocks ( Direction2D(..)
                                 , docksEventHook )
 import XMonad.Hooks.ManageHelpers (isFullscreen)
 import XMonad.Hooks.FadeInactive ( fadeInactiveLogHook )
+import qualified XMonad.Hooks.FadeWindows as Fade
 
 import XMonad.Actions.GridSelect (goToSelected
                                  ,bringSelected
@@ -284,7 +285,7 @@ myManageHook = composeAll
 -- return (All True) if the default handler is to be run afterwards. To
 -- combine event hooks use mappend or mconcat from Data.Monoid.
 --
-myEventHook = fullscreenEventHook <+> ewmhDesktopsEventHook
+myEventHook = fullscreenEventHook <+> Fade.fadeWindowsEventHook <+> ewmhDesktopsEventHook
 
 
 ------------------------------------------------------------------------
@@ -310,7 +311,7 @@ myStartupHook = do
 main :: IO ()
 main = mkDbusClient >>= main'
 
-main' dbus = xmonad . docks . ewmh $ defaults { logHook = myPolybarLogHook dbus }
+main' dbus = xmonad . docks . ewmh $ defaults dbus
 
 mkDbusClient :: IO D.Client
 mkDbusClient = do
@@ -352,13 +353,18 @@ polybarHook dbus =
 myPolybarLogHook dbus =  dynamicLogWithPP (polybarHook dbus) -- <+> myLogHook
 myLogHook = fadeInactiveLogHook 0.9
 
+myFadeHook = composeAll [ Fade.opaque
+                        , className =? "Alacritty"  --> Fade.transparency 0.2
+                        , className =? "discord" <&&> Fade.isUnfocused --> Fade.transparency 0.2
+                        ]
+
 -- A structure containing your configuration settings, overriding
 -- fields in the default config. Any you don't override, will
 -- use the defaults defined in xmonad/XMonad/Config.hs
 --
 -- No need to modify this.
 --
-defaults = desktopConfig {
+defaults dbus = desktopConfig {
       -- simple stuff
         terminal           = myTerminal,
         focusFollowsMouse  = myFocusFollowsMouse,
@@ -372,8 +378,8 @@ defaults = desktopConfig {
       -- key bindings
         keys               = myKeys,
         mouseBindings      = myMouseBindings,
-
       -- hooks, layouts
+        logHook            = myPolybarLogHook dbus <+> Fade.fadeWindowsLogHook myFadeHook,
         layoutHook         = desktopLayoutModifiers $ smartBorders myLayout,
         manageHook         = myManageHook <+> manageHook desktopConfig,
         handleEventHook    = myEventHook <+> handleEventHook  desktopConfig,
