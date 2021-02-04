@@ -349,7 +349,7 @@ polybarHook dbus =
           , ppSort            = getSortByXineramaRule
           }
 
-myPolybarLogHook dbus = myLogHook <+> dynamicLogWithPP (polybarHook dbus)
+myPolybarLogHook dbus =  dynamicLogWithPP (polybarHook dbus) -- <+> myLogHook
 myLogHook = fadeInactiveLogHook 0.9
 
 -- A structure containing your configuration settings, overriding

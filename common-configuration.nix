@@ -61,6 +61,9 @@
     arandr
     killall
     libnotify
+    jupyter
+    pandoc
+    libreoffice
   ];
   # Use the GRUB 2 boot loader (with EFI support)
   boot.loader.grub.enable = true;
@@ -354,7 +357,7 @@
     services.dunst = {
       enable = true;
       iconTheme = {
-        name = "Adwaita";
+        name = "Arc";
         # package = pkgs.gnome3.adwaita-icon-theme;
         package = pkgs.arc-icon-theme;
         size = "16x16";
@@ -383,38 +386,37 @@
         #   };
         #   patches = [];
         # });
-        package = pkgs.picom.overrideAttrs(o: {
-              src = pkgs.fetchFromGitHub {
-                repo = "picom";
-                owner = "ibhagwan";
-                rev = "44b4970f70d6b23759a61a2b94d9bfb4351b41b1";
-                sha256 = "0iff4bwpc00xbjad0m000midslgx12aihs33mdvfckr75r114ylh";
-              };
-        });
-        activeOpacity = "0.8";
-        inactiveOpacity = "1.0";
+        # package = pkgs.picom.overrideAttrs(o: {
+        #       src = pkgs.fetchFromGitHub {
+        #         repo = "picom";
+        #         owner = "ibhagwan";
+        #         rev = "44b4970f70d6b23759a61a2b94d9bfb4351b41b1";
+        #         sha256 = "0iff4bwpc00xbjad0m000midslgx12aihs33mdvfckr75r114ylh";
+        #       };
+        # });
+        # activeOpacity = "1.0";
+        # inactiveOpacity = "1.0";
         blur = true;
-        # backend = "glx";
-        experimentalBackends = true;
+        backend = "glx";
+        # experimentalBackends = true;
         fade = true;
         fadeDelta = 5;
         vSync = true;
-        opacityRule = [ 
-                        "100:class_g   *?= 'Brave-browser'"
-                        "60:class_g    *?= 'Alacritty'"
-                      ];
+        # opacityRule = [ 
+        #                 "100:class_g   *?= 'Brave-browser'"
+        #                 "60:class_g    *?= 'Alacritty'"
+        #               ];
         
         shadow = true;
         shadowOpacity = "0.75";
         extraOptions = ''
                      xrender-sync-fence = true;
-                     inactive-opacity-override = true;
                      detect-client-opacity = true;
                      use-ewmh-active-win = true;
                      mark-ovredir-focused = false;
         '';
         #  mark-wmwin-focused = true;
-        # 
+        # inactive-opacity-override = true;
     };
     gtk = {
       enable = true;
