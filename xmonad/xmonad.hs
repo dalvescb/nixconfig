@@ -355,7 +355,9 @@ myLogHook = fadeInactiveLogHook 0.9
 
 myFadeHook = composeAll [ Fade.opaque
                         , className =? "Alacritty"  --> Fade.transparency 0.2
-                        , className =? "discord" <&&> Fade.isUnfocused --> Fade.transparency 0.2
+                        , className =? "discord"
+                          <&&> Fade.isUnfocused
+                          <&&> fmap not isFullscreen --> Fade.transparency 0.2
                         ]
 
 -- A structure containing your configuration settings, overriding
