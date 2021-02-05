@@ -341,7 +341,7 @@
       inherit = bar/main
       monitor = ''${env:MONITOR:DP-0}
       modules-center = date
-      modules-left   = xmonad
+      modules-left   = ewmh
       tray-position  = right
       '';
       

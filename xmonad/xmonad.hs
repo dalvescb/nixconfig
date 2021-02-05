@@ -23,6 +23,7 @@ import qualified XMonad.Layout.Fullscreen as FS
 import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.EwmhDesktops ( ewmh
                                  , ewmhDesktopsEventHook
+                                 , ewmhDesktopsLogHook
                                  , fullscreenEventHook )
 import XMonad.Hooks.ManageDocks ( Direction2D(..)
                                 , ToggleStruts (..)
@@ -40,6 +41,8 @@ import XMonad.Actions.GridSelect (goToSelected
 import qualified DBus as D
 import qualified DBus.Client as D
 import qualified Codec.Binary.UTF8.String as UTF8
+
+import qualified Graphics.X11.ExtraTypes.XF86 as XF86
 
 import Data.Monoid
 import System.Exit
@@ -194,6 +197,12 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
         | (key, sc) <- zip [xK_i, xK_o, xK_u] [0..]
         , (f, m) <- [(W.view, 0), (W.shift, shiftMask)]]
 
+    ++
+    -- adjust audio via keyboard and pulseaudio
+    [((0,XF86.xF86XK_AudioRaiseVolume), spawn "pactl set-sink-volume @DEFAULT_SINK@ +1.5%")
+    ,((0,XF86.xF86XK_AudioLowerVolume), spawn "pactl set-sink-volume @DEFAULT_SINK@ -1.5%")
+    ,((0,XF86.xF86XK_AudioMute), spawn "pactl set-sink-mute @DEFAULT_SINK@ toggle")
+    ]
 
 ------------------------------------------------------------------------
 -- Mouse bindings: default actions bound to mouse events
@@ -346,7 +355,7 @@ polybarHook dbus =
           , ppUrgent          = wrapper orange
           , ppHidden          = wrapper gray
           , ppHiddenNoWindows = wrapper red
-          , ppTitle           = shorten 100 . wrapper purple
+          , ppTitle           = \_ -> "" -- shorten 100 . wrapper purple
           , ppSort            = getSortByXineramaRule
           }
 
@@ -381,7 +390,8 @@ defaults dbus = desktopConfig {
         keys               = myKeys,
         mouseBindings      = myMouseBindings,
       -- hooks, layouts
-        logHook            = myPolybarLogHook dbus <+> Fade.fadeWindowsLogHook myFadeHook,
+        -- logHook            = myPolybarLogHook dbus <+> Fade.fadeWindowsLogHook myFadeHook,
+        logHook            = ewmhDesktopsLogHook <+> Fade.fadeWindowsLogHook myFadeHook,
         layoutHook         = desktopLayoutModifiers $ smartBorders myLayout,
         manageHook         = myManageHook <+> manageHook desktopConfig,
         handleEventHook    = myEventHook <+> handleEventHook  desktopConfig,
