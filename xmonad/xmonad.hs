@@ -24,6 +24,7 @@ import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.EwmhDesktops ( ewmh
                                  , ewmhDesktopsEventHook
                                  , ewmhDesktopsLogHook
+                                 , ewmhDesktopsLogHookCustom
                                  , fullscreenEventHook )
 import XMonad.Hooks.ManageDocks ( Direction2D(..)
                                 , ToggleStruts (..)
@@ -369,6 +370,8 @@ myFadeHook = composeAll [ Fade.opaque
                           <&&> fmap not isFullscreen --> Fade.transparency 0.2
                         ]
 
+ewmhSortDesktops windowSpaces = undefined
+
 -- A structure containing your configuration settings, overriding
 -- fields in the default config. Any you don't override, will
 -- use the defaults defined in xmonad/XMonad/Config.hs
@@ -392,6 +395,8 @@ defaults dbus = desktopConfig {
       -- hooks, layouts
         -- logHook            = myPolybarLogHook dbus <+> Fade.fadeWindowsLogHook myFadeHook,
         logHook            = ewmhDesktopsLogHook <+> Fade.fadeWindowsLogHook myFadeHook,
+        -- logHook            = ewmhDesktopsLogHookCustom ewmhSortDesktops
+        --                      <+> Fade.fadeWindowsLogHook myFadeHook,
         layoutHook         = desktopLayoutModifiers $ smartBorders myLayout,
         manageHook         = myManageHook <+> manageHook desktopConfig,
         handleEventHook    = myEventHook <+> handleEventHook  desktopConfig,

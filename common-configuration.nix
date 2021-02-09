@@ -64,6 +64,8 @@
     jupyter
     pandoc
     libreoffice
+    rnnoise-plugin
+    noisetorch
   ];
   # Use the GRUB 2 boot loader (with EFI support)
   boot.loader.grub.enable = true;
@@ -97,6 +99,7 @@
         emacs-all-the-icons-fonts
         jetbrains-mono
         font-awesome
+        hack-font
       ];
   };
   environment.variables =

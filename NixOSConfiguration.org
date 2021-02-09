@@ -427,6 +427,8 @@ environment.systemPackages = with pkgs; [
   jupyter
   pandoc
   libreoffice
+  rnnoise-plugin
+  noisetorch
 ];
 #+END_SRC
 
@@ -514,6 +516,7 @@ fonts = {
       emacs-all-the-icons-fonts
       jetbrains-mono
       font-awesome
+      hack-font
     ];
 };
 #+END_SRC
