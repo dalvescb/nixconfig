@@ -365,13 +365,12 @@ myPolybarLogHook dbus =  dynamicLogWithPP (polybarHook dbus) -- <+> myLogHook
 myLogHook = fadeInactiveLogHook 0.9
 
 myFadeHook = composeAll [ Fade.opaque
-                        , className =? "Alacritty"  --> Fade.transparency 0.2
+                        , className =? "Alacritty"  --> Fade.transparency 0.1
                         , className =? "discord"
                           <&&> Fade.isUnfocused
-                          <&&> fmap not isFullscreen --> Fade.transparency 0.2
-                        , className =? "emacs"
-                          <&&> Fade.isUnfocused
-                          <&&> fmap not isFullscreen --> Fade.transparency 0.2
+                          <&&> fmap not isFullscreen --> Fade.transparency 0.1
+                        , className =? "Emacs"
+                          <&&> Fade.isUnfocused --> Fade.transparency 0.05
                         ]
 
 ewmhSortDesktops windowSpaces = undefined
