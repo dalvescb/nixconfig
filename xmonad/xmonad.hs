@@ -311,6 +311,7 @@ myStartupHook = do
   spawnOnce "pasystray &"
   spawnOnce "blueman-applet &"
   spawnOnce "nm-applet --sm-disable --indicator &"
+  spawnOnce "kdeconnect-indicator &"
   spawnOnce "systemctl --user restart polybar.service"
 
 ------------------------------------------------------------------------
@@ -366,6 +367,9 @@ myLogHook = fadeInactiveLogHook 0.9
 myFadeHook = composeAll [ Fade.opaque
                         , className =? "Alacritty"  --> Fade.transparency 0.2
                         , className =? "discord"
+                          <&&> Fade.isUnfocused
+                          <&&> fmap not isFullscreen --> Fade.transparency 0.2
+                        , className =? "emacs"
                           <&&> Fade.isUnfocused
                           <&&> fmap not isFullscreen --> Fade.transparency 0.2
                         ]
