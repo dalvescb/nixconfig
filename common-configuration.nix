@@ -66,6 +66,7 @@
     libreoffice
     rnnoise-plugin
     noisetorch
+    steam-run
   ];
   # Use the GRUB 2 boot loader (with EFI support)
   boot.loader.grub.enable = true;
@@ -339,8 +340,8 @@
       tail = true
       '';
     
-      topBar = ''
-      [bar/top]
+      primaryBar = ''
+      [bar/primary]
       inherit = bar/main
       monitor = ''${env:MONITOR:DP-0}
       modules-center = date
@@ -348,13 +349,20 @@
       tray-position  = right
       '';
       
+      secondaryBar = ''
+      [bar/secondary]
+      inherit = bar/main
+      monitor = ''${env:MONITOR:DP-2}
+      modules-left   = ewmh
+      '';
     in {
       enable = true;
       package = mypolybar;
       config = ./polybar/polybar.ini;
-      extraConfig = xmonad + bctl + topBar;
+      extraConfig = xmonad + bctl + primaryBar + secondaryBar;
       script = ''
-             polybar top 2>/home/dalvescb/.polybar_error.log &
+             polybar primary 2>/home/dalvescb/.polybar_primary_error.log &
+             polybar secondary 2>/home/dalvescb/.polybar_secondary_error.log &
       '';
     };
     services.dunst = {
