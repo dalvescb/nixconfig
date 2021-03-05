@@ -392,6 +392,7 @@ environment.systemPackages = with pkgs; [
   haskellPackages.stack
   haskellPackages.haskell-language-server
   haskellPackages.Agda
+  haskellPackages.implicit-hie
   python3Full
   snapper
   python38Packages.setuptools
@@ -430,6 +431,10 @@ environment.systemPackages = with pkgs; [
   rnnoise-plugin
   noisetorch
   steam-run
+  vulkan-tools
+  vulkan-loader
+  vulkan-validation-layers
+  python39Packages.pygments
 ];
 #+END_SRC
 
@@ -518,6 +523,8 @@ fonts = {
       jetbrains-mono
       font-awesome
       hack-font
+      inconsolata
+      inconsolata-nerdfont
     ];
 };
 #+END_SRC
@@ -584,10 +591,12 @@ configuration
         vaapiVdpau
         libvdpau-va-gl
       ];
+    setLdLibraryPath = true;
+    driSupport32Bit = true;
   };
-  hardware.opengl.driSupport32Bit = true;
 }
 #+END_SRC
+
 ** Nvidia Prime
 For a laptop with dedicated and integrated graphics, you can operate in hybrid
 mode (to get the power of the dedicated gpu when necessary and power saving with

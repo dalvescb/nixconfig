@@ -11,7 +11,8 @@
         vaapiVdpau
         libvdpau-va-gl
       ];
+    setLdLibraryPath = true;
+    driSupport32Bit = true;
   };
-  hardware.opengl.driSupport32Bit = true;
 }
 # Nvidia:1 ends here

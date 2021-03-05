@@ -29,6 +29,7 @@
     haskellPackages.stack
     haskellPackages.haskell-language-server
     haskellPackages.Agda
+    haskellPackages.implicit-hie
     python3Full
     snapper
     python38Packages.setuptools
@@ -67,6 +68,10 @@
     rnnoise-plugin
     noisetorch
     steam-run
+    vulkan-tools
+    vulkan-loader
+    vulkan-validation-layers
+    python39Packages.pygments
   ];
   # Use the GRUB 2 boot loader (with EFI support)
   boot.loader.grub.enable = true;
@@ -101,6 +106,8 @@
         jetbrains-mono
         font-awesome
         hack-font
+        inconsolata
+        inconsolata-nerdfont
       ];
   };
   environment.variables =
