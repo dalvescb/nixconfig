@@ -434,7 +434,7 @@ environment.systemPackages = with pkgs; [
   vulkan-tools
   vulkan-loader
   vulkan-validation-layers
-  python39Packages.pygments
+  python27Packages.pygments
 ];
 #+END_SRC
 
