@@ -435,6 +435,8 @@ environment.systemPackages = with pkgs; [
   vulkan-loader
   vulkan-validation-layers
   python27Packages.pygments
+  ipopt
+  docker
 ];
 #+END_SRC
 
