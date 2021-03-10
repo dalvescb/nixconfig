@@ -74,6 +74,7 @@
     python27Packages.pygments
     ipopt
     docker
+    haskell.packages.ghc883.haskell-language-server
   ];
   # Use the GRUB 2 boot loader (with EFI support)
   boot.loader.grub.enable = true;
