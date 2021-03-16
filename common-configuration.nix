@@ -21,7 +21,7 @@
     libva
     libva-utils
     razergenie
-    linuxPackages.openrazer
+    linuxPackages_5_10.openrazer
     pciutils
     arc-kde-theme
     # plasma5.kwallet-pam
@@ -33,7 +33,9 @@
     python3Full
     snapper
     python38Packages.setuptools
-    emacs26Packages.agda2-mode
+    # emacs26Packages.agda2-mode
+    agda
+    agda-pkg
     texlive.combined.scheme-full
     alacritty
     libsForQt5.ark
@@ -46,6 +48,7 @@
     zoom-us
     snapper
     steam
+    steam-run
     chntpw
     ntfs3g
     libsForQt5.plasma-integration
@@ -53,7 +56,7 @@
     libsForQt5.kdeconnect-kde
     xorg.xkill
     htop
-    linuxPackages.xpadneo
+    linuxPackages_5_10.xpadneo
     gsmartcontrol
     smartmontools
     pkg-config
@@ -67,7 +70,6 @@
     libreoffice
     rnnoise-plugin
     noisetorch
-    steam-run
     vulkan-tools
     vulkan-loader
     vulkan-validation-layers
@@ -75,6 +77,7 @@
     ipopt
     docker
     haskell.packages.ghc883.haskell-language-server
+    glmark2
   ];
   # Use the GRUB 2 boot loader (with EFI support)
   boot.loader.grub.enable = true;
@@ -177,6 +180,7 @@
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
   services.emacs.enable = true;
+  programs.steam.enable = true;
   # enables auto-updating
   system.autoUpgrade.enable = false;
   system.autoUpgrade.allowReboot = false;

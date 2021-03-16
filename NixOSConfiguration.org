@@ -63,6 +63,7 @@
 - [[#open-razer][Open Razer]]
 - [[#openssh][OpenSSH]]
 - [[#emacs-daemon][Emacs Daemon]]
+- [[#steam][Steam]]
 - [[#system-upgrades][System Upgrades]]
 - [[#opt-in-state][Opt-In State]]
   - [[#figuring-out-what-to-persist][Figuring out what to Persist]]
@@ -384,7 +385,7 @@ environment.systemPackages = with pkgs; [
   libva
   libva-utils
   razergenie
-  linuxPackages.openrazer
+  linuxPackages_5_10.openrazer
   pciutils
   arc-kde-theme
   # plasma5.kwallet-pam
@@ -396,7 +397,9 @@ environment.systemPackages = with pkgs; [
   python3Full
   snapper
   python38Packages.setuptools
-  emacs26Packages.agda2-mode
+  # emacs26Packages.agda2-mode
+  agda
+  agda-pkg
   texlive.combined.scheme-full
   alacritty
   libsForQt5.ark
@@ -409,6 +412,7 @@ environment.systemPackages = with pkgs; [
   zoom-us
   snapper
   steam
+  steam-run
   chntpw
   ntfs3g
   libsForQt5.plasma-integration
@@ -416,7 +420,7 @@ environment.systemPackages = with pkgs; [
   libsForQt5.kdeconnect-kde
   xorg.xkill
   htop
-  linuxPackages.xpadneo
+  linuxPackages_5_10.xpadneo
   gsmartcontrol
   smartmontools
   pkg-config
@@ -430,7 +434,6 @@ environment.systemPackages = with pkgs; [
   libreoffice
   rnnoise-plugin
   noisetorch
-  steam-run
   vulkan-tools
   vulkan-loader
   vulkan-validation-layers
@@ -438,6 +441,7 @@ environment.systemPackages = with pkgs; [
   ipopt
   docker
   haskell.packages.ghc883.haskell-language-server
+  glmark2
 ];
 #+END_SRC
 
@@ -595,6 +599,7 @@ configuration
         libvdpau-va-gl
       ];
     setLdLibraryPath = true;
+    driSupport = true;
     driSupport32Bit = true;
   };
 }
@@ -800,6 +805,11 @@ To install and enable the systemd user service for the Emacs daemon, add the
 following
 #+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
 services.emacs.enable = true;
+#+END_SRC
+
+* Steam
+#+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
+programs.steam.enable = true;
 #+END_SRC
 
 * System Upgrades
