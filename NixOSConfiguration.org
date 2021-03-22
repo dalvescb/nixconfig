@@ -50,7 +50,6 @@
 - [[#graphics][Graphics]]
   - [[#nvidia][Nvidia]]
   - [[#nvidia-prime][Nvidia Prime]]
-  - [[#gpu-acceleration][GPU Acceleration]]
 - [[#desktop-environment][Desktop Environment]]
   - [[#gnome-3][Gnome 3]]
   - [[#kde-plasma5][KDE Plasma5]]
@@ -640,29 +639,6 @@ integrated) using Nvidia Optimus via the following configuration
 }
 #+END_SRC
 *NOTE* it requires ~nixpkgs.config.allowUnfree~ enabled (see [[#allow-proprietary-software][Allow Proprietary Software]])
-
-** TODO GPU Acceleration 
-See the NixOS Wiki on [[https://nixos.wiki/wiki/Accelerated_Video_Playback][Accelerated Video Playback]].
-- First install ~libva~, ~libva-utils~ in [[#system-packages][System Packages]]
-- Then configure ~libva~ packages for Intel
-  #+BEGIN_SRC nix :tangle no 
-  nixpkgs.config.packageOverrides = pkgs: {
-    vaapiIntel = pkgs.vaapiIntel.override { enableHybridCodec = true; };
-  };
-  hardware.opengl = {
-    enable = true;
-    extraPackages = with pkgs; [
-      # intel-media-driver # LIBVA_DRIVER_NAME=iHD
-      vaapiIntel         # LIBVA_DRIVER_NAME=i965 (older but works better for Firefox/Chromium)
-      # vaapiVdpau
-      # libvdpau-va-gl
-    ];
-  };
-  #+END_SRC
-*NOTE* you test your configuration with
-#+BEGIN_SRC shell :tangle no
-nix-shell -p libva-utils --run vainfo
-#+END_SRC
 
 * Desktop Environment
 ** Gnome 3
