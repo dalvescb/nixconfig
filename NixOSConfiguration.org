@@ -378,7 +378,7 @@ environment.systemPackages = with pkgs; [
   imagemagick
   subversion
   firefox-bin
-  (chromium.override { enableVaapi = true; })
+  chromium
   brave
   discord
   nix-index
@@ -411,8 +411,8 @@ environment.systemPackages = with pkgs; [
   teams
   zoom-us
   snapper
-  steam
-  steam-run
+  # steam
+  # steam-run
   chntpw
   ntfs3g
   libsForQt5.plasma-integration
@@ -442,6 +442,8 @@ environment.systemPackages = with pkgs; [
   docker
   haskell.packages.ghc883.haskell-language-server
   glmark2
+  ripgrep
+  ripgrep-all
 ];
 #+END_SRC
 
@@ -999,6 +1001,7 @@ NixOS configurations aren't designed to generate user-specific configurations
 need the [[https://rycee.gitlab.io/home-manager/][Home Manager]] add on
 #+BEGIN_SRC nix :tangle no :noweb yes :noweb-ref insert-config-here
 home-manager.users.dalvescb = { pkgs, config, ... }: {
+  nixpkgs.config.allowUnfree = true;
   home.packages = with pkgs; [
     gimp
     pavucontrol
@@ -1020,6 +1023,7 @@ home-manager.users.dalvescb = { pkgs, config, ... }: {
     gnome3.adwaita-icon-theme
     dunst
     arc-icon-theme
+    steam-run
   ];
   
   <<insert-home-here>>

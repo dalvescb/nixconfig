@@ -14,7 +14,7 @@
     imagemagick
     subversion
     firefox-bin
-    (chromium.override { enableVaapi = true; })
+    chromium
     brave
     discord
     nix-index
@@ -47,8 +47,8 @@
     teams
     zoom-us
     snapper
-    steam
-    steam-run
+    # steam
+    # steam-run
     chntpw
     ntfs3g
     libsForQt5.plasma-integration
@@ -78,6 +78,8 @@
     docker
     haskell.packages.ghc883.haskell-language-server
     glmark2
+    ripgrep
+    ripgrep-all
   ];
   # Use the GRUB 2 boot loader (with EFI support)
   boot.loader.grub.enable = true;
@@ -253,6 +255,7 @@
     umount /mnt
   '';
   home-manager.users.dalvescb = { pkgs, config, ... }: {
+    nixpkgs.config.allowUnfree = true;
     home.packages = with pkgs; [
       gimp
       pavucontrol
@@ -274,6 +277,7 @@
       gnome3.adwaita-icon-theme
       dunst
       arc-icon-theme
+      steam-run
     ];
     
     programs.zsh.enable = true;

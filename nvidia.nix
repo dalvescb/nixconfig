@@ -12,6 +12,7 @@
         libvdpau-va-gl
       ];
     setLdLibraryPath = true;
+    driSupport = true;
     driSupport32Bit = true;
   };
 }
