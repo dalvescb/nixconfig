@@ -63,6 +63,7 @@
 - [[#openssh][OpenSSH]]
 - [[#emacs-daemon][Emacs Daemon]]
 - [[#steam][Steam]]
+- [[#dropbox][Dropbox]]
 - [[#system-upgrades][System Upgrades]]
 - [[#opt-in-state][Opt-In State]]
   - [[#figuring-out-what-to-persist][Figuring out what to Persist]]
@@ -443,6 +444,8 @@ environment.systemPackages = with pkgs; [
   glmark2
   ripgrep
   ripgrep-all
+  # dropbox - we don't need this in the environment. systemd unit pulls it in
+  dropbox-cli
 ];
 #+END_SRC
 
@@ -559,12 +562,18 @@ networking.networkmanager.enable = true;
 ** Firewall
 Open TCP/UDP ports on which incoming connects are accepted:
   - *KDE Connect* ports: 1714-1764
+  - *Dropbox* ports: 17500
 #+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
 networking.firewall.allowedTCPPortRanges = [
   # KDE Connect
   {
     from = 1714;
     to = 1764;
+  }
+  # Dropbox
+  {
+    from = 17500;
+    to = 17500;
   }
 ];
 
@@ -573,6 +582,11 @@ networking.firewall.allowedUDPPortRanges = [
   {
     from = 1714;
     to = 1764;
+  }
+  # Dropbox
+  {
+    from = 17500;
+    to = 17500;
   }
 ];
 #+END_SRC
@@ -786,8 +800,34 @@ services.emacs.enable = true;
 #+END_SRC
 
 * Steam
+To fix an issue with proton 5.13, steam now needs to be installed as a service
+(for the foreseeable future?), and not in ~environment.system-packages~. See the
+following [[https://github.com/NixOS/nixpkgs/pull/114024][pull request]] for details
 #+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
 programs.steam.enable = true;
+#+END_SRC
+
+* Dropbox
+Unfortunately there's no Dropbox module in nixpkgs, however the [[https://nixos.wiki/wiki/Dropbox][NixOS
+Wiki on Dropbox]] provides instructions for adding support via a service like so
+#+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
+systemd.user.services.dropbox = {
+    description = "Dropbox";
+    wantedBy = [ "graphical-session.target" ];
+    environment = {
+      QT_PLUGIN_PATH = "/run/current-system/sw/" + pkgs.qt5.qtbase.qtPluginPrefix;
+      QML2_IMPORT_PATH = "/run/current-system/sw/" + pkgs.qt5.qtbase.qtQmlPrefix;
+    };
+    serviceConfig = {
+      ExecStart = "${pkgs.dropbox.out}/bin/dropbox";
+      ExecReload = "${pkgs.coreutils.out}/bin/kill -HUP $MAINPID";
+      KillMode = "control-group"; # upstream recommends process
+      Restart = "on-failure";
+      PrivateTmp = true;
+      ProtectSystem = "full";
+      Nice = 10;
+    };
+  };
 #+END_SRC
 
 * System Upgrades
@@ -1250,4 +1290,4 @@ gtk = {
 #  LocalWords:  UEFI unfree NixOS OpenSSH BTRFS subvolume subvolumes WiFi GPU
 #  LocalWords:  systemd's Nvidia VA API KDE mutably Bluetooth bluetooth distro
 #  LocalWords:  TouchPad nixos FlySpell XMonad Polybar compositing GTK Rofi
-#  LocalWords:  dmenu Dunst centric
+#  LocalWords:  dmenu Dunst centric Dropbox nixpkgs

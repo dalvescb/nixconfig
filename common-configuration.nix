@@ -80,6 +80,8 @@
     glmark2
     ripgrep
     ripgrep-all
+    # dropbox - we don't need this in the environment. systemd unit pulls it in
+    dropbox-cli
   ];
   # Use the GRUB 2 boot loader (with EFI support)
   boot.loader.grub.enable = true;
@@ -132,6 +134,11 @@
       from = 1714;
       to = 1764;
     }
+    # Dropbox
+    {
+      from = 17500;
+      to = 17500;
+    }
   ];
   
   networking.firewall.allowedUDPPortRanges = [
@@ -139,6 +146,11 @@
     {
       from = 1714;
       to = 1764;
+    }
+    # Dropbox
+    {
+      from = 17500;
+      to = 17500;
     }
   ];
   services = {
@@ -183,6 +195,23 @@
   services.openssh.enable = true;
   services.emacs.enable = true;
   programs.steam.enable = true;
+  systemd.user.services.dropbox = {
+      description = "Dropbox";
+      wantedBy = [ "graphical-session.target" ];
+      environment = {
+        QT_PLUGIN_PATH = "/run/current-system/sw/" + pkgs.qt5.qtbase.qtPluginPrefix;
+        QML2_IMPORT_PATH = "/run/current-system/sw/" + pkgs.qt5.qtbase.qtQmlPrefix;
+      };
+      serviceConfig = {
+        ExecStart = "${pkgs.dropbox.out}/bin/dropbox";
+        ExecReload = "${pkgs.coreutils.out}/bin/kill -HUP $MAINPID";
+        KillMode = "control-group"; # upstream recommends process
+        Restart = "on-failure";
+        PrivateTmp = true;
+        ProtectSystem = "full";
+        Nice = 10;
+      };
+    };
   # enables auto-updating
   system.autoUpgrade.enable = false;
   system.autoUpgrade.allowReboot = false;
