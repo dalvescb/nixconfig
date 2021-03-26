@@ -27,7 +27,7 @@
     # plasma5.kwallet-pam
     # plasma5.sddm-kcm
     haskellPackages.stack
-    haskellPackages.haskell-language-server
+    (haskell-language-server.override { supportedGhcVersions = [ "884" "8104" ]; })
     haskellPackages.Agda
     haskellPackages.implicit-hie
     python3Full
@@ -76,7 +76,7 @@
     python27Packages.pygments
     ipopt
     docker
-    haskell.packages.ghc883.haskell-language-server
+    # haskell.packages.ghc883.haskell-language-server
     glmark2
     ripgrep
     ripgrep-all
