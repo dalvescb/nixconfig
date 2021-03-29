@@ -16,7 +16,7 @@
     firefox-bin
     chromium
     brave
-    discord
+    # discord
     nix-index
     libva
     libva-utils
