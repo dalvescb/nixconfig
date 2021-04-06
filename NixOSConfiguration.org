@@ -446,6 +446,7 @@ environment.systemPackages = with pkgs; [
   ripgrep-all
   # dropbox - we don't need this in the environment. systemd unit pulls it in
   dropbox-cli
+  nodePackages.mermaid-cli
 ];
 #+END_SRC
 

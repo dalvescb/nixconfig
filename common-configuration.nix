@@ -82,6 +82,7 @@
     ripgrep-all
     # dropbox - we don't need this in the environment. systemd unit pulls it in
     dropbox-cli
+    nodePackages.mermaid-cli
   ];
   # Use the GRUB 2 boot loader (with EFI support)
   boot.loader.grub.enable = true;
