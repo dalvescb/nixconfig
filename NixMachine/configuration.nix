@@ -30,10 +30,15 @@
   # needed to persist logging during boot
   fileSystems."/var/log".neededForBoot = true;
 
-  # mount secondary ntfs hdd
+  # mount secondary ntfs hdd partition
   fileSystems."/mnt/HD4" =
     { device = "/dev/disk/by-uuid/444227094226FF74";
       fsType = "ntfs";
       options = [ "rw" "uid=1000" ];
+    };
+  # mount secondary ext4 hdd partition
+  fileSystems."/mnt/shared" =
+    { device = "/dev/disk/by-uuid/9827ba47-effe-400e-8514-056925ca79db";
+      fsType = "ext4";
     };
 }
