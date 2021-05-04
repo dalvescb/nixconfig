@@ -38,7 +38,7 @@ import qualified XMonad.Hooks.FadeWindows as Fade
 import XMonad.Actions.GridSelect (goToSelected
                                  ,bringSelected
                                  ,defaultGSConfig)
-
+import XMonad.Actions.FloatKeys
 import qualified DBus as D
 import qualified DBus.Client as D
 import qualified Codec.Binary.UTF8.String as UTF8
@@ -174,6 +174,14 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     , ((modm, xK_Up),    sendMessage MirrorExpand)
     , ((modm, xK_Right), sendMessage MirrorShrink)
     , ((modm, xK_Down),  sendMessage MirrorShrink)
+
+    -- Resize floating windows
+    , ((modm,               xK_d     ), withFocused (keysResizeWindow (-10,-10) (1,1)))
+    , ((modm,               xK_s     ), withFocused (keysResizeWindow (10,10) (1,1)))
+    , ((modm ,              xK_w     ), withFocused (keysResizeWindow (10,0) (1,1)))
+    , ((modm .|. shiftMask, xK_w     ), withFocused (keysResizeWindow (-10,0) (1,1)))
+    , ((modm ,              xK_e     ), withFocused (keysResizeWindow (0,10) (1,1)))
+    , ((modm .|. shiftMask, xK_e     ), withFocused (keysResizeWindow (0,-10) (1,1)))
 
     -- Grid Select
     , ((modm, xK_g), goToSelected def)

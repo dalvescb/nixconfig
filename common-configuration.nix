@@ -86,6 +86,7 @@
     graphviz
     xdot
     haskellPackages.graphmod
+    obs-studio
   ];
   # Use the GRUB 2 boot loader (with EFI support)
   boot.loader.grub.enable = true;

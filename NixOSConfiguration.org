@@ -380,7 +380,7 @@ environment.systemPackages = with pkgs; [
   firefox-bin
   chromium
   brave
-  # discord
+  # discord installed with nix-env to keep up with mandatory updates
   nix-index
   libva
   libva-utils
@@ -450,6 +450,7 @@ environment.systemPackages = with pkgs; [
   graphviz
   xdot
   haskellPackages.graphmod
+  obs-studio
 ];
 #+END_SRC
 

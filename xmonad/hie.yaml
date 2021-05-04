@@ -1,2 +1,4 @@
 cradle:
   stack:
+    - path: "././"
+      component: "XMonad-Config:lib"
