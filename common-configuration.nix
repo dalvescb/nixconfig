@@ -16,7 +16,7 @@
     firefox-bin
     chromium
     brave
-    # discord installed with nix-env to keep up with mandatory updates
+    discord
     nix-index
     libva
     libva-utils
