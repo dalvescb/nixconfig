@@ -16,7 +16,7 @@
     firefox-bin
     chromium
     brave
-    # discord
+    # discord installed with nix-env to keep up with mandatory updates
     nix-index
     libva
     libva-utils
@@ -159,7 +159,7 @@
     }
   ];
   services = {
-    gnome3.gnome-keyring.enable = true;
+    gnome.gnome-keyring.enable = true;
     upower.enable = true;
     
     dbus = {

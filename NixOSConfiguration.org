@@ -691,7 +691,7 @@ Global Theme doesn't seem to work (for downloading/installing new themes) but
 ** None + Xmonad
 #+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
 services = {
-  gnome3.gnome-keyring.enable = true;
+  gnome.gnome-keyring.enable = true;
   upower.enable = true;
   
   dbus = {
