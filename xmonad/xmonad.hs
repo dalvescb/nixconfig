@@ -8,17 +8,23 @@
 --
 
 import XMonad
-import XMonad.Layout.ResizableTile
 import XMonad.Util.SpawnOnce
 import XMonad.Util.WorkspaceCompare (getSortByXineramaRule)
 
 import XMonad.Config.Desktop (desktopConfig
                              ,desktopLayoutModifiers)
+
+import XMonad.Layout.ResizableTile
 import XMonad.Layout.NoBorders (noBorders,smartBorders)
-import XMonad.Layout.Gaps (gaps)
+import XMonad.Layout.Gaps (gaps,GapMessage (..))
 import XMonad.Layout.Spacing (spacingRaw
-                             ,Border(..))
+                             ,Border(..)
+                             ,toggleScreenSpacingEnabled
+                             ,toggleWindowSpacingEnabled
+                             ,toggleSmartSpacing)
 import qualified XMonad.Layout.Fullscreen as FS
+import XMonad.Layout.MultiToggle.Instances (StdTransformers(NBFULL))
+import XMonad.Layout.MultiToggle (Toggle (..))
 
 import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.EwmhDesktops ( ewmh
@@ -31,7 +37,7 @@ import XMonad.Hooks.ManageDocks ( Direction2D(..)
                                 , avoidStruts
                                 , docks
                                 , docksEventHook )
-import XMonad.Hooks.ManageHelpers (isFullscreen)
+import XMonad.Hooks.ManageHelpers (isFullscreen, doFullFloat)
 import XMonad.Hooks.FadeInactive ( fadeInactiveLogHook )
 import qualified XMonad.Hooks.FadeWindows as Fade
 
@@ -50,6 +56,7 @@ import System.Exit
 
 import qualified XMonad.StackSet as W
 import qualified Data.Map        as M
+
 
 -- The preferred terminal program, which is used in a binding below and by
 -- certain contrib modules.
@@ -99,12 +106,11 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     -- launch a terminal
     [ ((modm .|. shiftMask, xK_Return), spawn $ XMonad.terminal conf)
 
-    -- launch dmenu
-    -- , ((modm,               xK_p     ), spawn "dmenu_run")
+    -- launch rofi
     , ((modm,               xK_p     ), spawn "rofi -modi drun,ssh,window -show drun -show-icons")
 
-    -- launch gmrun
-    , ((modm .|. shiftMask, xK_p     ), spawn "gmrun")
+    -- launch dmenu
+    , ((modm .|. shiftMask, xK_p     ), spawn "dmenu_run")
 
     -- close focused window
     , ((modm .|. shiftMask, xK_c     ), kill)
@@ -113,7 +119,14 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     , ((modm,               xK_space ), sendMessage NextLayout)
 
     --  Reset the layouts on the current workspace to default
-    , ((modm .|. shiftMask, xK_space ), setLayout $ XMonad.layoutHook conf)
+    -- , ((modm .|. shiftMask, xK_space ), setLayout $ XMonad.layoutHook conf)
+
+    -- Toggles noborder/full
+    , ((modm .|. shiftMask, xK_space ), sendMessage (Toggle NBFULL)
+                                        >> sendMessage ToggleStruts
+                                        >> toggleScreenSpacingEnabled
+                                        >> toggleWindowSpacingEnabled
+                                        >> sendMessage ToggleGaps)
 
     -- Resize viewed windows to the correct size
     , ((modm,               xK_n     ), refresh)
