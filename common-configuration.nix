@@ -367,6 +367,7 @@
       enable = true;
       terminal = "${pkgs.alacritty}/bin/alacritty";
       theme = ./rofi/theme.rafi;
+      package = pkgs.rofi.override { plugins = [ pkgs.rofi-file-browser ]; };
     };
     services.polybar = let
       

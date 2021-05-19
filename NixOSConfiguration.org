@@ -1135,6 +1135,7 @@ programs.rofi = {
   enable = true;
   terminal = "${pkgs.alacritty}/bin/alacritty";
   theme = ./rofi/theme.rafi;
+  package = pkgs.rofi.override { plugins = [ pkgs.rofi-file-browser ]; };
 };
 #+END_SRC
 
