@@ -131,6 +131,7 @@
       # lag under high gpu load. 
       # But this introduced a new bug! that is fixed by this environment variable
       MOZ_X11_EGL = "1";
+      HOSTNAME = "${config.networking.hostName}";
     };
   networking.networkmanager.enable = true;
   networking.firewall.allowedTCPPortRanges = [
@@ -344,7 +345,9 @@
          ];
     xsession = let
       extraCommands = ''
+          if [ $HOSTNAME = NixMachine ] ; then
                     ${pkgs.xorg.xrandr}/bin/xrandr --output DP-0 --primary --mode 2560x1440 --panning 2560x1440+1440+678 --rate 144.00 --output DP-2 --mode 2560x1440 --panning 2560x1440+4000+927 --rate 144.00 --right-of DP-0 --output DP-4 --rotate right --mode 2560x1440 --rate 60.00 --left-of DP-0
+          fi 
       '';
     in {
       enable = true;
@@ -415,7 +418,6 @@
       extraConfig = xmonad + bctl + primaryBar + secondaryBar;
       script = ''
              polybar primary 2>/home/dalvescb/.polybar_primary_error.log &
-             polybar secondary 2>/home/dalvescb/.polybar_secondary_error.log &
       '';
     };
     services.dunst = {

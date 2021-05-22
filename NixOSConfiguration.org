@@ -554,6 +554,7 @@ environment.variables =
     # lag under high gpu load. 
     # But this introduced a new bug! that is fixed by this environment variable
     MOZ_X11_EGL = "1";
+    HOSTNAME = "${config.networking.hostName}";
   };
 #+END_SRC
 * Networking
@@ -1106,7 +1107,9 @@ good enough reason alone to make it the window manager for me)
 #+BEGIN_SRC nix :tangle no :noweb-ref insert-home-here
 xsession = let
   extraCommands = ''
+      if [ $HOSTNAME = NixMachine ] ; then
                 ${pkgs.xorg.xrandr}/bin/xrandr --output DP-0 --primary --mode 2560x1440 --panning 2560x1440+1440+678 --rate 144.00 --output DP-2 --mode 2560x1440 --panning 2560x1440+4000+927 --rate 144.00 --right-of DP-0 --output DP-4 --rotate right --mode 2560x1440 --rate 60.00 --left-of DP-0
+      fi 
   '';
 in {
   enable = true;
@@ -1190,7 +1193,6 @@ in {
   extraConfig = xmonad + bctl + primaryBar + secondaryBar;
   script = ''
          polybar primary 2>/home/dalvescb/.polybar_primary_error.log &
-         polybar secondary 2>/home/dalvescb/.polybar_secondary_error.log &
   '';
 };
 #+END_SRC
@@ -1296,4 +1298,4 @@ gtk = {
 #  LocalWords:  UEFI unfree NixOS OpenSSH BTRFS subvolume subvolumes WiFi GPU
 #  LocalWords:  systemd's Nvidia VA API KDE mutably Bluetooth bluetooth distro
 #  LocalWords:  TouchPad nixos FlySpell XMonad Polybar compositing GTK Rofi
-#  LocalWords:  dmenu Dunst centric Dropbox nixpkgs
+#  LocalWords:  dmenu Dunst centric Dropbox nixpkgs Picom
