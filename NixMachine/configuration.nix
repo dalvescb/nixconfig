@@ -21,6 +21,15 @@
     "nixos-config=/home/dalvescb/nixconfig/${config.networking.hostName}/configuration.nix"
   ];
 
+  # set host specific env vars here
+  environment.variables =
+    {
+      # pimary monitor
+      MONITOR = "DP-0";
+      # DPI
+      DPI = "107";
+    };
+
   networking.useDHCP = false;
   networking.interfaces.eno2.useDHCP = true;
   networking.interfaces.wlo1.useDHCP = true;
