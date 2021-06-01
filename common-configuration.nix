@@ -234,7 +234,7 @@
     nixos.source = "/persist/etc/nixos";
     NIXOS.source = "/persist/etc/NIXOS";
     # persist NetworkManager 
-    # "NetworkManager/system-connections".source = "/persist/etc/NetworkManager/system-connections";
+    "NetworkManager/system-connections".source = "/persist/etc/NetworkManager/system-connections";
     # persist adjtime
     # adjtime.source = "/persist/etc/adjtime";
   };
@@ -399,25 +399,35 @@
       primaryBar = ''
       [bar/primary]
       inherit = bar/main
-      monitor = ''${env:MONITOR:DP-0}
+      monitor = ''${env:MONITOR}
       modules-center = date
       modules-left   = ewmh
       tray-position  = right
       '';
       
-      secondaryBar = ''
-      [bar/secondary]
+      highDPIBar = ''
+      [bar/highDPI]
       inherit = bar/main
-      monitor = ''${env:MONITOR:DP-2}
+      monitor = ''${env:MONITOR}
+      modules-center = date
       modules-left   = ewmh
+      tray-position  = right
+      dpi-x = 192
+      dpi-y = 192
+      tray-maxsize = 1000
       '';
+      
     in {
       enable = true;
       package = mypolybar;
       config = ./polybar/polybar.ini;
-      extraConfig = xmonad + bctl + primaryBar + secondaryBar;
+      extraConfig = xmonad + bctl + primaryBar + highDPIBar;
       script = ''
-             polybar primary 2>/home/dalvescb/.polybar_primary_error.log &
+      if [ $HOSTNAME = "NixBot" ] ; then
+        polybar highDPI 2>/home/dalvescb/.polybar_primary_error.log &
+      else 
+        polybar primary 2>/home/dalvescb/.polybar_primary_error.log &
+      fi
       '';
     };
     services.dunst = {

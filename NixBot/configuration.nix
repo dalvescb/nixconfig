@@ -15,7 +15,9 @@
 
   networking.hostName = "NixBot";
   nix.nixPath = [
-    "nixpkgs=/nix/var/nix/profiles/per-user/root/channels/nixos/nixpkgs"
+    "home-manager=/home/dalvescb/home-manager"
+    # "nixpkgs=/nix/var/nix/profiles/per-user/root/channels/nixos/nixpkgs"
+    "nixpkgs=/home/dalvescb/nixpkgs"
     "nixos-config=/home/dalvescb/nixconfig/${config.networking.hostName}/configuration.nix"
   ];
 
@@ -23,6 +25,14 @@
   networking.interfaces.enp0s31f6.useDHCP = true;
   networking.interfaces.wlp82s0.useDHCP = true;
 
+  # set host specific env vars here
+  environment.variables =
+    {
+      # pimary monitor
+      MONITOR = "eDP-1-1";
+      # DPI
+      DPI = "192";
+    };
   # need to set this statically when using opt-in state on a btrfs root subvolume
   environment.etc."machine-id".text = "b7665d1914cd41dc93406d8488004eb0";
 
