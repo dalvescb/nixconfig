@@ -1,5 +1,7 @@
-6933d068c5d HEAD@{0}: pull origin nixos-unstable: Fast-forward
-900115a4f7f HEAD@{1}: pull origin nixos-unstable: Fast-forward
-7a1fbc38a4b HEAD@{2}: pull origin nixos-unstable: Fast-forward
-65a9923bbb9 HEAD@{3}: checkout: moving from master to nixos-unstable
-5548ff174ca HEAD@{4}: clone: from https://github.com/NixOS/nixpkgs.git
+01f43d5049c HEAD@{0}: commit (merge): merge
+869032c5910 HEAD@{1}: commit: custom rollback rofi
+6933d068c5d HEAD@{2}: pull origin nixos-unstable: Fast-forward
+900115a4f7f HEAD@{3}: pull origin nixos-unstable: Fast-forward
+7a1fbc38a4b HEAD@{4}: pull origin nixos-unstable: Fast-forward
+65a9923bbb9 HEAD@{5}: checkout: moving from master to nixos-unstable
+5548ff174ca HEAD@{6}: clone: from https://github.com/NixOS/nixpkgs.git
