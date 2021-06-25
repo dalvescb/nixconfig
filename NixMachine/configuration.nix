@@ -44,7 +44,7 @@
   fileSystems."/mnt/HD4" =
     { device = "/dev/disk/by-uuid/444227094226FF74";
       fsType = "ntfs";
-      options = [ "rw" "uid=1000" ];
+      options = [ "uid=1000" "gid=100" "rw" "user" "exec" "umask=000" ];
     };
   # mount secondary ext4 hdd partition
   fileSystems."/mnt/shared" =
