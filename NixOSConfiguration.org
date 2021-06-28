@@ -57,6 +57,7 @@
 - [[#bluetooth][Bluetooth]]
 - [[#sounds-settings][Sounds Settings]]
 - [[#touchpad-support][TouchPad support]]
+  - [[#xbox-controller-support][Xbox controller support]]
 - [[#shell-environment][Shell Environment]]
 - [[#users-management][Users Management]]
 - [[#open-razer][Open Razer]]
@@ -747,6 +748,11 @@ To enable touchpad support through [[https://wiki.archlinux.org/index.php/Libinp
 services.xserver.libinput.enable = true;
 #+END_SRC
 
+** Xbox controller support
+#+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
+hardware.xpadneo.enable = true;
+#+END_SRC
+
 * Shell Environment
 Enable the default shell (i.e. bash,zhs,fish,etc) here
 #+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
@@ -1308,4 +1314,4 @@ gtk = {
 #  LocalWords:  UEFI unfree NixOS OpenSSH BTRFS subvolume subvolumes WiFi GPU
 #  LocalWords:  systemd's Nvidia VA API KDE mutably Bluetooth bluetooth distro
 #  LocalWords:  TouchPad nixos FlySpell XMonad Polybar compositing GTK Rofi
-#  LocalWords:  dmenu Dunst centric Dropbox nixpkgs Picom
+#  LocalWords:  dmenu Dunst centric Dropbox nixpkgs Picom Xbox

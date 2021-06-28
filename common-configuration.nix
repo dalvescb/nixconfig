@@ -194,6 +194,7 @@
      package = pkgs.pulseaudioFull;
   };
   services.xserver.libinput.enable = true;
+  hardware.xpadneo.enable = true;
   programs.zsh.enable = true;
   programs.fish.enable = true;
   hardware.openrazer.enable = true;
