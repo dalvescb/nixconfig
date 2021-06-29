@@ -452,6 +452,7 @@ environment.systemPackages = with pkgs; [
   xdot
   haskellPackages.graphmod
   obs-studio
+  vlc
 ];
 #+END_SRC
 

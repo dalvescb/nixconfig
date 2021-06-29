@@ -87,6 +87,7 @@
     xdot
     haskellPackages.graphmod
     obs-studio
+    vlc
   ];
   # Use the GRUB 2 boot loader (with EFI support)
   boot.loader.grub.enable = true;
