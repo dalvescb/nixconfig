@@ -80,6 +80,7 @@
   - [[#polybar][Polybar]]
   - [[#dunst][Dunst]]
   - [[#picom][Picom]]
+  - [[#betterlockscreen][BetterLockscreen]]
   - [[#gtk-theme][GTK Theme]]
 
 * Installing NixOS 
@@ -453,6 +454,7 @@ environment.systemPackages = with pkgs; [
   haskellPackages.graphmod
   obs-studio
   vlc
+  betterlockscreen
 ];
 #+END_SRC
 
@@ -1292,7 +1294,18 @@ services.picom = {
     # inactive-opacity-override = true;
 };
 #+END_SRC
-
+** BetterLockscreen
+#+BEGIN_SRC nix :tangle no :noweb-ref insert-home-here
+services.screen-locker = {
+    enable = true;
+    inactiveInterval = 30; # minutes
+    lockCmd = "${pkgs.betterlockscreen}/bin/betterlockscreen -l dim";
+    xautolockExtraOptions = [
+      "Xautolock.killer: systemctl suspend"
+    ];
+  };
+home.file.".config/betterlockscreenrc".source = ./betterlockscreen/betterlockscreenrc;
+#+END_SRC
 ** GTK Theme
 Even though gnome is not installed, you can still set the GTK theme for
 any application that uses GTK
@@ -1315,4 +1328,4 @@ gtk = {
 #  LocalWords:  UEFI unfree NixOS OpenSSH BTRFS subvolume subvolumes WiFi GPU
 #  LocalWords:  systemd's Nvidia VA API KDE mutably Bluetooth bluetooth distro
 #  LocalWords:  TouchPad nixos FlySpell XMonad Polybar compositing GTK Rofi
-#  LocalWords:  dmenu Dunst centric Dropbox nixpkgs Picom Xbox
+#  LocalWords:  dmenu Dunst centric Dropbox nixpkgs Picom Xbox BetterLockscreen

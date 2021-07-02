@@ -88,6 +88,7 @@
     haskellPackages.graphmod
     obs-studio
     vlc
+    betterlockscreen
   ];
   # Use the GRUB 2 boot loader (with EFI support)
   boot.loader.grub.enable = true;
@@ -496,6 +497,15 @@
         #  mark-wmwin-focused = true;
         # inactive-opacity-override = true;
     };
+    services.screen-locker = {
+        enable = true;
+        inactiveInterval = 30; # minutes
+        lockCmd = "${pkgs.betterlockscreen}/bin/betterlockscreen -l dim";
+        xautolockExtraOptions = [
+          "Xautolock.killer: systemctl suspend"
+        ];
+      };
+    home.file.".config/betterlockscreenrc".source = ./betterlockscreen/betterlockscreenrc;
     gtk = {
       enable = true;
       iconTheme = {
