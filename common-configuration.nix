@@ -500,7 +500,7 @@
     services.screen-locker = {
         enable = true;
         inactiveInterval = 30; # minutes
-        lockCmd = "${pkgs.betterlockscreen}/bin/betterlockscreen -l dim";
+        lockCmd = "systemctl --user stop picom.service ; ${pkgs.betterlockscreen}/bin/betterlockscreen -l dim ; systemctl --user start picom.service";
         xautolockExtraOptions = [
           "Xautolock.killer: systemctl suspend"
         ];
