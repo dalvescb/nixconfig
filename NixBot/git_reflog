@@ -1,0 +1,3 @@
+540dccb2aea HEAD@{0}: checkout: moving from nixos-unstable to nixos-unstable
+540dccb2aea HEAD@{1}: checkout: moving from master to nixos-unstable
+f188138af3e HEAD@{2}: clone: from https://github.com/NixOS/nixpkgs.git
