@@ -414,6 +414,7 @@
       monitor = ''${env:MONITOR}
       modules-center = date
       modules-left   = ewmh
+      modules-right  = battery backlight
       tray-position  = right
       dpi-x = 192
       dpi-y = 192
