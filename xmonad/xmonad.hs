@@ -45,6 +45,8 @@ import XMonad.Actions.GridSelect (goToSelected
                                  ,bringSelected
                                  ,defaultGSConfig)
 import XMonad.Actions.FloatKeys
+import XMonad.Actions.NoBorders (toggleBorder)
+
 import qualified DBus as D
 import qualified DBus.Client as D
 import qualified Codec.Binary.UTF8.String as UTF8
@@ -127,6 +129,9 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
                                         >> toggleScreenSpacingEnabled
                                         >> toggleWindowSpacingEnabled
                                         >> sendMessage ToggleGaps)
+
+    -- Toggles border
+    , ((modm .|. shiftMask, xK_b), withFocused  toggleBorder)
 
     -- Resize viewed windows to the correct size
     , ((modm,               xK_n     ), refresh)
