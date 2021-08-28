@@ -27,7 +27,7 @@
     # plasma5.kwallet-pam
     # plasma5.sddm-kcm
     haskellPackages.stack
-    (haskell-language-server.override { supportedGhcVersions = [ "884" "8104" ]; })
+    (haskell-language-server.override { supportedGhcVersions = [ "884" "8106" ]; })
     haskellPackages.Agda
     haskellPackages.implicit-hie
     python3Full
@@ -89,6 +89,7 @@
     obs-studio
     vlc
     betterlockscreen
+    niv
   ];
   # Use the GRUB 2 boot loader (with EFI support)
   boot.loader.grub.enable = true;
@@ -221,6 +222,12 @@
         Nice = 10;
       };
     };
+  nix.binaryCachePublicKeys = [
+    "hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ=" # Binary Cache for Haskell.nix
+  ];
+  nix.binaryCaches = [
+    "https://hydra.iohk.io" # Binary Cache for Haskell.nix
+  ];
   # enables auto-updating
   system.autoUpgrade.enable = false;
   system.autoUpgrade.allowReboot = false;
@@ -373,7 +380,7 @@
       enable = true;
       terminal = "${pkgs.alacritty}/bin/alacritty";
       theme = ./rofi/theme.rafi;
-      package = pkgs.rofi.override { plugins = [ pkgs.rofi-file-browser ]; };
+      # package = pkgs.rofi.override { plugins = [ pkgs.rofi-file-browser ]; };
     };
     services.polybar = let
       

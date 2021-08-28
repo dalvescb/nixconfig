@@ -65,6 +65,7 @@
 - [[#emacs-daemon][Emacs Daemon]]
 - [[#steam][Steam]]
 - [[#dropbox][Dropbox]]
+- [[#nixconf][Nix.conf]]
 - [[#system-upgrades][System Upgrades]]
 - [[#opt-in-state][Opt-In State]]
   - [[#figuring-out-what-to-persist][Figuring out what to Persist]]
@@ -393,7 +394,7 @@ environment.systemPackages = with pkgs; [
   # plasma5.kwallet-pam
   # plasma5.sddm-kcm
   haskellPackages.stack
-  (haskell-language-server.override { supportedGhcVersions = [ "884" "8104" ]; })
+  (haskell-language-server.override { supportedGhcVersions = [ "884" "8106" ]; })
   haskellPackages.Agda
   haskellPackages.implicit-hie
   python3Full
@@ -455,6 +456,7 @@ environment.systemPackages = with pkgs; [
   obs-studio
   vlc
   betterlockscreen
+  niv
 ];
 #+END_SRC
 
@@ -845,6 +847,18 @@ systemd.user.services.dropbox = {
   };
 #+END_SRC
 
+* Nix.conf
+These settings will configure settings int ~/etc/nix/nix.conf~
+
+#+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
+nix.binaryCachePublicKeys = [
+  "hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ=" # Binary Cache for Haskell.nix
+];
+nix.binaryCaches = [
+  "https://hydra.iohk.io" # Binary Cache for Haskell.nix
+];
+#+END_SRC
+
 * System Upgrades
 Configure how System Upgrades are performed here
 #+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
@@ -1147,7 +1161,7 @@ programs.rofi = {
   enable = true;
   terminal = "${pkgs.alacritty}/bin/alacritty";
   theme = ./rofi/theme.rafi;
-  package = pkgs.rofi.override { plugins = [ pkgs.rofi-file-browser ]; };
+  # package = pkgs.rofi.override { plugins = [ pkgs.rofi-file-browser ]; };
 };
 #+END_SRC
 

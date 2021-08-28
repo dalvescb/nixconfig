@@ -1,9 +1,10 @@
-495e5e1a13a HEAD@{0}: pull: Merge made by the 'recursive' strategy.
-6c5428cc5d8 HEAD@{1}: commit (merge): merge
-01f43d5049c HEAD@{2}: commit (merge): merge
-869032c5910 HEAD@{3}: commit: custom rollback rofi
-6933d068c5d HEAD@{4}: pull origin nixos-unstable: Fast-forward
-900115a4f7f HEAD@{5}: pull origin nixos-unstable: Fast-forward
-7a1fbc38a4b HEAD@{6}: pull origin nixos-unstable: Fast-forward
-65a9923bbb9 HEAD@{7}: checkout: moving from master to nixos-unstable
-5548ff174ca HEAD@{8}: clone: from https://github.com/NixOS/nixpkgs.git
+a8c5550d293 HEAD@{0}: commit (merge): merge
+495e5e1a13a HEAD@{1}: pull: Merge made by the 'recursive' strategy.
+6c5428cc5d8 HEAD@{2}: commit (merge): merge
+01f43d5049c HEAD@{3}: commit (merge): merge
+869032c5910 HEAD@{4}: commit: custom rollback rofi
+6933d068c5d HEAD@{5}: pull origin nixos-unstable: Fast-forward
+900115a4f7f HEAD@{6}: pull origin nixos-unstable: Fast-forward
+7a1fbc38a4b HEAD@{7}: pull origin nixos-unstable: Fast-forward
+65a9923bbb9 HEAD@{8}: checkout: moving from master to nixos-unstable
+5548ff174ca HEAD@{9}: clone: from https://github.com/NixOS/nixpkgs.git
