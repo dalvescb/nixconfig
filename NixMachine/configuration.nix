@@ -34,6 +34,8 @@
   networking.interfaces.eno2.useDHCP = true;
   networking.interfaces.wlo1.useDHCP = true;
 
+  hardware.video.hidpi.enable = false;
+
   # need to set this statically when using opt-in state on a btrfs root subvolume
   environment.etc."machine-id".text = "b9c71693f16c41d2990fc03ed875ac77";
 
