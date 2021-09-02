@@ -525,6 +525,8 @@
         package = pkgs.gnome3.adwaita-icon-theme;
       };
     };
+    programs.vscode.enable = true;
+    programs.vscode.package = pkgs.vscode-fhs;
     
   };
   programs.zsh.shellAliases = { 

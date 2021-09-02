@@ -83,6 +83,7 @@
   - [[#picom][Picom]]
   - [[#betterlockscreen][BetterLockscreen]]
   - [[#gtk-theme][GTK Theme]]
+  - [[#vs-code][VS Code]]
 
 * Installing NixOS 
 The installation part of the [[https://nixos.org/manual/nixos/stable/index.html#ch-installation][NixOS Manual]] describes how to perform a standard
@@ -1338,9 +1339,18 @@ gtk = {
 };
 #+END_SRC
 
+** VS Code
+This will enable VS Code using buildFHSUserEnv so that you can install
+extensions without having to declare them in this config
+#+BEGIN_SRC nix :tangle no :noweb-ref insert-home-here
+programs.vscode.enable = true;
+programs.vscode.package = pkgs.vscode-fhs;
+#+END_SRC
+
 * FlySpell Local Words                                                    :ignore: :noexport:
 
 #  LocalWords:  UEFI unfree NixOS OpenSSH BTRFS subvolume subvolumes WiFi GPU
 #  LocalWords:  systemd's Nvidia VA API KDE mutably Bluetooth bluetooth distro
 #  LocalWords:  TouchPad nixos FlySpell XMonad Polybar compositing GTK Rofi
 #  LocalWords:  dmenu Dunst centric Dropbox nixpkgs Picom Xbox BetterLockscreen
+#  LocalWords:  buildFHSUserEnv
