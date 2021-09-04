@@ -459,6 +459,7 @@ environment.systemPackages = with pkgs; [
   vlc
   betterlockscreen
   niv
+  shotcut
 ];
 #+END_SRC
 
