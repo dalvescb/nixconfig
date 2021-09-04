@@ -69,7 +69,7 @@
     pandoc
     libreoffice
     rnnoise-plugin
-    noisetorch
+    # noisetorch
     vulkan-tools
     vulkan-loader
     vulkan-validation-layers
@@ -222,6 +222,7 @@
         Nice = 10;
       };
     };
+  programs.noisetorch.enable = true;
   nix.binaryCachePublicKeys = [
     "hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ=" # Binary Cache for Haskell.nix
   ];

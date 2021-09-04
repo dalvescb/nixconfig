@@ -65,6 +65,7 @@
 - [[#emacs-daemon][Emacs Daemon]]
 - [[#steam][Steam]]
 - [[#dropbox][Dropbox]]
+- [[#noisetorch][NoiseTorch]]
 - [[#nixconf][Nix.conf]]
 - [[#system-upgrades][System Upgrades]]
 - [[#opt-in-state][Opt-In State]]
@@ -437,7 +438,7 @@ environment.systemPackages = with pkgs; [
   pandoc
   libreoffice
   rnnoise-plugin
-  noisetorch
+  # noisetorch
   vulkan-tools
   vulkan-loader
   vulkan-validation-layers
@@ -846,6 +847,14 @@ systemd.user.services.dropbox = {
       Nice = 10;
     };
   };
+#+END_SRC
+
+* NoiseTorch
+[[https://github.com/lawl/NoiseTorch][NoiseTorch]] is a real-time noise suppressor for Linux that works with PulseAudio
+or Pipewire (it requires the setcap wrapper to run properly and thus needs to be
+enabled as a service)
+#+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
+programs.noisetorch.enable = true;
 #+END_SRC
 
 * Nix.conf
