@@ -27,7 +27,7 @@
     # plasma5.kwallet-pam
     # plasma5.sddm-kcm
     haskellPackages.stack
-    (haskell-language-server.override { supportedGhcVersions = [ "884" "8106" ]; })
+    (haskell-language-server.override { supportedGhcVersions = [ "884" "8107" ]; })
     haskellPackages.Agda
     haskellPackages.implicit-hie
     python3Full
