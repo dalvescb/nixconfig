@@ -67,6 +67,7 @@
 - [[#dropbox][Dropbox]]
 - [[#noisetorch][NoiseTorch]]
 - [[#nixconf][Nix.conf]]
+- [[#nix-extra-options][Nix Extra Options]]
 - [[#system-upgrades][System Upgrades]]
 - [[#opt-in-state][Opt-In State]]
   - [[#figuring-out-what-to-persist][Figuring out what to Persist]]
@@ -77,6 +78,7 @@
 - [[#home-manager][Home Manager]]
   - [[#shell-configuration][Shell Configuration]]
     - [[#shell-aliases][Shell Aliases]]
+  - [[#nix-direnv][Nix-Direnv]]
   - [[#xmonad][XMonad]]
   - [[#rofi][Rofi]]
   - [[#polybar][Polybar]]
@@ -85,6 +87,7 @@
   - [[#betterlockscreen][BetterLockscreen]]
   - [[#gtk-theme][GTK Theme]]
   - [[#vs-code][VS Code]]
+  - [[#keyboard-layout][Keyboard Layout]]
 
 * Installing NixOS 
 The installation part of the [[https://nixos.org/manual/nixos/stable/index.html#ch-installation][NixOS Manual]] describes how to perform a standard
@@ -719,7 +722,7 @@ services = {
   };
   
   xserver.layout = "us";
-  xserver.xkbOptions = "ctrl:swapcaps";
+  xserver.xkbOptions = "ctrl:swapcaps"; # this stopped working on home-manager update. needs to be set through home.keyboard.options now?
 };
 
 console.useXkbConfig = true;
@@ -868,6 +871,16 @@ nix.binaryCachePublicKeys = [
 nix.binaryCaches = [
   "https://hydra.iohk.io" # Binary Cache for Haskell.nix
 ];
+#+END_SRC
+
+* Nix Extra Options
+The following extra options are needed by Home Manager for nix-direnv (see the
+[[https://github.com/nix-community/nix-direnv][direnv github]] for details
+#+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
+nix.extraOptions = ''
+                 keep-outputs = true
+                 keep-derivations = true
+                 '';
 #+END_SRC
 
 * System Upgrades
@@ -1135,6 +1148,14 @@ programs.zsh.shellAliases = {
 };
 #+END_SRC
 
+** Nix-Direnv
+A fast, persistent implementation of direnv's use-nix, see [[https://github.com/nix-community/nix-direnv][nix-direnv]] for
+details
+#+BEGIN_SRC nix :tangle no :noweb-ref insert-home-here
+programs.direnv.enable = true;
+programs.direnv.nix-direnv.enable = true;
+#+END_SRC
+
 ** XMonad
 [[https://xmonad.org][XMonad]] is a tiling window manager written and configured in Haskell (which is a
 good enough reason alone to make it the window manager for me)
@@ -1357,10 +1378,19 @@ programs.vscode.enable = true;
 programs.vscode.package = pkgs.vscode-fhs;
 #+END_SRC
 
+** Keyboard Layout
+This will set the keyboard layout (which used to be set by services.xserver
+#+BEGIN_SRC nix :tangle no :noweb-ref insert-home-here
+home.keyboard = {
+  layout = "us";
+  options = [ "ctrl:swapcaps" ];
+  };
+#+END_SRC
+
 * FlySpell Local Words                                                    :ignore: :noexport:
 
 #  LocalWords:  UEFI unfree NixOS OpenSSH BTRFS subvolume subvolumes WiFi GPU
 #  LocalWords:  systemd's Nvidia VA API KDE mutably Bluetooth bluetooth distro
 #  LocalWords:  TouchPad nixos FlySpell XMonad Polybar compositing GTK Rofi
 #  LocalWords:  dmenu Dunst centric Dropbox nixpkgs Picom Xbox BetterLockscreen
-#  LocalWords:  buildFHSUserEnv
+#  LocalWords:  buildFHSUserEnv direnv direnv's

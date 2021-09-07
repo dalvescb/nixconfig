@@ -182,7 +182,7 @@
     };
     
     xserver.layout = "us";
-    xserver.xkbOptions = "ctrl:swapcaps";
+    xserver.xkbOptions = "ctrl:swapcaps"; # this stopped working on home-manager update. needs to be set through home.keyboard.options now?
   };
   
   console.useXkbConfig = true;
@@ -230,6 +230,10 @@
   nix.binaryCaches = [
     "https://hydra.iohk.io" # Binary Cache for Haskell.nix
   ];
+  nix.extraOptions = ''
+                   keep-outputs = true
+                   keep-derivations = true
+                   '';
   # enables auto-updating
   system.autoUpgrade.enable = false;
   system.autoUpgrade.allowReboot = false;
@@ -355,6 +359,8 @@
           zsh-syntax-highlighting
           zsh-autosuggestions
          ];
+    programs.direnv.enable = true;
+    programs.direnv.nix-direnv.enable = true;
     xsession = let
       extraCommands = ''
           if [ $HOSTNAME = NixMachine ] ; then
@@ -529,6 +535,10 @@
     };
     programs.vscode.enable = true;
     programs.vscode.package = pkgs.vscode-fhs;
+    home.keyboard = {
+      layout = "us";
+      options = [ "ctrl:swapcaps" ];
+      };
     
   };
   programs.zsh.shellAliases = { 
