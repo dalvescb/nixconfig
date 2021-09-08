@@ -91,6 +91,8 @@
     betterlockscreen
     niv
     shotcut
+    gnome.nautilus
+    gnome.sushi
   ];
   # Use the GRUB 2 boot loader (with EFI support)
   boot.loader.grub.enable = true;
@@ -165,6 +167,7 @@
   ];
   services = {
     gnome.gnome-keyring.enable = true;
+    gnome.sushi.enable = true;
     upower.enable = true;
     
     dbus = {

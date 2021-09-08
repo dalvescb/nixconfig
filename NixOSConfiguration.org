@@ -463,6 +463,8 @@ environment.systemPackages = with pkgs; [
   betterlockscreen
   niv
   shotcut
+  gnome.nautilus
+  gnome.sushi
 ];
 #+END_SRC
 
@@ -705,6 +707,7 @@ Global Theme doesn't seem to work (for downloading/installing new themes) but
 #+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
 services = {
   gnome.gnome-keyring.enable = true;
+  gnome.sushi.enable = true;
   upower.enable = true;
   
   dbus = {
