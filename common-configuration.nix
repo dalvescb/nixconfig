@@ -88,6 +88,8 @@
     haskellPackages.graphmod
     obs-studio
     vlc
+    haruna
+    mkvtoolnix
     betterlockscreen
     niv
     shotcut
