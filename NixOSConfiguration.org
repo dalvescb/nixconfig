@@ -33,6 +33,7 @@
   - [[#building-this-document][Building This Document]]
 - [[#template][Template]]
 - [[#imports][Imports]]
+- [[#overlays][Overlays]]
 - [[#system-packages][System Packages]]
 - [[#boot-loader][Boot loader]]
   - [[#supporting-btrfs-and-ntfs-file-system][Supporting BTRFS and NTFS File System]]
@@ -371,7 +372,19 @@ sudo nix-channel --update
 #+END_SRC
 Also make sure home-manager is in your ~NIX_PATH~ variable (see [[#multi-system-file-layout][Multi-System
 File Layout]] for an example of how/where to set it)
- 
+
+* Overlays
+Overlays provide a method to extend and change the imported nixpkgs. See
+[[https://nixos.wiki/wiki/Overlays][Overlays]] for details
+
+#+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
+nixpkgs.overlays = let
+    # this overlay is just a tmp fix for a steam update issue, track here https://github.com/ValveSoftware/steam-runtime/issues/462
+    # remove me when the issue is fixed
+    overlay =(self: super: { steam = super.steam.override { extraPkgs = pkgs: with pkgs; [ pango harfbuzz libthai ]; }; } ) ;
+  in [ overlay ];
+#+END_SRC
+
 * System Packages
 Install packages system-wide by adding them to ~environment.systemPackages~.
 *NOTE* multiple declarations (between modules) will result in /merging/ of this

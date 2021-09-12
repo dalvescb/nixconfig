@@ -5,6 +5,9 @@
 
 {
   imports = [ <home-manager/nixos> ];
+  nixpkgs.overlays = let
+      overlay =(self: super: { steam = super.steam.override { extraPkgs = pkgs: with pkgs; [ pango harfbuzz libthai ]; }; } ) ;
+    in [ overlay ];
   environment.systemPackages = with pkgs; [
     wget
     ispell
