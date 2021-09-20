@@ -6,6 +6,8 @@
 {
   imports = [ <home-manager/nixos> ];
   nixpkgs.overlays = let
+      # this overlay is just a tmp fix for a steam update issue, track here https://github.com/ValveSoftware/steam-runtime/issues/462
+      # remove me when the issue is fixed
       overlay =(self: super: { steam = super.steam.override { extraPkgs = pkgs: with pkgs; [ pango harfbuzz libthai ]; }; } ) ;
     in [ overlay ];
   environment.systemPackages = with pkgs; [
@@ -213,6 +215,7 @@
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
   services.emacs.enable = true;
+  services.emacs.defaultEditor = true;
   programs.steam.enable = true;
   systemd.user.services.dropbox = {
       description = "Dropbox";

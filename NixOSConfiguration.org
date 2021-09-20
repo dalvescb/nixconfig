@@ -838,6 +838,7 @@ To install and enable the systemd user service for the Emacs daemon, add the
 following
 #+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
 services.emacs.enable = true;
+services.emacs.defaultEditor = true;
 #+END_SRC
 
 * Steam
