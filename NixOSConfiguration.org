@@ -85,7 +85,6 @@
   - [[#polybar][Polybar]]
   - [[#dunst][Dunst]]
   - [[#picom][Picom]]
-  - [[#betterlockscreen][BetterLockscreen]]
   - [[#gtk-theme][GTK Theme]]
   - [[#vs-code][VS Code]]
   - [[#keyboard-layout][Keyboard Layout]]
@@ -475,7 +474,6 @@ environment.systemPackages = with pkgs; [
   vlc
   haruna
   mkvtoolnix
-  betterlockscreen
   niv
   shotcut
   gnome.nautilus
@@ -1360,18 +1358,7 @@ services.picom = {
     # inactive-opacity-override = true;
 };
 #+END_SRC
-** BetterLockscreen
-#+BEGIN_SRC nix :tangle no :noweb-ref insert-home-here
-services.screen-locker = {
-    enable = true;
-    inactiveInterval = 30; # minutes
-    lockCmd = "systemctl --user stop picom.service ; ${pkgs.betterlockscreen}/bin/betterlockscreen -l dim ; systemctl --user start picom.service";
-    xautolockExtraOptions = [
-      "Xautolock.killer: systemctl suspend"
-    ];
-  };
-home.file.".config/betterlockscreenrc".source = ./betterlockscreen/betterlockscreenrc;
-#+END_SRC
+
 ** GTK Theme
 Even though gnome is not installed, you can still set the GTK theme for
 any application that uses GTK

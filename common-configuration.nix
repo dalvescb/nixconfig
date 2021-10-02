@@ -95,7 +95,6 @@
     vlc
     haruna
     mkvtoolnix
-    betterlockscreen
     niv
     shotcut
     gnome.nautilus
@@ -524,15 +523,6 @@
         #  mark-wmwin-focused = true;
         # inactive-opacity-override = true;
     };
-    services.screen-locker = {
-        enable = true;
-        inactiveInterval = 30; # minutes
-        lockCmd = "systemctl --user stop picom.service ; ${pkgs.betterlockscreen}/bin/betterlockscreen -l dim ; systemctl --user start picom.service";
-        xautolockExtraOptions = [
-          "Xautolock.killer: systemctl suspend"
-        ];
-      };
-    home.file.".config/betterlockscreenrc".source = ./betterlockscreen/betterlockscreenrc;
     gtk = {
       enable = true;
       iconTheme = {
