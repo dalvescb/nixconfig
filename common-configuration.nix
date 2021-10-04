@@ -9,7 +9,8 @@
       # this overlay is just a tmp fix for a steam update issue, track here https://github.com/ValveSoftware/steam-runtime/issues/462
       # remove me when the issue is fixed
       overlay =(self: super: { steam = super.steam.override { extraPkgs = pkgs: with pkgs; [ pango harfbuzz libthai ]; }; } ) ;
-    in [ overlay ];
+    # in [ overlay ];
+    in [ ];  # use no overlays atm
   environment.systemPackages = with pkgs; [
     wget
     ispell
