@@ -1,2 +1,3 @@
-bbbe2b35f73 HEAD@{0}: checkout: moving from master to nixos-unstable
-99031a470ac HEAD@{1}: clone: from github.com:NixOS/nixpkgs.git
+14aef06d9b3 HEAD@{0}: pull: Fast-forward
+bbbe2b35f73 HEAD@{1}: checkout: moving from master to nixos-unstable
+99031a470ac HEAD@{2}: clone: from github.com:NixOS/nixpkgs.git
