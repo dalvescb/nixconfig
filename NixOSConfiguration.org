@@ -479,6 +479,7 @@ environment.systemPackages = with pkgs; [
   shotcut
   gnome.nautilus
   gnome.sushi
+  scrot
 ];
 #+END_SRC
 
@@ -1400,4 +1401,4 @@ home.keyboard = {
 #  LocalWords:  systemd's Nvidia VA API KDE mutably Bluetooth bluetooth distro
 #  LocalWords:  TouchPad nixos FlySpell XMonad Polybar compositing GTK Rofi
 #  LocalWords:  dmenu Dunst centric Dropbox nixpkgs Picom Xbox BetterLockscreen
-#  LocalWords:  buildFHSUserEnv direnv direnv's
+#  LocalWords:  buildFHSUserEnv direnv direnv's NoiseTorch conf ertm
