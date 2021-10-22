@@ -101,6 +101,7 @@
     gnome.nautilus
     gnome.sushi
     scrot
+    btop
   ];
   # Use the GRUB 2 boot loader (with EFI support)
   boot.loader.grub.enable = true;

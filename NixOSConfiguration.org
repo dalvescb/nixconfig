@@ -480,6 +480,7 @@ environment.systemPackages = with pkgs; [
   gnome.nautilus
   gnome.sushi
   scrot
+  btop
 ];
 #+END_SRC
 
