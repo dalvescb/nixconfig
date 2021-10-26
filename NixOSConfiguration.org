@@ -482,6 +482,7 @@ environment.systemPackages = with pkgs; [
   scrot
   btop
   lm_sensors
+  rnix-lsp
 ];
 #+END_SRC
 
