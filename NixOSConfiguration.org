@@ -80,12 +80,13 @@
   - [[#shell-configuration][Shell Configuration]]
     - [[#shell-aliases][Shell Aliases]]
   - [[#nix-direnv][Nix-Direnv]]
-  - [[#xmonad][XMonad]]
-  - [[#rofi][Rofi]]
-  - [[#polybar][Polybar]]
-  - [[#dunst][Dunst]]
-  - [[#picom][Picom]]
-  - [[#gtk-theme][GTK Theme]]
+  - [[#xmonad--kde][XMonad + KDE]]
+  - [[#xmonad--none-removed][XMonad + None #REMOVED]]
+  - [[#rofi-removed][Rofi #REMOVED]]
+  - [[#polybar-removed][Polybar #REMOVED]]
+  - [[#dunst-removed][Dunst #REMOVED]]
+  - [[#picom-removed][Picom #REMOVED]]
+  - [[#gtk-theme-removed][GTK Theme #REMOVED]]
   - [[#vs-code][VS Code]]
   - [[#keyboard-layout][Keyboard Layout]]
 
@@ -482,6 +483,9 @@ environment.systemPackages = with pkgs; [
   scrot
   btop
   lm_sensors
+  kde-gtk-config
+  arc-theme
+  materia-theme
 ];
 #+END_SRC
 
@@ -700,11 +704,20 @@ services.xserver.desktopManager.gnome3.enable = true;
 #+END_SRC
 
 ** KDE Plasma5
-#+BEGIN_SRC nix :tangle no 
+#+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
 services.xserver.enable = true;
-# services.xserver.displayManager.sddm.enable = true;
-services.xserver.displayManager.lightdm.enable = true;
+# services.xserver.displayManager.lightdm.enable = true;
+services.xserver.displayManager.sddm.enable = true;
 services.xserver.desktopManager.plasma5.enable = true;
+
+# services.xserver.displayManager.defaultSession = "none+xmonad";
+services.xserver.windowManager.xmonad = {
+    enable = true;
+    enableContribAndExtras = true;
+  };
+
+services.xserver.layout = "us";
+services.xserver.xkbOptions = "ctrl:swapcaps"; # this stopped working on home-manager update. needs to be set through home.keyboard.options now?
 #+END_SRC
 
 Global Theme doesn't seem to work (for downloading/installing new themes) but
@@ -721,7 +734,7 @@ Global Theme doesn't seem to work (for downloading/installing new themes) but
   #+END_SRC
 
 ** None + Xmonad
-#+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
+#+BEGIN_SRC nix :tangle no 
 services = {
   gnome.gnome-keyring.enable = true;
   gnome.sushi.enable = true;
@@ -1177,10 +1190,39 @@ programs.direnv.enable = true;
 programs.direnv.nix-direnv.enable = true;
 #+END_SRC
 
-** XMonad
+** XMonad + KDE
 [[https://xmonad.org][XMonad]] is a tiling window manager written and configured in Haskell (which is a
 good enough reason alone to make it the window manager for me)
 #+BEGIN_SRC nix :tangle no :noweb-ref insert-home-here
+xsession = {
+  enable = true;
+  
+  windowManager.xmonad = {
+    enable = true;
+    enableContribAndExtras = true;
+    extraPackages = hp: [
+      hp.dbus
+      hp.monad-logger
+      hp.xmonad-contrib
+      hp.xmobar
+    ];
+    config = ./xmonad/xmonad.hs;
+  };
+};
+#+END_SRC
+In order to configure KDE to use xmonad as its window manager instead of its
+default window manager (KWin), you need to configure the following script
+(see [[https://wiki.haskell.org/Xmonad/Using_xmonad_in_KDE][wiki.haskell.org/Xmonad/Using_xmonad_in_KDE]] for details)
+#+BEGIN_SRC nix :tangle no :noweb-ref insert-home-here
+home.file.".config/plasma-workspace/env/set_window_manager.sh".text = ''
+                                                                    export KDEWM=${pkgs.haskellPackages.xmonad}/bin/xmonad
+                                                                    '';
+home.file.".config/plasma-workspace/env/set_window_manager.sh".executable = true;
+#+END_SRC
+** XMonad + None #REMOVED
+[[https://xmonad.org][XMonad]] is a tiling window manager written and configured in Haskell (which is a
+good enough reason alone to make it the window manager for me)
+#+BEGIN_SRC nix :tangle no
 xsession = let
   extraCommands = ''
       if [ $HOSTNAME = NixMachine ] ; then
@@ -1206,10 +1248,10 @@ in {
 };
 #+END_SRC
 
-** Rofi
+** Rofi #REMOVED
 [[https://github.com/davatorium/rofi][Rofi]] is an application launcher, which is nice to have when you don't have a
 full desktop manager so you don't have to launch everything from terminal
-#+BEGIN_SRC nix :tangle no :noweb-ref insert-home-here
+#+BEGIN_SRC nix :tangle no 
 programs.rofi = {
   enable = true;
   terminal = "${pkgs.alacritty}/bin/alacritty";
@@ -1218,11 +1260,11 @@ programs.rofi = {
 };
 #+END_SRC
 
-** Polybar
+** Polybar #REMOVED
 XMonad doesn't come with any sort of dock/bar by default, [[https://github.com/polybar/polybar][Polybar]] is a highly
 customizable status bar that integrates with many different desktop
 environments
-#+BEGIN_SRC nix :tangle no :noweb-ref insert-home-here
+#+BEGIN_SRC nix :tangle no
 services.polybar = let
   
   mypolybar = pkgs.polybar.override {
@@ -1284,11 +1326,11 @@ in {
 };
 #+END_SRC
 
-** Dunst
+** Dunst #REMOVED
 [[https://dunst-project.org/][Dunst]] is a lightweight replacement for notification daemons provided by most
 desktop environments. It's very customizable and isn't dependent on any toolkits
 so fits into window manager centric setups (like XMonad with no Desktop Environment)
-#+BEGIN_SRC nix :tangle no :noweb-ref insert-home-here
+#+BEGIN_SRC nix :tangle no
 services.dunst = {
   enable = true;
   iconTheme = {
@@ -1313,12 +1355,12 @@ services.dunst = {
 };
 #+END_SRC
 
-** Picom
+** Picom #REMOVED
 [[https://github.com/yshui/picom][Picom]] is a compositor. Wtf is a compositor?? Kind of a weird thing, according to
 [[https://en.wikipedia.org/wiki/Compositing_window_manager][Wikipedia]] a compositing window manager is a provides applications with an
 off-screen buffer for each window. In simpler terms, if you want fancy blurring
 and other window effects you need one
-#+BEGIN_SRC nix :tangle no :noweb-ref insert-home-here
+#+BEGIN_SRC nix :tangle no
 services.picom = {
     enable = true;
     # package = pkgs.picom.overrideDerivation (oldAttrs: {
@@ -1363,10 +1405,10 @@ services.picom = {
 };
 #+END_SRC
 
-** GTK Theme
+** GTK Theme #REMOVED
 Even though gnome is not installed, you can still set the GTK theme for
 any application that uses GTK
-#+BEGIN_SRC nix :tangle no :noweb-ref insert-home-here
+#+BEGIN_SRC nix :tangle no
 gtk = {
   enable = true;
   iconTheme = {
@@ -1389,7 +1431,7 @@ programs.vscode.package = pkgs.vscode-fhs;
 #+END_SRC
 
 ** Keyboard Layout
-This will set the keyboard layout (which used to be set by services.xserver
+This will set the keyboard layout (which used to be set by services.xserver)
 #+BEGIN_SRC nix :tangle no :noweb-ref insert-home-here
 home.keyboard = {
   layout = "us";
@@ -1403,4 +1445,5 @@ home.keyboard = {
 #  LocalWords:  systemd's Nvidia VA API KDE mutably Bluetooth bluetooth distro
 #  LocalWords:  TouchPad nixos FlySpell XMonad Polybar compositing GTK Rofi
 #  LocalWords:  dmenu Dunst centric Dropbox nixpkgs Picom Xbox BetterLockscreen
-#  LocalWords:  buildFHSUserEnv direnv direnv's NoiseTorch conf ertm
+#  LocalWords:  buildFHSUserEnv direnv direnv's NoiseTorch conf ertm KWin
+#  LocalWords:  xmonad

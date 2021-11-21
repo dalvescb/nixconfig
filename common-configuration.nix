@@ -103,6 +103,9 @@
     scrot
     btop
     lm_sensors
+    kde-gtk-config
+    arc-theme
+    materia-theme
   ];
   # Use the GRUB 2 boot loader (with EFI support)
   boot.loader.grub.enable = true;
@@ -175,31 +178,19 @@
       to = 17500;
     }
   ];
-  services = {
-    gnome.gnome-keyring.enable = true;
-    gnome.sushi.enable = true;
-    upower.enable = true;
-    
-    dbus = {
-      enable = true;
-      packages = [ pkgs.gnome3.dconf ];
-    };
+  services.xserver.enable = true;
+  # services.xserver.displayManager.lightdm.enable = true;
+  services.xserver.displayManager.sddm.enable = true;
+  services.xserver.desktopManager.plasma5.enable = true;
   
-    xserver.enable = true;
-  
-    xserver.displayManager.defaultSession = "none+xmonad";
-  
-    xserver.windowManager.xmonad = {
+  # services.xserver.displayManager.defaultSession = "none+xmonad";
+  services.xserver.windowManager.xmonad = {
       enable = true;
       enableContribAndExtras = true;
     };
-    
-    xserver.layout = "us";
-    xserver.xkbOptions = "ctrl:swapcaps"; # this stopped working on home-manager update. needs to be set through home.keyboard.options now?
-  };
   
-  console.useXkbConfig = true;
-  systemd.services.upower.enable = true;
+  services.xserver.layout = "us";
+  services.xserver.xkbOptions = "ctrl:swapcaps"; # this stopped working on home-manager update. needs to be set through home.keyboard.options now?
   hardware.bluetooth.enable = true;
   services.blueman.enable = true;
   sound.enable = true;
@@ -375,16 +366,8 @@
          ];
     programs.direnv.enable = true;
     programs.direnv.nix-direnv.enable = true;
-    xsession = let
-      extraCommands = ''
-          if [ $HOSTNAME = NixMachine ] ; then
-                    ${pkgs.xorg.xrandr}/bin/xrandr --output DP-0 --primary --mode 2560x1440 --panning 2560x1440+1440+678 --rate 144.00 --output DP-2 --mode 2560x1440 --panning 2560x1440+4000+927 --rate 144.00 --right-of DP-0 --output DP-4 --rotate right --mode 2560x1440 --rate 60.00 --left-of DP-0
-          fi 
-      '';
-    in {
+    xsession = {
       enable = true;
-      
-      initExtra = extraCommands;
       
       windowManager.xmonad = {
         enable = true;
@@ -398,146 +381,10 @@
         config = ./xmonad/xmonad.hs;
       };
     };
-    programs.rofi = {
-      enable = true;
-      terminal = "${pkgs.alacritty}/bin/alacritty";
-      theme = ./rofi/theme.rafi;
-      # package = pkgs.rofi.override { plugins = [ pkgs.rofi-file-browser ]; };
-    };
-    services.polybar = let
-      
-      mypolybar = pkgs.polybar.override {
-        alsaSupport = true;
-        pulseSupport = true;
-      };
-      
-      bluetoothScript = pkgs.callPackage ./polybar/bluetooth.nix {};
-      bctl = ''
-      [module/bctl]
-      type = custom/script
-      exec = ${bluetoothScript}/bin/bluetooth-ctl
-      tail = true
-      click-left = ${bluetoothScript}/bin/bluetooth-ctl --toggle &
-      '';
-    
-      xmonad = ''
-      [module/xmonad]
-      type = custom/script
-      exec = ${pkgs.xmonad-log}/bin/xmonad-log 
-    
-      tail = true
-      '';
-    
-      primaryBar = ''
-      [bar/primary]
-      inherit = bar/main
-      monitor = ''${env:MONITOR}
-      modules-center = date
-      modules-left   = ewmh
-      tray-position  = right
-      '';
-      
-      highDPIBar = ''
-      [bar/highDPI]
-      inherit = bar/main
-      monitor = ''${env:MONITOR}
-      modules-center = date
-      modules-left   = ewmh
-      modules-right  = battery backlight
-      tray-position  = right
-      dpi-x = 192
-      dpi-y = 192
-      tray-maxsize = 1000
-      '';
-      
-    in {
-      enable = true;
-      package = mypolybar;
-      config = ./polybar/polybar.ini;
-      extraConfig = xmonad + bctl + primaryBar + highDPIBar;
-      script = ''
-      if [ $HOSTNAME = "NixBot" ] ; then
-        polybar highDPI 2>/home/dalvescb/.polybar_primary_error.log &
-      else 
-        polybar primary 2>/home/dalvescb/.polybar_primary_error.log &
-      fi
-      '';
-    };
-    services.dunst = {
-      enable = true;
-      iconTheme = {
-        name = "Arc";
-        # package = pkgs.gnome3.adwaita-icon-theme;
-        package = pkgs.arc-icon-theme;
-        size = "16x16";
-      };
-      settings = {
-        global = {
-          monitor = 0;
-          geometry = "500x50-50+65";
-          shrink = "yes";
-          transparency = 10;
-          padding = 16;
-          horizontal_padding = 16;
-          font = "JetBrains Mono Medium 10";
-          line_height = 4;
-          format = ''<b>%s</b>\n%b'';
-        };
-      };
-    };
-    services.picom = {
-        enable = true;
-        # package = pkgs.picom.overrideDerivation (oldAttrs: {
-        #   name = "picom-v8";
-        #   src = pkgs.fetchurl {
-        #     url = https://github.com/yshui/picom/archive/v8.tar.gz;
-        #     sha256 = "03s8236jm9wfqaqqvrfhwwxyjbygh69km5z3x9iz946ab30a6fgq";
-        #   };
-        #   patches = [];
-        # });
-        # package = pkgs.picom.overrideAttrs(o: {
-        #       src = pkgs.fetchFromGitHub {
-        #         repo = "picom";
-        #         owner = "ibhagwan";
-        #         rev = "44b4970f70d6b23759a61a2b94d9bfb4351b41b1";
-        #         sha256 = "0iff4bwpc00xbjad0m000midslgx12aihs33mdvfckr75r114ylh";
-        #       };
-        # });
-        # activeOpacity = "1.0";
-        # inactiveOpacity = "1.0";
-        blur = true;
-        backend = "glx";
-        # experimentalBackends = true;
-        fade = true;
-        fadeDelta = 5;
-        vSync = true;
-        # opacityRule = [ 
-        #                 "100:class_g   *?= 'Brave-browser'"
-        #                 "60:class_g    *?= 'Alacritty'"
-        #               ];
-        
-        shadow = true;
-        shadowOpacity = "0.75";
-        extraOptions = ''
-                     xrender-sync-fence = true;
-                     detect-client-opacity = true;
-                     use-ewmh-active-win = true;
-                     mark-ovredir-focused = false;
-        '';
-        #  mark-wmwin-focused = true;
-        # inactive-opacity-override = true;
-    };
-    gtk = {
-      enable = true;
-      iconTheme = {
-        name = "Adwaita-dark";
-        package = pkgs.gnome3.adwaita-icon-theme;
-      };
-      theme = {
-        name = "Adwaita-dark";
-        package = pkgs.gnome3.adwaita-icon-theme;
-      };
-    };
+    home.file.".config/plasma-workspace/env/set_window_manager.sh".text = ''
+                                                                        export KDEWM=${pkgs.haskellPackages.xmonad}/bin/xmonad
+                                                                        '';
+    home.file.".config/plasma-workspace/env/set_window_manager.sh".executable = true;
     programs.vscode.enable = true;
     programs.vscode.package = pkgs.vscode-fhs;
     home.keyboard = {
