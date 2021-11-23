@@ -486,6 +486,7 @@ environment.systemPackages = with pkgs; [
   kde-gtk-config
   arc-theme
   materia-theme
+  libsForQt5.knotifications
 ];
 #+END_SRC
 
@@ -1124,7 +1125,7 @@ home-manager.users.dalvescb = { pkgs, config, ... }: {
     #   path = "${pkgs.rofi}/bin/rofi";
     # } ])
     gnome3.adwaita-icon-theme
-    dunst
+    # dunst
     arc-icon-theme
     steam-run
   ];

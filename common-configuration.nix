@@ -106,6 +106,7 @@
     kde-gtk-config
     arc-theme
     materia-theme
+    libsForQt5.knotifications
   ];
   # Use the GRUB 2 boot loader (with EFI support)
   boot.loader.grub.enable = true;
@@ -331,7 +332,7 @@
       #   path = "${pkgs.rofi}/bin/rofi";
       # } ])
       gnome3.adwaita-icon-theme
-      dunst
+      # dunst
       arc-icon-theme
       steam-run
     ];
