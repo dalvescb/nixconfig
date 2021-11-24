@@ -85,7 +85,7 @@
   - [[#rofi-removed][Rofi #REMOVED]]
   - [[#polybar-removed][Polybar #REMOVED]]
   - [[#dunst-removed][Dunst #REMOVED]]
-  - [[#picom-removed][Picom #REMOVED]]
+  - [[#picom][Picom]]
   - [[#gtk-theme-removed][GTK Theme #REMOVED]]
   - [[#vs-code][VS Code]]
   - [[#keyboard-layout][Keyboard Layout]]
@@ -1356,12 +1356,12 @@ services.dunst = {
 };
 #+END_SRC
 
-** Picom #REMOVED
+** Picom
 [[https://github.com/yshui/picom][Picom]] is a compositor. Wtf is a compositor?? Kind of a weird thing, according to
 [[https://en.wikipedia.org/wiki/Compositing_window_manager][Wikipedia]] a compositing window manager is a provides applications with an
 off-screen buffer for each window. In simpler terms, if you want fancy blurring
 and other window effects you need one
-#+BEGIN_SRC nix :tangle no
+#+BEGIN_SRC nix :tangle no :noweb-ref insert-home-here
 services.picom = {
     enable = true;
     # package = pkgs.picom.overrideDerivation (oldAttrs: {

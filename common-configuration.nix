@@ -386,6 +386,48 @@
                                                                         export KDEWM=${pkgs.haskellPackages.xmonad}/bin/xmonad
                                                                         '';
     home.file.".config/plasma-workspace/env/set_window_manager.sh".executable = true;
+    services.picom = {
+        enable = true;
+        # package = pkgs.picom.overrideDerivation (oldAttrs: {
+        #   name = "picom-v8";
+        #   src = pkgs.fetchurl {
+        #     url = https://github.com/yshui/picom/archive/v8.tar.gz;
+        #     sha256 = "03s8236jm9wfqaqqvrfhwwxyjbygh69km5z3x9iz946ab30a6fgq";
+        #   };
+        #   patches = [];
+        # });
+        # package = pkgs.picom.overrideAttrs(o: {
+        #       src = pkgs.fetchFromGitHub {
+        #         repo = "picom";
+        #         owner = "ibhagwan";
+        #         rev = "44b4970f70d6b23759a61a2b94d9bfb4351b41b1";
+        #         sha256 = "0iff4bwpc00xbjad0m000midslgx12aihs33mdvfckr75r114ylh";
+        #       };
+        # });
+        # activeOpacity = "1.0";
+        # inactiveOpacity = "1.0";
+        blur = true;
+        backend = "glx";
+        # experimentalBackends = true;
+        fade = true;
+        fadeDelta = 5;
+        vSync = true;
+        # opacityRule = [ 
+        #                 "100:class_g   *?= 'Brave-browser'"
+        #                 "60:class_g    *?= 'Alacritty'"
+        #               ];
+        
+        shadow = true;
+        shadowOpacity = "0.75";
+        extraOptions = ''
+                     xrender-sync-fence = true;
+                     detect-client-opacity = true;
+                     use-ewmh-active-win = true;
+                     mark-ovredir-focused = false;
+        '';
+        #  mark-wmwin-focused = true;
+        # inactive-opacity-override = true;
+    };
     programs.vscode.enable = true;
     programs.vscode.package = pkgs.vscode-fhs;
     home.keyboard = {
