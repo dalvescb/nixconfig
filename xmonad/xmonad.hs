@@ -51,36 +51,140 @@ import qualified XMonad.StackSet as W
 import qualified Data.Map as Map
 import XMonad.Config.Kde (kde4Config)
 
+----------------------------------------------------------------------------------------------------
+-- * Configuration Variables
+
+-- | The preferred terminal program
+myTerminal      = "alacritty"
+
+-- | Whether focus follows the mouse pointer.
+myFocusFollowsMouse = True
+-- | Whether clicking on a window to focus also passes the click to the window
+myClickJustFocuses = False
+
+-- | Width of the window border in pixels.
+myBorderWidth   = 1
+-- | Border colors for unfocused windows, respectively.
+myNormalBorderColor  = "#dddddd"
+-- | Border colors for focused windows, respectively.
+myFocusedBorderColor = "#bf00ff"
+
+-- | The default number of workspaces (virtual screens) and their names.
+--   By default we use numeric strings, but any string may be used as a
+--   workspace name. The number of workspaces is determined by the length
+--   of this list.
+--
+--   A tagging example:
+--
+--   > workspaces = ["web", "irc", "code" ] ++ map show [4..9]
+myWorkspaces    = ["1","2","3","4","5","6","7","8","9"]
+
+----------------------------------------------------------------------------------------------------
+-- * Main
+
 main = xmonad kde4Config
-    { modMask = mod4Mask -- use the Windows button as mod
-    , manageHook = manageHook kde4Config <+> myManageHook
-    , startupHook = myStartupHook <+> startupHook kde4Config
+    { -- hooks
+      manageHook      = manageHook kde4Config <+> myManageHook
+    , logHook         = ewmhDesktopsLogHook <+> Fade.fadeWindowsLogHook myFadeHook
+    , handleEventHook = myEventHook <+> handleEventHook desktopConfig
+    , startupHook     = myStartupHook <+> startupHook kde4Config
+    , layoutHook      = desktopLayoutModifiers $ smartBorders myLayout
+      -- keys / mouse
+    , modMask = mod4Mask -- use the Windows button as mod
     , keys = myKeys <+> keys kde4Config
+    , focusFollowsMouse  = myFocusFollowsMouse
+    , clickJustFocuses   = myClickJustFocuses
+      -- miscellaneous configuration
+    , workspaces = myWorkspaces
+    , normalBorderColor  = myNormalBorderColor
+    , focusedBorderColor = myFocusedBorderColor
+    , borderWidth        = myBorderWidth
+    , terminal           = myTerminal
     }
 
+----------------------------------------------------------------------------------------------------
+-- * Hooks
+
+-- | Windows Management Hook
+--   Provides a means to manage window settings by properties like className, title, etc (use the xprop command
+--   line utitlity to "discover" a windows properties). For opacity settings see @myFadeHook@
 myManageHook = composeAll . concat $
     [ [ className   =? "krunner" --> doIgnore >> doFloat ]
     , [(className   =? "plasmashell" <&&> checkSkipTaskbar)
         --> doIgnore <+> hasBorder False ]
     , [ className   =? c --> doFloat           | c <- myFloats]
     , [ title       =? t --> doFloat           | t <- myOtherFloats]
-    , [ className   =? c --> doF (W.shift "2") | c <- webApps]
-    , [ className   =? c --> doF (W.shift "3") | c <- ircApps]
+    , [ resource  =? "kdesktop"       --> doIgnore ]
+    , [ resource  =? "desktop_window" --> doIgnore ]
+    , [ isFullscreen  --> doFloat ]
+    , [ FS.fullscreenManageHook  ]
+    -- , [ className   =? c --> doF (W.shift "2") | c <- webApps]
+    -- , [ className   =? c --> doF (W.shift "3") | c <- ircApps]
     ]
-  where myFloats      = ["MPlayer", "Gimp","plasmashell"]
-        myOtherFloats = ["alsamixer"]
-        webApps       = ["Firefox-bin", "Opera"] -- open on desktop 2
-        ircApps       = ["Ksirc"]                -- open on desktop 3
-        checkSkipTaskbar :: Query Bool
-        checkSkipTaskbar = isInProperty "_NET_WM_STATE" "_NET_WM_STATE_SKIP_TASKBAR"
+  where
+    myFloats      = ["plasmashell"]
+    myOtherFloats = ["alsamixer"]
+    -- webApps       = ["Firefox-bin", "Opera"] -- open on desktop 2
+    -- ircApps       = ["Ksirc"]                -- open on desktop 3
+    checkSkipTaskbar :: Query Bool
+    checkSkipTaskbar = isInProperty "_NET_WM_STATE" "_NET_WM_STATE_SKIP_TASKBAR"
 
+-- | Fade Management Hook
+--   Provides a means to manage window opacity
+myFadeHook = composeAll [ Fade.opaque
+                        , className =? "Alacritty"  --> Fade.transparency 0.1
+                        , className =? "discord"
+                          <&&> Fade.isUnfocused
+                          <&&> fmap not isFullscreen --> Fade.transparency 0.1
+                        , className =? "Emacs"
+                          <&&> Fade.isUnfocused --> Fade.transparency 0.05
+                        ]
 
+-- | Defines a custom handler function for X Events. The function should
+-- return (All True) if the default handler is to be run afterwards. To
+-- combine event hooks use mappend or mconcat from Data.Monoid.
+myEventHook = fullscreenEventHook <+> Fade.fadeWindowsEventHook <+> ewmhDesktopsEventHook
+
+-- | Startup Hook
+--   Provides a hook to launch executables at startup
 myStartupHook = do
   spawnOnce "startplasma-x11 &"
 
-------------------------------------------------------------------------
--- Key bindings. Add, modify or remove key bindings here.
+-- | Layout Hook
+-- You can specify and transform your layouts by modifying these values.
+-- If you change layout bindings be sure to use 'mod-shift-space' after
+-- restarting (with 'mod-q') to reset your layout state to the new
+-- defaults, as xmonad preserves your old layout settings by default.
 --
+-- The available layouts.  Note that each layout is separated by |||,
+-- which denotes layout choice.
+myLayout = addSpaces $ addGaps $ tiled ||| tall ||| Full
+  --tiled ||| Mirror tiled ||| Full
+  where
+     -- add spaces (configurable amount of space around windows)
+     addSpaces = spacingRaw True (Border 0 5 5 5) True (Border 5 5 5 5) True
+     -- add gaps (adds space/gaps along edges of screen)
+     addGaps = gaps [(U,10),(R,10),(L,10),(D,10)]
+     -- Two master panes, 1/10th resize increment, only show master
+     -- panes by default. Unlike plain 'Tall', this also allows
+     -- resizing the master panes, via the 'MirrorShrink' and
+     -- 'MirrorExpand' messages
+     -- need to import xmonad-contrib
+     tall = ResizableTall 2 (1/10) 1 []
+     -- default tiling algorithm partitions the screen into two panes
+     tiled   = Tall nmaster delta ratio
+     -- The default number of windows in the master pane
+     nmaster = 1
+     -- Default proportion of screen occupied by master pane
+     ratio   = 1/2
+     -- Percent of screen to increment by when resizing panes
+     delta   = 3/100
+
+----------------------------------------------------------------------------------------------------
+-- * Key bindings. Add, modify or remove key bindings here.
+
+-- | Key bindings
+--   All keybindings are configured here
 myKeys conf@(XConfig {XMonad.modMask = modm}) = Map.fromList $
 
     -- launch a terminal
