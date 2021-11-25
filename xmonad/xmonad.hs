@@ -149,6 +149,8 @@ myEventHook = fullscreenEventHook <+> Fade.fadeWindowsEventHook <+> ewmhDesktops
 --   Provides a hook to launch executables at startup
 myStartupHook = do
   spawnOnce "startplasma-x11 &"
+  -- spawnOnce "plasmawindow org.kde.plasma.systemtray"
+  -- Not tested but the above should standalone run systemtray
 
 -- | Layout Hook
 -- You can specify and transform your layouts by modifying these values.
