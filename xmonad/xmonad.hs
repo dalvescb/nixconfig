@@ -65,9 +65,10 @@ myClickJustFocuses = False
 -- | Width of the window border in pixels.
 myBorderWidth   = 1
 -- | Border colors for unfocused windows, respectively.
-myNormalBorderColor  = "#dddddd"
+myNormalBorderColor  = "#dddddd" -- gray
 -- | Border colors for focused windows, respectively.
-myFocusedBorderColor = "#bf00ff"
+myFocusedBorderColor = "#00ffff"
+-- purple "#bf00ff", lightblue #00ffff, darkblue "#0000ff"
 
 -- | The default number of workspaces (virtual screens) and their names.
 --   By default we use numeric strings, but any string may be used as a
