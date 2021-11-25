@@ -109,9 +109,9 @@ main = xmonad kde4Config
 --   Provides a means to manage window settings by properties like className, title, etc (use the xprop command
 --   line utitlity to "discover" a windows properties). For opacity settings see @myFadeHook@
 myManageHook = composeAll . concat $
-    [ [ className   =? "krunner" --> doIgnore >> doFloat ]
-    , [(className   =? "plasmashell" <&&> checkSkipTaskbar)
-        --> doIgnore <+> hasBorder False ]
+    [
+      [ className   =? "krunner" --> doIgnore >> doFloat ]
+    , [(className   =? "plasmashell" <&&> checkSkipTaskbar) --> doIgnore <+> hasBorder False ]
     , [ className   =? c --> doFloat           | c <- myFloats]
     , [ title       =? t --> doFloat           | t <- myOtherFloats]
     , [ resource  =? "kdesktop"       --> doIgnore ]

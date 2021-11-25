@@ -107,6 +107,7 @@
     arc-theme
     materia-theme
     libsForQt5.knotifications
+    libsForQt5.sddm-kcm
   ];
   # Use the GRUB 2 boot loader (with EFI support)
   boot.loader.grub.enable = true;
@@ -388,14 +389,6 @@
     home.file.".config/plasma-workspace/env/set_window_manager.sh".executable = true;
     services.picom = {
         enable = true;
-        # package = pkgs.picom.overrideDerivation (oldAttrs: {
-        #   name = "picom-v8";
-        #   src = pkgs.fetchurl {
-        #     url = https://github.com/yshui/picom/archive/v8.tar.gz;
-        #     sha256 = "03s8236jm9wfqaqqvrfhwwxyjbygh69km5z3x9iz946ab30a6fgq";
-        #   };
-        #   patches = [];
-        # });
         # package = pkgs.picom.overrideAttrs(o: {
         #       src = pkgs.fetchFromGitHub {
         #         repo = "picom";

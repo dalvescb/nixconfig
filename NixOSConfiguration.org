@@ -82,13 +82,13 @@
   - [[#nix-direnv][Nix-Direnv]]
   - [[#xmonad--kde][XMonad + KDE]]
   - [[#xmonad--none-removed][XMonad + None #REMOVED]]
-  - [[#rofi-removed][Rofi #REMOVED]]
-  - [[#polybar-removed][Polybar #REMOVED]]
-  - [[#dunst-removed][Dunst #REMOVED]]
   - [[#picom][Picom]]
   - [[#gtk-theme-removed][GTK Theme #REMOVED]]
   - [[#vs-code][VS Code]]
   - [[#keyboard-layout][Keyboard Layout]]
+  - [[#rofi-removed][Rofi #REMOVED]]
+  - [[#polybar-removed][Polybar #REMOVED]]
+  - [[#dunst-removed][Dunst #REMOVED]]
 
 * Installing NixOS 
 The installation part of the [[https://nixos.org/manual/nixos/stable/index.html#ch-installation][NixOS Manual]] describes how to perform a standard
@@ -487,6 +487,7 @@ environment.systemPackages = with pkgs; [
   arc-theme
   materia-theme
   libsForQt5.knotifications
+  libsForQt5.sddm-kcm
 ];
 #+END_SRC
 
@@ -1249,6 +1250,82 @@ in {
 };
 #+END_SRC
 
+** Picom
+[[https://github.com/yshui/picom][Picom]] is a compositor. Wtf is a compositor?? Kind of a weird thing, according to
+[[https://en.wikipedia.org/wiki/Compositing_window_manager][Wikipedia]] a compositing window manager is a provides applications with an
+off-screen buffer for each window. In simpler terms, if you want fancy blurring
+and other window effects you need one
+#+BEGIN_SRC nix :tangle no :noweb-ref insert-home-here
+services.picom = {
+    enable = true;
+    # package = pkgs.picom.overrideAttrs(o: {
+    #       src = pkgs.fetchFromGitHub {
+    #         repo = "picom";
+    #         owner = "ibhagwan";
+    #         rev = "44b4970f70d6b23759a61a2b94d9bfb4351b41b1";
+    #         sha256 = "0iff4bwpc00xbjad0m000midslgx12aihs33mdvfckr75r114ylh";
+    #       };
+    # });
+    # activeOpacity = "1.0";
+    # inactiveOpacity = "1.0";
+    blur = true;
+    backend = "glx";
+    # experimentalBackends = true;
+    fade = true;
+    fadeDelta = 5;
+    vSync = true;
+    # opacityRule = [ 
+    #                 "100:class_g   *?= 'Brave-browser'"
+    #                 "60:class_g    *?= 'Alacritty'"
+    #               ];
+    
+    shadow = true;
+    shadowOpacity = "0.75";
+    extraOptions = ''
+                 xrender-sync-fence = true;
+                 detect-client-opacity = true;
+                 use-ewmh-active-win = true;
+                 mark-ovredir-focused = false;
+    '';
+    #  mark-wmwin-focused = true;
+    # inactive-opacity-override = true;
+};
+#+END_SRC
+
+** GTK Theme #REMOVED
+Even though gnome is not installed, you can still set the GTK theme for
+any application that uses GTK
+#+BEGIN_SRC nix :tangle no
+gtk = {
+  enable = true;
+  iconTheme = {
+    name = "Adwaita-dark";
+    package = pkgs.gnome3.adwaita-icon-theme;
+  };
+  theme = {
+    name = "Adwaita-dark";
+    package = pkgs.gnome3.adwaita-icon-theme;
+  };
+};
+#+END_SRC
+
+** VS Code
+This will enable VS Code using buildFHSUserEnv so that you can install
+extensions without having to declare them in this config
+#+BEGIN_SRC nix :tangle no :noweb-ref insert-home-here
+programs.vscode.enable = true;
+programs.vscode.package = pkgs.vscode-fhs;
+#+END_SRC
+
+** Keyboard Layout
+This will set the keyboard layout (which used to be set by services.xserver)
+#+BEGIN_SRC nix :tangle no :noweb-ref insert-home-here
+home.keyboard = {
+  layout = "us";
+  options = [ "ctrl:swapcaps" ];
+  };
+#+END_SRC
+
 ** Rofi #REMOVED
 [[https://github.com/davatorium/rofi][Rofi]] is an application launcher, which is nice to have when you don't have a
 full desktop manager so you don't have to launch everything from terminal
@@ -1354,90 +1431,6 @@ services.dunst = {
     };
   };
 };
-#+END_SRC
-
-** Picom
-[[https://github.com/yshui/picom][Picom]] is a compositor. Wtf is a compositor?? Kind of a weird thing, according to
-[[https://en.wikipedia.org/wiki/Compositing_window_manager][Wikipedia]] a compositing window manager is a provides applications with an
-off-screen buffer for each window. In simpler terms, if you want fancy blurring
-and other window effects you need one
-#+BEGIN_SRC nix :tangle no :noweb-ref insert-home-here
-services.picom = {
-    enable = true;
-    # package = pkgs.picom.overrideDerivation (oldAttrs: {
-    #   name = "picom-v8";
-    #   src = pkgs.fetchurl {
-    #     url = https://github.com/yshui/picom/archive/v8.tar.gz;
-    #     sha256 = "03s8236jm9wfqaqqvrfhwwxyjbygh69km5z3x9iz946ab30a6fgq";
-    #   };
-    #   patches = [];
-    # });
-    # package = pkgs.picom.overrideAttrs(o: {
-    #       src = pkgs.fetchFromGitHub {
-    #         repo = "picom";
-    #         owner = "ibhagwan";
-    #         rev = "44b4970f70d6b23759a61a2b94d9bfb4351b41b1";
-    #         sha256 = "0iff4bwpc00xbjad0m000midslgx12aihs33mdvfckr75r114ylh";
-    #       };
-    # });
-    # activeOpacity = "1.0";
-    # inactiveOpacity = "1.0";
-    blur = true;
-    backend = "glx";
-    # experimentalBackends = true;
-    fade = true;
-    fadeDelta = 5;
-    vSync = true;
-    # opacityRule = [ 
-    #                 "100:class_g   *?= 'Brave-browser'"
-    #                 "60:class_g    *?= 'Alacritty'"
-    #               ];
-    
-    shadow = true;
-    shadowOpacity = "0.75";
-    extraOptions = ''
-                 xrender-sync-fence = true;
-                 detect-client-opacity = true;
-                 use-ewmh-active-win = true;
-                 mark-ovredir-focused = false;
-    '';
-    #  mark-wmwin-focused = true;
-    # inactive-opacity-override = true;
-};
-#+END_SRC
-
-** GTK Theme #REMOVED
-Even though gnome is not installed, you can still set the GTK theme for
-any application that uses GTK
-#+BEGIN_SRC nix :tangle no
-gtk = {
-  enable = true;
-  iconTheme = {
-    name = "Adwaita-dark";
-    package = pkgs.gnome3.adwaita-icon-theme;
-  };
-  theme = {
-    name = "Adwaita-dark";
-    package = pkgs.gnome3.adwaita-icon-theme;
-  };
-};
-#+END_SRC
-
-** VS Code
-This will enable VS Code using buildFHSUserEnv so that you can install
-extensions without having to declare them in this config
-#+BEGIN_SRC nix :tangle no :noweb-ref insert-home-here
-programs.vscode.enable = true;
-programs.vscode.package = pkgs.vscode-fhs;
-#+END_SRC
-
-** Keyboard Layout
-This will set the keyboard layout (which used to be set by services.xserver)
-#+BEGIN_SRC nix :tangle no :noweb-ref insert-home-here
-home.keyboard = {
-  layout = "us";
-  options = [ "ctrl:swapcaps" ];
-  };
 #+END_SRC
 
 * FlySpell Local Words                                                    :ignore: :noexport:
