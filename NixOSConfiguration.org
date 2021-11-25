@@ -488,6 +488,7 @@ environment.systemPackages = with pkgs; [
   materia-theme
   libsForQt5.knotifications
   libsForQt5.sddm-kcm
+  rnix-lsp
 ];
 #+END_SRC
 
