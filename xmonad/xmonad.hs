@@ -112,8 +112,8 @@ main = xmonad kde4Config
 myManageHook = composeAll . concat $
     [
       [ className   =? "krunner" --> doIgnore >> doFloat ]
-    , [(className   =? "plasmashell" <&&> checkSkipTaskbar) --> doIgnore <+> hasBorder False ]
-    -- , [(className   =? "plasmashell" <&&> checkSkipTaskbar) --> doIgnore <+>  doFloat >> hasBorder False ]
+    -- , [(className   =? "plasmashell" <&&> checkSkipTaskbar) --> doIgnore <+> hasBorder False ]
+    , [(className   =? "plasmashell" <&&> checkSkipTaskbar) --> doIgnore <+>  doFloat >> hasBorder False ]
     , [ className   =? c --> doFloat           | c <- myFloats]
     , [ title       =? t --> doFloat           | t <- myOtherFloats]
     , [ resource  =? "kdesktop"       --> doIgnore ]
