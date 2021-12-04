@@ -6,11 +6,54 @@
 {
   imports = [ <home-manager/nixos> ];
   nixpkgs.overlays = let
-      # this overlay is just a tmp fix for a steam update issue, track here https://github.com/ValveSoftware/steam-runtime/issues/462
-      # remove me when the issue is fixed
-      overlay =(self: super: { steam = super.steam.override { extraPkgs = pkgs: with pkgs; [ pango harfbuzz libthai ]; }; } ) ;
-    # in [ overlay ];
-    in [ ];  # use no overlays atm
+    # this overlay is just a tmp fix for a steam update issue, track here https://github.com/ValveSoftware/steam-runtime/issues/462
+    # remove me when the issue is fixed
+    steam-overlay =(self: super: { steam = super.steam.override { extraPkgs = pkgs: with pkgs; [ pango harfbuzz libthai ]; }; } ) ;
+    # plasma-framework-overly = (final: prev: {
+    #   libsForQt5.kdeFrameworks.plasma-framework = prev.libsForQt5.kdeFrameworks.plasma-framework.overrideAttrs (oldAttrs:
+    #     rec {
+    #       src = pkgs.fetchurl {
+    #         url = "https://github.com/KDE/plasma-framework/archive/refs/tags/v5.87.0.tar.gz";
+    #         sha256 = "05q0hw64snmkqs2sl81g2l9ak4sjriwgsd2b7xkp9bxlr3n4wm00";
+    #         name = "plasma-framework-5.87.0.tar.xz";
+    #         };
+    #     });
+    # });
+    plasma-framework-overly = (final: prev:
+      let
+        libsForQt5 = prev.libsForQt5.overrideScope' (
+          finalx: prevx:
+          let
+            kdeFrameworks = prevx.kdeFrameworks.overrideScope' (
+              finaly: prevy: {
+                plasma-framework = prevy.plasma-framework.overrideAttrs (oldAttrs:
+                  rec {
+                    # NOTE update me as nixpkgs gets updated, see
+                    # nixpkgs/pkgs/development/libraries/kde-frameworks/srcs.nix to see current version
+                    src = pkgs.fetchurl {
+                      url = "https://github.com/dalvescb/plasma-framework/archive/refs/tags/v5.87.0-xmonad.tar.gz";
+                      sha256 = "sha256-qxPZ2seVO8b+mX4XgoVWdH88w/7KB49/TfVrMdxrIAw=";
+                      name = "plasma-framework-5.87.0.tar.gz";
+                    };
+                  });
+              });
+            plasma5 = prevx.plasma5;
+            kdeGear = prevx.kdeGear;
+            all = kdeFrameworks // plasma5 // plasma5.thirdParty // kdeGear;
+            libsForQt5 = all // {
+              inherit kdeFrameworks plasma5 kdeGear;
+              kdeApplications = kdeGear;
+            };
+          in libsForQt5 // {
+            inherit libsForQt5;
+          });
+      in { inherit libsForQt5;
+            inherit (libsForQt5) plasma-desktop;
+            plasma5Packages = libsForQt5;
+          }
+    );
+  # in [ plasma-framework-overly ];  
+  in [ plasma-framework-overly ];  # use no overlays atm
   environment.systemPackages = with pkgs; [
     wget
     ispell
