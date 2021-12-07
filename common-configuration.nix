@@ -151,6 +151,7 @@
     materia-theme
     libsForQt5.knotifications
     libsForQt5.sddm-kcm
+    libsForQt5.konqueror
     rnix-lsp
   ];
   # Use the GRUB 2 boot loader (with EFI support)
