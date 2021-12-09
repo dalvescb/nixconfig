@@ -533,6 +533,7 @@ environment.systemPackages = with pkgs; [
   libsForQt5.sddm-kcm
   libsForQt5.konqueror
   rnix-lsp
+  spotify
 ];
 #+END_SRC
 

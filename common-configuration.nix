@@ -153,6 +153,7 @@
     libsForQt5.sddm-kcm
     libsForQt5.konqueror
     rnix-lsp
+    spotify
   ];
   # Use the GRUB 2 boot loader (with EFI support)
   boot.loader.grub.enable = true;
