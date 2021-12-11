@@ -271,7 +271,7 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = Map.fromList $
     , ((modm              , xK_q     ), spawn "xmonad --recompile; xmonad --restart")
 
     -- Kill plasmashell
-    , ((modm .|. shiftMask, xK_q), spawn "kquitapp5 plasmashell || killall plasmashell")
+    , ((modm .|. shiftMask, xK_q), spawn "kquitapp5 plasmashell || killall plasmashell && kstart5 plasmashell")
 
     -- Run xmessage with a summary of the default keybindings (useful for beginners)
     -- , ((modm .|. shiftMask, xK_slash ), spawn ("echo \"" ++ help ++ "\" | xmessage -file -"))
