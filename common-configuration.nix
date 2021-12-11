@@ -199,6 +199,7 @@
       # But this introduced a new bug! that is fixed by this environment variable
       MOZ_X11_EGL = "1";
       HOSTNAME = "${config.networking.hostName}";
+      XDG_SESSION_TYPE="x11";
     };
   networking.networkmanager.enable = true;
   networking.firewall.allowedTCPPortRanges = [
