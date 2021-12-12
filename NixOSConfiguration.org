@@ -46,6 +46,7 @@
   - [[#allow-proprietary-software][Allow Proprietary Software]]
   - [[#fonts][Fonts]]
   - [[#global-environment-variables][Global Environment Variables]]
+  - [[#systemd][Systemd]]
 - [[#networking][Networking]]
   - [[#firewall][Firewall]]
 - [[#graphics][Graphics]]
@@ -641,6 +642,14 @@ environment.variables =
     XDG_SESSION_TYPE="x11";
   };
 #+END_SRC
+** Systemd 
+Set an extra variables usually set in ~/etc/systemd/system.conf~ here
+#+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
+systemd.extraConfig = ''
+                    DefaultTimeoutStopSec=5s
+                    '';
+#+END_SRC
+
 * Networking
 - The hostname and DHCP settings should already be set in your
   ~configuration.nix~ (see [[#multi-system-file-layout][Multi-System File Layout]])
@@ -1487,4 +1496,4 @@ services.dunst = {
 #  LocalWords:  TouchPad nixos FlySpell XMonad Polybar compositing GTK Rofi
 #  LocalWords:  dmenu Dunst centric Dropbox nixpkgs Picom Xbox BetterLockscreen
 #  LocalWords:  buildFHSUserEnv direnv direnv's NoiseTorch conf ertm KWin
-#  LocalWords:  xmonad TimeZone
+#  LocalWords:  xmonad TimeZone Systemd

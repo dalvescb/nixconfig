@@ -201,6 +201,9 @@
       HOSTNAME = "${config.networking.hostName}";
       XDG_SESSION_TYPE="x11";
     };
+  systemd.extraConfig = ''
+                      DefaultTimeoutStopSec=5s
+                      '';
   networking.networkmanager.enable = true;
   networking.firewall.allowedTCPPortRanges = [
     # KDE Connect
