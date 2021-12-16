@@ -146,6 +146,8 @@
     scrot
     btop
     lm_sensors
+    xsensors
+    hddtemp
     kde-gtk-config
     arc-theme
     materia-theme
