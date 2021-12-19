@@ -79,6 +79,8 @@
     (haskell-language-server.override { supportedGhcVersions = [ "884" "8107" ]; })
     haskellPackages.Agda
     haskellPackages.implicit-hie
+    cabal-install
+    ghc
     python3Full
     snapper
     python38Packages.setuptools
