@@ -830,7 +830,14 @@ Enable bluetooth support with one simple line (see
 #+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
 hardware.bluetooth.enable = true;
 services.blueman.enable = true;
+hardware.bluetooth.settings = {
+  General = {
+    Enable = "Source,Sink,Media,Socket";
+    };
+};
 #+END_SRC
+The ~hardware.bluetooth.settings~ was suggested for enabling the A2DP profile
+for headsets in the wiki, although it might not be necessary
 
 * Sounds Settings
 Sound should be enabled through [[https://nixos.wiki/wiki/PulseAudio][Pulse Audio]]. The default install is a

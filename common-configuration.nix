@@ -249,6 +249,11 @@
   services.xserver.xkbOptions = "ctrl:swapcaps"; # this stopped working on home-manager update. needs to be set through home.keyboard.options now?
   hardware.bluetooth.enable = true;
   services.blueman.enable = true;
+  hardware.bluetooth.settings = {
+    General = {
+      Enable = "Source,Sink,Media,Socket";
+      };
+  };
   sound.enable = true;
   hardware.pulseaudio = {
      enable = true;
