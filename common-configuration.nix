@@ -207,6 +207,7 @@
     };
   systemd.extraConfig = ''
                       DefaultTimeoutStopSec=5s
+                      DefaultTimeoutStartSec=5s
                       '';
   networking.networkmanager.enable = true;
   networking.firewall.allowedTCPPortRanges = [
