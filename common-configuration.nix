@@ -9,16 +9,6 @@
     # this overlay is just a tmp fix for a steam update issue, track here https://github.com/ValveSoftware/steam-runtime/issues/462
     # remove me when the issue is fixed
     steam-overlay =(self: super: { steam = super.steam.override { extraPkgs = pkgs: with pkgs; [ pango harfbuzz libthai ]; }; } ) ;
-    # plasma-framework-overly = (final: prev: {
-    #   libsForQt5.kdeFrameworks.plasma-framework = prev.libsForQt5.kdeFrameworks.plasma-framework.overrideAttrs (oldAttrs:
-    #     rec {
-    #       src = pkgs.fetchurl {
-    #         url = "https://github.com/KDE/plasma-framework/archive/refs/tags/v5.87.0.tar.gz";
-    #         sha256 = "05q0hw64snmkqs2sl81g2l9ak4sjriwgsd2b7xkp9bxlr3n4wm00";
-    #         name = "plasma-framework-5.87.0.tar.xz";
-    #         };
-    #     });
-    # });
     plasma-framework-overly = (final: prev:
       let
         libsForQt5 = prev.libsForQt5.overrideScope' (
@@ -158,6 +148,8 @@
     libsForQt5.konqueror
     rnix-lsp
     spotify
+    webtorrent_desktop
+    transmission-qt
   ];
   # Use the GRUB 2 boot loader (with EFI support)
   boot.loader.grub.enable = true;

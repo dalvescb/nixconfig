@@ -529,6 +529,8 @@ environment.systemPackages = with pkgs; [
   libsForQt5.konqueror
   rnix-lsp
   spotify
+  webtorrent_desktop
+  transmission-qt
 ];
 #+END_SRC
 
