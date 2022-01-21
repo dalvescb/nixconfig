@@ -60,7 +60,7 @@
     libva
     libva-utils
     razergenie
-    linuxPackages_5_10.openrazer
+    linuxPackages_5_15.openrazer
     pciutils
     arc-kde-theme
     # plasma5.kwallet-pam
@@ -97,7 +97,7 @@
     libsForQt5.kdeconnect-kde
     xorg.xkill
     htop
-    linuxPackages_5_10.xpadneo
+    linuxPackages_5_15.xpadneo
     gsmartcontrol
     smartmontools
     pkg-config
@@ -167,7 +167,7 @@
   boot.supportedFilesystems = [ "btrfs" "ntfs" ];
   hardware.enableAllFirmware = true;
   boot.extraModprobeConfig = '' options bluetooth disable_ertm=1 '';
-  boot.kernelPackages = pkgs.linuxPackages_5_10;
+  boot.kernelPackages = pkgs.linuxPackages_5_15;
   time.timeZone = "America/Toronto";
   i18n.defaultLocale = "en_US.UTF-8";
   console = {

@@ -441,7 +441,7 @@ environment.systemPackages = with pkgs; [
   libva
   libva-utils
   razergenie
-  linuxPackages_5_10.openrazer
+  linuxPackages_5_15.openrazer
   pciutils
   arc-kde-theme
   # plasma5.kwallet-pam
@@ -478,7 +478,7 @@ environment.systemPackages = with pkgs; [
   libsForQt5.kdeconnect-kde
   xorg.xkill
   htop
-  linuxPackages_5_10.xpadneo
+  linuxPackages_5_15.xpadneo
   gsmartcontrol
   smartmontools
   pkg-config
@@ -570,7 +570,7 @@ boot.extraModprobeConfig = '' options bluetooth disable_ertm=1 '';
 See [[https://nixos.wiki/wiki/Linux_kernel][NixOS Wiki Linux Kernel]] for details on selecting a kernel. If you don't
 specify a kernel, it'll default to a the "latest" lts kernel
 #+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
-boot.kernelPackages = pkgs.linuxPackages_5_10;
+boot.kernelPackages = pkgs.linuxPackages_5_15;
 #+END_SRC
 
 * Virtual Box
