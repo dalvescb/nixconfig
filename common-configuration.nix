@@ -20,10 +20,11 @@
                   rec {
                     # NOTE update me as nixpkgs gets updated, see
                     # nixpkgs/pkgs/development/libraries/kde-frameworks/srcs.nix to see current version
+                    # and apply fixes in https://github.com/xmonad/xmonad/issues/174
                     src = pkgs.fetchurl {
-                      url = "https://github.com/dalvescb/plasma-framework/archive/refs/tags/v5.87.0-xmonad.tar.gz";
-                      sha256 = "sha256-qxPZ2seVO8b+mX4XgoVWdH88w/7KB49/TfVrMdxrIAw=";
-                      name = "plasma-framework-5.87.0.tar.gz";
+                      url = "https://github.com/dalvescb/plasma-framework/archive/refs/tags/xmonad-5.90.tar.gz";
+                      sha256 = "sha256-8EoNNnSW6nxwyc5h/vR6BnF71c3J2WlZL1ivHfcGsWI=";
+                      name = "plasma-framework-5.90.0.tar.gz";
                     };
                   });
               });
