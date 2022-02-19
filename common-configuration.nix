@@ -96,6 +96,7 @@
     libsForQt5.plasma-integration
     libsForQt5.plasma-browser-integration
     libsForQt5.kdeconnect-kde
+    libsForQt5.okular
     xorg.xkill
     htop
     linuxPackages_5_15.xpadneo
