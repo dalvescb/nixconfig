@@ -374,7 +374,7 @@
       xorg.xmessage
       nitrogen
       font-awesome
-      font-awesome-ttf      # used by polybar
+      # font-awesome-ttf      # used by polybar
       material-design-icons # used by polybar
       xmonad-log
       pasystray
