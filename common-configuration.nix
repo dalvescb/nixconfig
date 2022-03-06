@@ -152,6 +152,7 @@
     spotify
     webtorrent_desktop
     transmission-qt
+    kgraphviewer
   ];
   # Use the GRUB 2 boot loader (with EFI support)
   boot.loader.grub.enable = true;
@@ -234,6 +235,11 @@
   services.xserver.displayManager.sddm.enable = true;
   services.xserver.desktopManager.plasma5.enable = true;
   
+  services.xserver.displayManager.setupCommands = ''
+  xrandr --output DP-2 --off
+  xrandr --output HDMI-0 --off
+  xrandr --output DP-0 --mode 2560x1440 --pos 0x0 --rotate normal
+  '';
   # services.xserver.displayManager.defaultSession = "none+xmonad";
   services.xserver.windowManager.xmonad = {
       enable = true;

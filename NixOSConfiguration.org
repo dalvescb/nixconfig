@@ -533,6 +533,7 @@ environment.systemPackages = with pkgs; [
   spotify
   webtorrent_desktop
   transmission-qt
+  kgraphviewer
 ];
 #+END_SRC
 
