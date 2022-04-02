@@ -45,6 +45,8 @@
   - [[#locale][Locale]]
   - [[#allow-proprietary-software][Allow Proprietary Software]]
   - [[#fonts][Fonts]]
+  - [[#keyboard-layout][Keyboard Layout]]
+  - [[#swap-control-and-caps][Swap Control and Caps]]
   - [[#global-environment-variables][Global Environment Variables]]
   - [[#systemd][Systemd]]
 - [[#networking][Networking]]
@@ -81,12 +83,12 @@
   - [[#shell-configuration][Shell Configuration]]
     - [[#shell-aliases][Shell Aliases]]
   - [[#nix-direnv][Nix-Direnv]]
-  - [[#xmonad--kde][XMonad + KDE]]
+  - [[#xmonad--kde-removed][XMonad + KDE #REMOVED]]
   - [[#xmonad--none-removed][XMonad + None #REMOVED]]
-  - [[#picom][Picom]]
+  - [[#picom-removed][Picom #REMOVED]]
   - [[#gtk-theme-removed][GTK Theme #REMOVED]]
   - [[#vs-code][VS Code]]
-  - [[#keyboard-layout][Keyboard Layout]]
+  - [[#keyboard-layout-1][Keyboard Layout]]
   - [[#rofi-removed][Rofi #REMOVED]]
   - [[#polybar-removed][Polybar #REMOVED]]
   - [[#dunst-removed][Dunst #REMOVED]]
@@ -534,6 +536,8 @@ environment.systemPackages = with pkgs; [
   webtorrent_desktop
   transmission-qt
   kgraphviewer
+  gnome.gnome-tweaks
+  gnomeExtensions.appindicator
 ];
 #+END_SRC
 
@@ -628,6 +632,14 @@ fonts = {
 };
 #+END_SRC
 
+** Keyboard Layout
+#+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
+services.xserver.layout = "us";
+#+END_SRC
+** Swap Control and Caps
+#+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
+services.xserver.xkbOptions = "ctrl:swapcaps"; # this stopped working on home-manager update. needs to be set through home.keyboard.options now?
+#+END_SRC
 ** Global Environment Variables
 Set global environment variables (to be initialized in /etc/profile) here
 #+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
@@ -639,6 +651,8 @@ environment.variables =
     MOZ_X11_EGL = "1";
     HOSTNAME = "${config.networking.hostName}";
     XDG_SESSION_TYPE="x11";
+    # needed to fix bug https://github.com/NixOS/nixpkgs/issues/48424
+    WEBKIT_DISABLE_COMPOSITING_MODE = "1";
   };
 #+END_SRC
 ** Systemd 
@@ -755,14 +769,16 @@ integrated) using Nvidia Optimus via the following configuration
 
 * Desktop Environment
 ** Gnome 3
-#+BEGIN_SRC nix :tangle no 
+#+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
 services.xserver.enable = true;
 services.xserver.displayManager.gdm.enable = true;
-services.xserver.desktopManager.gnome3.enable = true;
+services.xserver.desktopManager.gnome.enable = true;
+
+services.udev.packages = with pkgs; [ gnome3.gnome-settings-daemon ];
 #+END_SRC
 
 ** KDE Plasma5
-#+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
+#+BEGIN_SRC nix :tangle no
 services.xserver.enable = true;
 # services.xserver.displayManager.lightdm.enable = true;
 services.xserver.displayManager.sddm.enable = true;
@@ -773,9 +789,6 @@ services.xserver.windowManager.xmonad = {
     enable = true;
     enableContribAndExtras = true;
   };
-
-services.xserver.layout = "us";
-services.xserver.xkbOptions = "ctrl:swapcaps"; # this stopped working on home-manager update. needs to be set through home.keyboard.options now?
 #+END_SRC
 
 Global Theme doesn't seem to work (for downloading/installing new themes) but
@@ -811,9 +824,6 @@ services = {
     enable = true;
     enableContribAndExtras = true;
   };
-  
-  xserver.layout = "us";
-  xserver.xkbOptions = "ctrl:swapcaps"; # this stopped working on home-manager update. needs to be set through home.keyboard.options now?
 };
 
 console.useXkbConfig = true;
@@ -964,10 +974,11 @@ programs.noisetorch.enable = true;
 These settings will configure settings int ~/etc/nix/nix.conf~
 
 #+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
-nix.binaryCachePublicKeys = [
+nix.settings.trusted-public-keys = [
   "hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ=" # Binary Cache for Haskell.nix
 ];
-nix.binaryCaches = [
+
+nix.settings.substituters = [
   "https://hydra.iohk.io" # Binary Cache for Haskell.nix
 ];
 #+END_SRC
@@ -1255,10 +1266,10 @@ programs.direnv.enable = true;
 programs.direnv.nix-direnv.enable = true;
 #+END_SRC
 
-** XMonad + KDE
+** XMonad + KDE #REMOVED
 [[https://xmonad.org][XMonad]] is a tiling window manager written and configured in Haskell (which is a
 good enough reason alone to make it the window manager for me)
-#+BEGIN_SRC nix :tangle no :noweb-ref insert-home-here
+#+BEGIN_SRC nix :tangle no
 xsession = {
   enable = true;
   
@@ -1278,7 +1289,7 @@ xsession = {
 In order to configure KDE to use xmonad as its window manager instead of its
 default window manager (KWin), you need to configure the following script
 (see [[https://wiki.haskell.org/Xmonad/Using_xmonad_in_KDE][wiki.haskell.org/Xmonad/Using_xmonad_in_KDE]] for details)
-#+BEGIN_SRC nix :tangle no :noweb-ref insert-home-here
+#+BEGIN_SRC nix :tangle no
 home.file.".config/plasma-workspace/env/set_window_manager.sh".text = ''
                                                                     export KDEWM=${pkgs.haskellPackages.xmonad}/bin/xmonad
                                                                     '';
@@ -1313,12 +1324,12 @@ in {
 };
 #+END_SRC
 
-** Picom
+** Picom #REMOVED
 [[https://github.com/yshui/picom][Picom]] is a compositor. Wtf is a compositor?? Kind of a weird thing, according to
 [[https://en.wikipedia.org/wiki/Compositing_window_manager][Wikipedia]] a compositing window manager is a provides applications with an
 off-screen buffer for each window. In simpler terms, if you want fancy blurring
 and other window effects you need one
-#+BEGIN_SRC nix :tangle no :noweb-ref insert-home-here
+#+BEGIN_SRC nix :tangle no
 services.picom = {
     enable = true;
     # package = pkgs.picom.overrideAttrs(o: {

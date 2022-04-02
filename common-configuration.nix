@@ -153,6 +153,8 @@
     webtorrent_desktop
     transmission-qt
     kgraphviewer
+    gnome.gnome-tweaks
+    gnomeExtensions.appindicator
   ];
   # Use the GRUB 2 boot loader (with EFI support)
   boot.loader.grub.enable = true;
@@ -191,6 +193,8 @@
         inconsolata-nerdfont
       ];
   };
+  services.xserver.layout = "us";
+  services.xserver.xkbOptions = "ctrl:swapcaps"; # this stopped working on home-manager update. needs to be set through home.keyboard.options now?
   environment.variables =
     {
       # In firefox in about:config I switched gfx.webrender.all to true to fix bug causing
@@ -199,6 +203,8 @@
       MOZ_X11_EGL = "1";
       HOSTNAME = "${config.networking.hostName}";
       XDG_SESSION_TYPE="x11";
+      # needed to fix bug https://github.com/NixOS/nixpkgs/issues/48424
+      WEBKIT_DISABLE_COMPOSITING_MODE = "1";
     };
   systemd.extraConfig = ''
                       DefaultTimeoutStopSec=5s
@@ -231,18 +237,10 @@
     }
   ];
   services.xserver.enable = true;
-  # services.xserver.displayManager.lightdm.enable = true;
-  services.xserver.displayManager.sddm.enable = true;
-  services.xserver.desktopManager.plasma5.enable = true;
+  services.xserver.displayManager.gdm.enable = true;
+  services.xserver.desktopManager.gnome.enable = true;
   
-  # services.xserver.displayManager.defaultSession = "none+xmonad";
-  services.xserver.windowManager.xmonad = {
-      enable = true;
-      enableContribAndExtras = true;
-    };
-  
-  services.xserver.layout = "us";
-  services.xserver.xkbOptions = "ctrl:swapcaps"; # this stopped working on home-manager update. needs to be set through home.keyboard.options now?
+  services.udev.packages = with pkgs; [ gnome3.gnome-settings-daemon ];
   hardware.bluetooth.enable = true;
   services.blueman.enable = true;
   hardware.bluetooth.settings = {
@@ -286,10 +284,11 @@
       };
     };
   programs.noisetorch.enable = true;
-  nix.binaryCachePublicKeys = [
+  nix.settings.trusted-public-keys = [
     "hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ=" # Binary Cache for Haskell.nix
   ];
-  nix.binaryCaches = [
+  
+  nix.settings.substituters = [
     "https://hydra.iohk.io" # Binary Cache for Haskell.nix
   ];
   nix.extraOptions = ''
@@ -423,59 +422,6 @@
          ];
     programs.direnv.enable = true;
     programs.direnv.nix-direnv.enable = true;
-    xsession = {
-      enable = true;
-      
-      windowManager.xmonad = {
-        enable = true;
-        enableContribAndExtras = true;
-        extraPackages = hp: [
-          hp.dbus
-          hp.monad-logger
-          hp.xmonad-contrib
-          hp.xmobar
-        ];
-        config = ./xmonad/xmonad.hs;
-      };
-    };
-    home.file.".config/plasma-workspace/env/set_window_manager.sh".text = ''
-                                                                        export KDEWM=${pkgs.haskellPackages.xmonad}/bin/xmonad
-                                                                        '';
-    home.file.".config/plasma-workspace/env/set_window_manager.sh".executable = true;
-    services.picom = {
-        enable = true;
-        # package = pkgs.picom.overrideAttrs(o: {
-        #       src = pkgs.fetchFromGitHub {
-        #         repo = "picom";
-        #         owner = "ibhagwan";
-        #         rev = "44b4970f70d6b23759a61a2b94d9bfb4351b41b1";
-        #         sha256 = "0iff4bwpc00xbjad0m000midslgx12aihs33mdvfckr75r114ylh";
-        #       };
-        # });
-        # activeOpacity = "1.0";
-        # inactiveOpacity = "1.0";
-        blur = true;
-        backend = "glx";
-        # experimentalBackends = true;
-        fade = true;
-        fadeDelta = 5;
-        vSync = true;
-        # opacityRule = [ 
-        #                 "100:class_g   *?= 'Brave-browser'"
-        #                 "60:class_g    *?= 'Alacritty'"
-        #               ];
-        
-        shadow = true;
-        shadowOpacity = "0.75";
-        extraOptions = ''
-                     xrender-sync-fence = true;
-                     detect-client-opacity = true;
-                     use-ewmh-active-win = true;
-                     mark-ovredir-focused = false;
-        '';
-        #  mark-wmwin-focused = true;
-        # inactive-opacity-override = true;
-    };
     programs.vscode.enable = true;
     programs.vscode.package = pkgs.vscode-fhs;
     home.keyboard = {
