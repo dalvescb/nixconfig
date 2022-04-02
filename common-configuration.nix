@@ -44,7 +44,7 @@
           }
     );
   # in [ plasma-framework-overly ];  
-  in [ plasma-framework-overly ];  # use no overlays atm
+  in [ ];  # use no overlays atm
   environment.systemPackages = with pkgs; [
     wget
     ispell
@@ -95,7 +95,7 @@
     ntfs3g
     libsForQt5.plasma-integration
     libsForQt5.plasma-browser-integration
-    libsForQt5.kdeconnect-kde
+    # libsForQt5.kdeconnect-kde
     libsForQt5.okular
     xorg.xkill
     htop
@@ -145,6 +145,7 @@
     kde-gtk-config
     arc-theme
     materia-theme
+    orchis-theme
     libsForQt5.knotifications
     libsForQt5.sddm-kcm
     libsForQt5.konqueror
@@ -154,7 +155,10 @@
     transmission-qt
     kgraphviewer
     gnome.gnome-tweaks
+    gnome.dconf-editor
     gnomeExtensions.appindicator
+    gnomeExtensions.just-perfection
+    gnomeExtensions.gsconnect
   ];
   # Use the GRUB 2 boot loader (with EFI support)
   boot.loader.grub.enable = true;
