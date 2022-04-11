@@ -112,7 +112,7 @@
     pandoc
     libreoffice
     rnnoise-plugin
-    # noisetorch
+    noisetorch
     vulkan-tools
     vulkan-loader
     vulkan-validation-layers
@@ -154,11 +154,18 @@
     webtorrent_desktop
     transmission-qt
     kgraphviewer
+    libgtop
+    gnome-icon-theme
     gnome.gnome-tweaks
     gnome.dconf-editor
     gnomeExtensions.appindicator
     gnomeExtensions.just-perfection
     gnomeExtensions.gsconnect
+    gnomeExtensions.another-window-session-manager
+    gnomeExtensions.vitals
+    gnomeExtensions.freon
+    gnomeExtensions.dash-to-panel
+    gnomeExtensions.sound-output-device-chooser
   ];
   # Use the GRUB 2 boot loader (with EFI support)
   boot.loader.grub.enable = true;

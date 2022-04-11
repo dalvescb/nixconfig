@@ -495,7 +495,7 @@ environment.systemPackages = with pkgs; [
   pandoc
   libreoffice
   rnnoise-plugin
-  # noisetorch
+  noisetorch
   vulkan-tools
   vulkan-loader
   vulkan-validation-layers
@@ -537,11 +537,18 @@ environment.systemPackages = with pkgs; [
   webtorrent_desktop
   transmission-qt
   kgraphviewer
+  libgtop
+  gnome-icon-theme
   gnome.gnome-tweaks
   gnome.dconf-editor
   gnomeExtensions.appindicator
   gnomeExtensions.just-perfection
   gnomeExtensions.gsconnect
+  gnomeExtensions.another-window-session-manager
+  gnomeExtensions.vitals
+  gnomeExtensions.freon
+  gnomeExtensions.dash-to-panel
+  gnomeExtensions.sound-output-device-chooser
 ];
 #+END_SRC
 
