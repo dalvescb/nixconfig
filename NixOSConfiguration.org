@@ -83,6 +83,7 @@
   - [[#shell-configuration][Shell Configuration]]
     - [[#shell-aliases][Shell Aliases]]
   - [[#nix-direnv][Nix-Direnv]]
+  - [[#dconf-config-gnome][dconf Config (Gnome)]]
   - [[#xmonad--kde-removed][XMonad + KDE #REMOVED]]
   - [[#xmonad--none-removed][XMonad + None #REMOVED]]
   - [[#picom-removed][Picom #REMOVED]]
@@ -785,6 +786,7 @@ services.xserver.enable = true;
 services.xserver.displayManager.gdm.enable = true;
 services.xserver.desktopManager.gnome.enable = true;
 
+services.dbus.packages = [ pkgs.dconf ];
 services.udev.packages = with pkgs; [ gnome3.gnome-settings-daemon ];
 #+END_SRC
 
@@ -1214,6 +1216,7 @@ home-manager.users.dalvescb = { pkgs, config, ... }: {
     # dunst
     arc-icon-theme
     steam-run
+    dconf2nix
   ];
   
   <<insert-home-here>>
@@ -1275,6 +1278,50 @@ details
 #+BEGIN_SRC nix :tangle no :noweb-ref insert-home-here
 programs.direnv.enable = true;
 programs.direnv.nix-direnv.enable = true;
+#+END_SRC
+
+** dconf Config (Gnome)
+Dump current dconf settings with ~dconf dump / > dconf-backup~ 
+#+BEGIN_SRC nix :tangle no :noweb-ref insert-home-here
+dconf.settings = {
+
+  "desktop/wm/keybindings" = { 
+      "close"= "['<Shift><Super>c']";
+      "cycle-windows"= "['<Super>o']";
+      "cycle-windows-backward"= "['<Shift><Super>o']";
+      "maximize"="@as []";
+      "minimize"="@as []";
+      "move-to-monitor-left"= "['<Shift><Super>j']";
+      "move-to-monitor-right"= "['<Shift><Super>k']";
+      "move-to-workspace-1"= "['<Shift><Super>exclam']";
+      "move-to-workspace-2"= "['<Shift><Super>at']";
+      "move-to-workspace-3"= "['<Shift><Super>numbersign']";
+      "move-to-workspace-4"= "['<Shift><Super>dollar']";
+      "move-to-workspace-left"= "['<Shift><Super>h']";
+      "move-to-workspace-right"= "['<Shift><Super>l']";
+      "switch-input-source"= "@as []";
+      "switch-input-source-backward"= "@as []";
+      "switch-to-workspace-1"= "['<Super>1']";
+      "switch-to-workspace-2"= "['<Super>2']";
+      "switch-to-workspace-3"= "['<Super>3']";
+      "switch-to-workspace-4"= "['<Super>4']";
+      "switch-to-workspace-left"= "['<Super>h']";
+      "switch-to-workspace-right"= "['<Super>l']";
+      "toggle-fullscreen"= "['<Shift><Super>space']";
+      "toggle-maximized"= "['<Super>i']";
+    };
+  
+    "mutter/keybindings" = {
+      "switch-monitor" = "['XF86Display']";
+      "toggle-tiled-left" = "['<Super>j']";
+      "toggle-tiled-right" = "['<Super>k']";
+    };
+  
+    "settings-daemon/plugins/media-keys" = {
+      "screensaver" = "@as []";
+      "search" = "['<Super>p']";
+    };
+  };
 #+END_SRC
 
 ** XMonad + KDE #REMOVED
@@ -1524,5 +1571,5 @@ services.dunst = {
 #  LocalWords:  systemd's Nvidia VA API KDE mutably Bluetooth bluetooth distro
 #  LocalWords:  TouchPad nixos FlySpell XMonad Polybar compositing GTK Rofi
 #  LocalWords:  dmenu Dunst centric Dropbox nixpkgs Picom Xbox BetterLockscreen
-#  LocalWords:  buildFHSUserEnv direnv direnv's NoiseTorch conf ertm KWin
-#  LocalWords:  xmonad TimeZone Systemd
+#  LocalWords:  buildFHSUserEnv direnv direnv's NoiseTorch conf ertm KWin dconf
+#  LocalWords:  xmonad TimeZone Systemd Config
