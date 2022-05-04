@@ -163,7 +163,7 @@
     gnomeExtensions.gsconnect
     gnomeExtensions.another-window-session-manager
     gnomeExtensions.vitals
-    gnomeExtensions.freon
+    # gnomeExtensions.freon
     gnomeExtensions.dash-to-panel
     gnomeExtensions.sound-output-device-chooser
   ];
@@ -435,45 +435,45 @@
          ];
     programs.direnv.enable = true;
     programs.direnv.nix-direnv.enable = true;
-    dconf.settings = {
+    # dconf.settings = {
     
-      "desktop/wm/keybindings" = { 
-          "close"= "['<Shift><Super>c']";
-          "cycle-windows"= "['<Super>o']";
-          "cycle-windows-backward"= "['<Shift><Super>o']";
-          "maximize"="@as []";
-          "minimize"="@as []";
-          "move-to-monitor-left"= "['<Shift><Super>j']";
-          "move-to-monitor-right"= "['<Shift><Super>k']";
-          "move-to-workspace-1"= "['<Shift><Super>exclam']";
-          "move-to-workspace-2"= "['<Shift><Super>at']";
-          "move-to-workspace-3"= "['<Shift><Super>numbersign']";
-          "move-to-workspace-4"= "['<Shift><Super>dollar']";
-          "move-to-workspace-left"= "['<Shift><Super>h']";
-          "move-to-workspace-right"= "['<Shift><Super>l']";
-          "switch-input-source"= "@as []";
-          "switch-input-source-backward"= "@as []";
-          "switch-to-workspace-1"= "['<Super>1']";
-          "switch-to-workspace-2"= "['<Super>2']";
-          "switch-to-workspace-3"= "['<Super>3']";
-          "switch-to-workspace-4"= "['<Super>4']";
-          "switch-to-workspace-left"= "['<Super>h']";
-          "switch-to-workspace-right"= "['<Super>l']";
-          "toggle-fullscreen"= "['<Shift><Super>space']";
-          "toggle-maximized"= "['<Super>i']";
-        };
+    #   "desktop/wm/keybindings" = { 
+    #       "close"= "['<Shift><Super>c']";
+    #       "cycle-windows"= "['<Super>o']";
+    #       "cycle-windows-backward"= "['<Shift><Super>o']";
+    #       "maximize"="@as []";
+    #       "minimize"="@as []";
+    #       "move-to-monitor-left"= "['<Shift><Super>j']";
+    #       "move-to-monitor-right"= "['<Shift><Super>k']";
+    #       "move-to-workspace-1"= "['<Shift><Super>exclam']";
+    #       "move-to-workspace-2"= "['<Shift><Super>at']";
+    #       "move-to-workspace-3"= "['<Shift><Super>numbersign']";
+    #       "move-to-workspace-4"= "['<Shift><Super>dollar']";
+    #       "move-to-workspace-left"= "['<Shift><Super>h']";
+    #       "move-to-workspace-right"= "['<Shift><Super>l']";
+    #       "switch-input-source"= "@as []";
+    #       "switch-input-source-backward"= "@as []";
+    #       "switch-to-workspace-1"= "['<Super>1']";
+    #       "switch-to-workspace-2"= "['<Super>2']";
+    #       "switch-to-workspace-3"= "['<Super>3']";
+    #       "switch-to-workspace-4"= "['<Super>4']";
+    #       "switch-to-workspace-left"= "['<Super>h']";
+    #       "switch-to-workspace-right"= "['<Super>l']";
+    #       "toggle-fullscreen"= "['<Shift><Super>space']";
+    #       "toggle-maximized"= "['<Super>i']";
+    #     };
       
-        "mutter/keybindings" = {
-          "switch-monitor" = "['XF86Display']";
-          "toggle-tiled-left" = "['<Super>j']";
-          "toggle-tiled-right" = "['<Super>k']";
-        };
+    #     "mutter/keybindings" = {
+    #       "switch-monitor" = "['XF86Display']";
+    #       "toggle-tiled-left" = "['<Super>j']";
+    #       "toggle-tiled-right" = "['<Super>k']";
+    #     };
       
-        "settings-daemon/plugins/media-keys" = {
-          "screensaver" = "@as []";
-          "search" = "['<Super>p']";
-        };
-      };
+    #     "settings-daemon/plugins/media-keys" = {
+    #       "screensaver" = "@as []";
+    #       "search" = "['<Super>p']";
+    #     };
+    #   };
     programs.vscode.enable = true;
     programs.vscode.package = pkgs.vscode-fhs;
     home.keyboard = {
