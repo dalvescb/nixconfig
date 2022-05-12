@@ -79,7 +79,7 @@
     agda
     agda-pkg
     texlive.combined.scheme-full
-    alacritty
+    # alacritty
     libsForQt5.ark
     zip
     unzip
@@ -166,6 +166,7 @@
     # gnomeExtensions.freon
     gnomeExtensions.dash-to-panel
     gnomeExtensions.sound-output-device-chooser
+    gnomeExtensions.gtk-title-bar
   ];
   # Use the GRUB 2 boot loader (with EFI support)
   boot.loader.grub.enable = true;
@@ -303,6 +304,10 @@
   nix.settings.substituters = [
     "https://hydra.iohk.io" # Binary Cache for Haskell.nix
   ];
+  
+  #  this was added to fix the following error when using buildStackProject
+  # error: derivation '/nix/store/5sdvfa4fg9rsrqnl120ji9gnn6fa15gc-Coconut-env.drv' has '__noChroot' set, but that's not allowed when 'sandbox' is 'true'
+  nix.useSandbox = false;
   nix.extraOptions = ''
                    keep-outputs = true
                    keep-derivations = true
@@ -403,6 +408,7 @@
       arc-icon-theme
       steam-run
       dconf2nix
+      alacritty
     ];
     
     programs.zsh.enable = true;
@@ -433,6 +439,59 @@
           zsh-syntax-highlighting
           zsh-autosuggestions
          ];
+    programs.alacritty.enable = true;
+    programs.alacritty.settings = {
+      window.opacity = 0.9;
+      font.normal = {
+        family = "Source Code Pro";
+        style = "Regular";
+      };
+      font.bold = {
+        family = "Source Code Pro";
+        style = "Bold";
+      };
+      font.italic = {
+        family = "Source Code Pro";
+        style = "Italic";
+      };
+      font.bold_italic = {
+        family = "Source Code Pro";
+        style = "Bold Italic";
+      };
+      font.size = 14.0;
+      import = [ "~/nixconfig/alacritty/dracula.yml" ];
+      # colors = {
+      #   primary = {
+      #     background = "0x1a1b26";
+      #     foreground = "0xa9b1d6";
+      #   };
+      #   normal = {
+      #     black =  "0x32344a";
+      #     red =    "0xf7768e";
+      #     green =  "0x9ece6a";
+      #     yellow = "0xe0af68";
+      #     blue =   "0x7aa2f7";
+      #     magenta ="0xad8ee6";
+      #     cyan =   "0x449dab";
+      #     white =  "0x787c99";
+      #   };
+      #   bright = {
+      #     black =  "0x444b6a";
+      #     red =    "0xff7a93";
+      #     green =  "0xb9f27c";
+      #     yellow = "0xff9e64";
+      #     blue =   "0x7da6ff";
+      #     magenta ="0xbb9af7";
+      #     cyan =   "0x0db9d7";
+      #   };
+      # };
+      key_bindings = [
+        {
+          key = "Escape";
+          action = "ToggleViMode";
+        }
+      ];
+    };
     programs.direnv.enable = true;
     programs.direnv.nix-direnv.enable = true;
     # dconf.settings = {
