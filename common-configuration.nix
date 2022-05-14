@@ -79,7 +79,7 @@
     agda
     agda-pkg
     texlive.combined.scheme-full
-    alacritty
+    # alacritty
     libsForQt5.ark
     zip
     unzip
@@ -168,6 +168,7 @@
     # gnomeExtensions.freon
     gnomeExtensions.dash-to-panel
     gnomeExtensions.sound-output-device-chooser
+    gnomeExtensions.gtk-title-bar
   ];
   # Use the GRUB 2 boot loader (with EFI support)
   boot.loader.grub.enable = true;
@@ -306,6 +307,10 @@
   nix.settings.substituters = [
     "https://hydra.iohk.io" # Binary Cache for Haskell.nix
   ];
+  
+  #  this was added to fix the following error when using buildStackProject
+  # error: derivation '/nix/store/5sdvfa4fg9rsrqnl120ji9gnn6fa15gc-Coconut-env.drv' has '__noChroot' set, but that's not allowed when 'sandbox' is 'true'
+  nix.useSandbox = false;
   nix.extraOptions = ''
                    keep-outputs = true
                    keep-derivations = true
@@ -321,66 +326,6 @@
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "20.09"; # Did you read the comment?
-  environment.etc = {
-    # persist /etc/nixos
-    nixos.source = "/persist/etc/nixos";
-    NIXOS.source = "/persist/etc/NIXOS";
-    # persist NetworkManager 
-    "NetworkManager/system-connections".source = "/persist/etc/NetworkManager/system-connections";
-    # persist adjtime
-    # adjtime.source = "/persist/etc/adjtime";
-  };
-  
-  systemd.tmpfiles.rules = [
-   "L /var/lib/NetworkManager/secret_key - - - - /persist/var/lib/NetworkManager/secret_key"
-   "L /var/lib/NetworkManager/seen-bssids - - - - /persist/var/lib/NetworkManager/seen-bssids"
-   "L /var/lib/NetworkManager/timestamps - - - - /persist/var/lib/NetworkManager/timestamps"
-   "L /var/lib/bluetooth - - - - /persist/var/lib/bluetooth"
-  ];
-  
-  security.sudo.extraConfig = ''
-    # rollback results in sudo lectures after each reboot
-    Defaults lecture = never
-  '';
-  # Note `lib.mkBefore` is used instead of `lib.mkAfter` here.
-  boot.initrd.postDeviceCommands = pkgs.lib.mkBefore ''
-    mkdir -p /mnt
-  
-    # We first mount the btrfs root to /mnt
-    # so we can manipulate btrfs subvolumes.
-    mount -o subvol=/ /dev/mapper/enc /mnt
-  
-    # While we're tempted to just delete /root and create
-    # a new snapshot from /root-blank, /root is already
-    # populated at this point with a number of subvolumes,
-    # which makes `btrfs subvolume delete` fail.
-    # So, we remove them first.
-    #
-    # /root contains subvolumes:
-    # - /root/var/lib/portables
-    # - /root/var/lib/machines
-    #
-    # I suspect these are related to systemd-nspawn, but
-    # since I don't use it I'm not 100% sure.
-    # Anyhow, deleting these subvolumes hasn't resulted
-    # in any issues so far, except for fairly
-    # benign-looking errors from systemd-tmpfiles.
-    btrfs subvolume list -o /mnt/root |
-    cut -f9 -d' ' |
-    while read subvolume; do
-      echo "deleting /$subvolume subvolume..."
-      btrfs subvolume delete "/mnt/$subvolume"
-    done &&
-    echo "deleting /root subvolume..." &&
-    btrfs subvolume delete /mnt/root
-  
-    echo "restoring blank /root subvolume..."
-    btrfs subvolume snapshot /mnt/root-blank /mnt/root
-  
-    # Once we're done rolling back to a blank snapshot,
-    # we can unmount /mnt and continue on the boot process.
-    umount /mnt
-  '';
   home-manager.users.dalvescb = { pkgs, config, ... }: {
     nixpkgs.config.allowUnfree = true;
     home.packages = with pkgs; [
@@ -406,6 +351,7 @@
       arc-icon-theme
       steam-run
       dconf2nix
+      alacritty
     ];
     
     programs.zsh.enable = true;
@@ -436,6 +382,44 @@
           zsh-syntax-highlighting
           zsh-autosuggestions
          ];
+    programs.alacritty.enable = true;
+    programs.alacritty.settings = {
+      window.opacity = 0.9;
+      font.normal = {
+        family = "Source Code Pro";
+        style = "Regular";
+      };
+      font.bold = {
+        family = "Source Code Pro";
+        style = "Bold";
+      };
+      font.italic = {
+        family = "Source Code Pro";
+        style = "Italic";
+      };
+      font.bold_italic = {
+        family = "Source Code Pro";
+        style = "Bold Italic";
+      };
+      font.size = 14.0;
+      import = [ "~/nixconfig/alacritty/dracula.yml" ];
+      key_bindings = [
+        {
+          key = "Escape";
+          action = "ToggleViMode";
+        }
+        {
+          key = "LBracket";
+          mods = "Control";
+          action = "ToggleViMode";
+        }
+        {
+          key = "N";
+          mods = "Control|Shift";
+          action = "SpawnNewInstance";
+        }
+      ];
+    };
     programs.direnv.enable = true;
     programs.direnv.nix-direnv.enable = true;
     dconf.settings = {
