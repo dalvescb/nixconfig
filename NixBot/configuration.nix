@@ -24,6 +24,11 @@
   networking.useDHCP = false;
   networking.interfaces.enp0s31f6.useDHCP = true;
   networking.interfaces.wlp82s0.useDHCP = true;
+  # networking.networkmanager.dns = "systemd-resolved";
+  networking.networkmanager.insertNameservers = [ "8.8.8.8" "8.8.4.4" ];
+  networking.nameservers = [ "8.8.8.8" "8.8.4.4" ];
+
+  hardware.enableAllFirmware = true;
 
   # set host specific env vars here
   environment.variables =
