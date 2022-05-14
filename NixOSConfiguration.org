@@ -75,9 +75,9 @@
 - [[#system-upgrades][System Upgrades]]
 - [[#opt-in-state][Opt-In State]]
   - [[#figuring-out-what-to-persist][Figuring out what to Persist]]
-  - [[#persisting-files][Persisting Files]]
+  - [[#persisting-files-removed][Persisting Files #REMOVED]]
     - [[#persisting-machine-id][Persisting Machine-ID]]
-  - [[#root-rollback][Root Rollback]]
+  - [[#root-rollback-removed][Root Rollback #REMOVED]]
   - [[#copying-files-to-persist][Copying Files to Persist]]
 - [[#home-manager][Home Manager]]
   - [[#shell-configuration][Shell Configuration]]
@@ -1082,11 +1082,11 @@ the blank snapshot. To do this:
   done
   #+END_SRC
 
-** Persisting Files
+** Persisting Files #REMOVED
 We copy files/directories in ~/etc/~ to their own spot in ~/persist/etc/~ to
 make them persist (~/etc/nixos~ is a good example of a directory we need to do
 this with) and use systemd's [[https://www.freedesktop.org/software/systemd/man/tmpfiles.d.html][tmpfiles.d]] to symlink files as necessary 
-#+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
+#+BEGIN_SRC nix :tangle no
 environment.etc = {
   # persist /etc/nixos
   nixos.source = "/persist/etc/nixos";
@@ -1127,10 +1127,10 @@ security.sudo.extraConfig = ''
   document in ~common-configuration.nix~, it must be added to
   ~configuration.nix~ manually
   
-** Root Rollback
+** Root Rollback #REMOVED
 Finally, we need to configure NixOS to rollback the root subvolume (to our
 root-blank snapshot) on boot
-#+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
+#+BEGIN_SRC nix :tangle no
 # Note `lib.mkBefore` is used instead of `lib.mkAfter` here.
 boot.initrd.postDeviceCommands = pkgs.lib.mkBefore ''
   mkdir -p /mnt
