@@ -1,12 +1,13 @@
-41ff747f882 HEAD@{0}: pull: Fast-forward
-cbe587c735b HEAD@{1}: checkout: moving from nixos-21.11 to nixos-unstable
-9e49886b3d8 HEAD@{2}: checkout: moving from nixos-unstable to nixos-21.11
-cbe587c735b HEAD@{3}: pull: Fast-forward
-3e072546ea9 HEAD@{4}: pull: Fast-forward
-48d63e924a2 HEAD@{5}: pull: Fast-forward
-ff377a78794 HEAD@{6}: pull: Fast-forward
-6daa4a5c045 HEAD@{7}: pull: Fast-forward
-34ad3ffe08a HEAD@{8}: pull: Fast-forward
-14aef06d9b3 HEAD@{9}: pull: Fast-forward
-bbbe2b35f73 HEAD@{10}: checkout: moving from master to nixos-unstable
-99031a470ac HEAD@{11}: clone: from github.com:NixOS/nixpkgs.git
+43ff6cb1c02 HEAD@{0}: pull: Fast-forward
+41ff747f882 HEAD@{1}: pull: Fast-forward
+cbe587c735b HEAD@{2}: checkout: moving from nixos-21.11 to nixos-unstable
+9e49886b3d8 HEAD@{3}: checkout: moving from nixos-unstable to nixos-21.11
+cbe587c735b HEAD@{4}: pull: Fast-forward
+3e072546ea9 HEAD@{5}: pull: Fast-forward
+48d63e924a2 HEAD@{6}: pull: Fast-forward
+ff377a78794 HEAD@{7}: pull: Fast-forward
+6daa4a5c045 HEAD@{8}: pull: Fast-forward
+34ad3ffe08a HEAD@{9}: pull: Fast-forward
+14aef06d9b3 HEAD@{10}: pull: Fast-forward
+bbbe2b35f73 HEAD@{11}: checkout: moving from master to nixos-unstable
+99031a470ac HEAD@{12}: clone: from github.com:NixOS/nixpkgs.git
