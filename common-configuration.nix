@@ -155,6 +155,9 @@
     transmission-qt
     kgraphviewer
     libgtop
+    etcher
+    openrgb
+    poppler
     gnome-icon-theme
     gnome.gnome-tweaks
     gnome.dconf-editor
@@ -222,6 +225,13 @@
                       DefaultTimeoutStopSec=5s
                       DefaultTimeoutStartSec=5s
                       '';
+  services.cron = {
+    enable = true;
+    systemCronJobs = [
+        "*/5 * * * * root /home/dalvescb/duckdns/duck.sh >/dev/null 2>&1"
+      ];
+  };
+  services.openssh.enable = true;
   networking.networkmanager.enable = true;
   networking.firewall.allowedTCPPortRanges = [
     # KDE Connect
@@ -234,6 +244,11 @@
       from = 17500;
       to = 17500;
     }
+    # SSH
+    {
+      from = 22;
+      to = 22;
+    } 
   ];
   
   networking.firewall.allowedUDPPortRanges = [
@@ -246,6 +261,11 @@
     {
       from = 17500;
       to = 17500;
+    }
+    # SSH
+    {
+      from = 22;
+      to = 22;
     }
   ];
   services.xserver.enable = true;
@@ -274,8 +294,6 @@
   programs.zsh.enable = true;
   programs.fish.enable = true;
   hardware.openrazer.enable = true;
-  # Enable the OpenSSH daemon.
-  services.openssh.enable = true;
   services.emacs.enable = true;
   services.emacs.defaultEditor = true;
   programs.steam.enable = true;
@@ -312,6 +330,9 @@
                    keep-outputs = true
                    keep-derivations = true
                    '';
+  nixpkgs.config.permittedInsecurePackages = [
+                  "electron-12.2.3"
+                ];
   # enables auto-updating
   system.autoUpgrade.enable = false;
   system.autoUpgrade.allowReboot = false;

@@ -39,6 +39,7 @@
   - [[#supporting-btrfs-and-ntfs-file-system][Supporting BTRFS and NTFS File System]]
   - [[#disable-ertm][Disable ertm]]
 - [[#kernel][Kernel]]
+  - [[#kernel-modules][Kernel Modules]]
 - [[#virtual-box][Virtual Box]]
 - [[#system-settings][System Settings]]
   - [[#timezone][TimeZone]]
@@ -49,6 +50,8 @@
   - [[#swap-control-and-caps][Swap Control and Caps]]
   - [[#global-environment-variables][Global Environment Variables]]
   - [[#systemd][Systemd]]
+- [[#cron][Cron]]
+- [[#openssh][OpenSSH]]
 - [[#networking][Networking]]
   - [[#firewall][Firewall]]
 - [[#graphics][Graphics]]
@@ -65,13 +68,13 @@
 - [[#shell-environment][Shell Environment]]
 - [[#users-management][Users Management]]
 - [[#open-razer][Open Razer]]
-- [[#openssh][OpenSSH]]
 - [[#emacs-daemon][Emacs Daemon]]
 - [[#steam][Steam]]
 - [[#dropbox][Dropbox]]
 - [[#noisetorch][NoiseTorch]]
 - [[#nixconf][Nix.conf]]
 - [[#nix-extra-options][Nix Extra Options]]
+- [[#nix-permitted-insecure-packages][Nix Permitted Insecure Packages]]
 - [[#system-upgrades][System Upgrades]]
 - [[#opt-in-state][Opt-In State]]
   - [[#figuring-out-what-to-persist][Figuring out what to Persist]]
@@ -540,6 +543,9 @@ environment.systemPackages = with pkgs; [
   transmission-qt
   kgraphviewer
   libgtop
+  etcher
+  openrgb
+  poppler
   gnome-icon-theme
   gnome.gnome-tweaks
   gnome.dconf-editor
@@ -593,6 +599,8 @@ specify a kernel, it'll default to a the "latest" lts kernel
 #+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
 boot.kernelPackages = pkgs.linuxPackages_5_15;
 #+END_SRC
+** Kernel Modules
+Set kernel modules to be loaded here
 
 * Virtual Box
 If installing NixOS inside of a virtual box (which is a great way to develop a
@@ -678,6 +686,26 @@ systemd.extraConfig = ''
                     '';
 #+END_SRC
 
+* Cron
+See [[https://nixos.wiki/wiki/Cron]] for details on configuring NixOS for cron
+#+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
+services.cron = {
+  enable = true;
+  systemCronJobs = [
+      # updates ip for duckdns
+      "*/5 * * * * root /home/dalvescb/duckdns/duck.sh >/dev/null 2>&1"
+    ];
+};
+#+END_SRC
+
+* OpenSSH
+Enable OpenSSH server here. NOTE you can authorize public keys for users by adding
+~users.users.USERNAME.openssh.authroizedKeys.keys = [ "PUBLIC KEY STRING" ];~ to
+host specific configuration file
+#+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
+services.openssh.enable = true;
+#+END_SRC
+
 * Networking
 - The hostname and DHCP settings should already be set in your
   ~configuration.nix~ (see [[#multi-system-file-layout][Multi-System File Layout]])
@@ -702,6 +730,11 @@ networking.firewall.allowedTCPPortRanges = [
     from = 17500;
     to = 17500;
   }
+  # SSH
+  {
+    from = 22;
+    to = 22;
+  } 
 ];
 
 networking.firewall.allowedUDPPortRanges = [
@@ -714,6 +747,11 @@ networking.firewall.allowedUDPPortRanges = [
   {
     from = 17500;
     to = 17500;
+  }
+  # SSH
+  {
+    from = 22;
+    to = 22;
   }
 ];
 #+END_SRC
@@ -931,13 +969,6 @@ hardware.openrazer.enable = true;
 You also need to add your user to the ~plugdev~ group in your user configuration
 (see  [[#users-management][Users Management]])
 
-* OpenSSH
-Enable OpenSSH
-#+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
-# Enable the OpenSSH daemon.
-services.openssh.enable = true;
-#+END_SRC
-
 * Emacs Daemon
 To install and enable the systemd user service for the Emacs daemon, add the
 following
@@ -1011,7 +1042,13 @@ nix.extraOptions = ''
                  keep-derivations = true
                  '';
 #+END_SRC
-
+* Nix Permitted Insecure Packages
+Add any packages marked as insecure that you want to build here anyways
+#+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
+nixpkgs.config.permittedInsecurePackages = [
+                "electron-12.2.3"
+              ];
+#+END_SRC
 * System Upgrades
 Configure how System Upgrades are performed here
 #+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
