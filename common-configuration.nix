@@ -116,7 +116,7 @@
     vulkan-tools
     vulkan-loader
     vulkan-validation-layers
-    python27Packages.pygments
+    python37Packages.pygments
     ipopt
     docker
     # haskell.packages.ghc883.haskell-language-server
@@ -228,6 +228,7 @@
   services.cron = {
     enable = true;
     systemCronJobs = [
+        # updates ip for duckdns
         "*/5 * * * * root /home/dalvescb/duckdns/duck.sh >/dev/null 2>&1"
       ];
   };
@@ -325,7 +326,7 @@
   
   #  this was added to fix the following error when using buildStackProject
   # error: derivation '/nix/store/5sdvfa4fg9rsrqnl120ji9gnn6fa15gc-Coconut-env.drv' has '__noChroot' set, but that's not allowed when 'sandbox' is 'true'
-  nix.useSandbox = false;
+  nix.settings.sandbox = false;
   nix.extraOptions = ''
                    keep-outputs = true
                    keep-derivations = true
@@ -346,6 +347,7 @@
   system.stateVersion = "20.09"; # Did you read the comment?
   home-manager.users.dalvescb = { pkgs, config, ... }: {
     nixpkgs.config.allowUnfree = true;
+    home.stateVersion = "20.09";
     home.packages = with pkgs; [
       gimp
       pavucontrol
