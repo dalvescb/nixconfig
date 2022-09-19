@@ -425,15 +425,6 @@
       import = [ "~/nixconfig/alacritty/dracula.yml" ];
       key_bindings = [
         {
-          key = "Escape";
-          action = "ToggleViMode";
-        }
-        {
-          key = "LBracket";
-          mods = "Control";
-          action = "ToggleViMode";
-        }
-        {
           key = "N";
           mods = "Control|Shift";
           action = "SpawnNewInstance";
