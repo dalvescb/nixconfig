@@ -37,6 +37,9 @@
 
   hardware.video.hidpi.enable = false;
 
+  services.hardware.openrgb.motherboard = "intel";
+  services.hardware.openrgb.enable = true;
+
   # need to set this statically when using opt-in state on a btrfs root subvolume
   environment.etc."machine-id".text = "b9c71693f16c41d2990fc03ed875ac77";
 

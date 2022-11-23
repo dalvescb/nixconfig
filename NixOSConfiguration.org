@@ -70,6 +70,7 @@
 - [[#open-razer][Open Razer]]
 - [[#emacs-daemon][Emacs Daemon]]
 - [[#steam][Steam]]
+- [[#gamemode][Gamemode]]
 - [[#dropbox][Dropbox]]
 - [[#noisetorch][NoiseTorch]]
 - [[#nixconf][Nix.conf]]
@@ -491,7 +492,7 @@ environment.systemPackages = with pkgs; [
   gsmartcontrol
   smartmontools
   pkg-config
-  alsaLib
+  alsa-lib
   xorg.xrandr
   arandr
   killall
@@ -546,6 +547,7 @@ environment.systemPackages = with pkgs; [
   etcher
   openrgb
   poppler
+  ditaa
   gnome-icon-theme
   gnome.gnome-tweaks
   gnome.dconf-editor
@@ -827,7 +829,7 @@ services.xserver.displayManager.gdm.enable = true;
 services.xserver.desktopManager.gnome.enable = true;
 
 services.dbus.packages = [ pkgs.dconf ];
-services.udev.packages = with pkgs; [ gnome3.gnome-settings-daemon ];
+services.udev.packages = with pkgs; [ gnome.gnome-settings-daemon ];
 #+END_SRC
 
 ** KDE Plasma5
@@ -866,7 +868,7 @@ services = {
   
   dbus = {
     enable = true;
-    packages = [ pkgs.gnome3.dconf ];
+    packages = [ pkgs.gnome.dconf ];
   };
 
   xserver.enable = true;
@@ -899,21 +901,32 @@ The ~hardware.bluetooth.settings~ was suggested for enabling the A2DP profile
 for headsets in the wiki, although it might not be necessary
 
 * Sounds Settings
-Sound should be enabled through [[https://nixos.wiki/wiki/PulseAudio][Pulse Audio]]. The default install is a
-lightweight version, to build a fully install (needed for some bluetooth
-headsets) you'll need to specify ~pkgs.pulseaudioFull~
+Standard sound support is enabled through [[https://nixos.wiki/wiki/PulseAudio][Pulse Audio]].
+
+However, I have switched to [[https://nixos.wiki/wiki/PipeWire][Pipewire]] as it seems to be less buggy with bluetooth
+headsets. I've left my previous pulse audio configuration commented out
  #+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
  sound.enable = true;
- hardware.pulseaudio = {
-    enable = true;
-    support32Bit = true;
-    # NixOS allows either a lightweight build (default) or full build of PulseAudio to be installed.
-    # Only the full build has Bluetooth support, so it must be selected here.
-    package = pkgs.pulseaudioFull;
+ # hardware.pulseaudio = {
+ #    enable = true;
+ #    support32Bit = true;
+ #    # NixOS allows either a lightweight build (default) or full build of PulseAudio to be installed.
+ #    # Only the full build has Bluetooth support, so it must be selected here.
+ #    package = pkgs.pulseaudioFull;
+ # };
+ hardware.pulseaudio.enable = false;
+ security.rtkit.enable = true;
+ services.pipewire = {
+  enable = true;
+  alsa.enable = true;
+  alsa.support32Bit = true;
+  pulse.enable = true;
+  # If you want to use JACK applications, uncomment this
+  #jack.enable = true;
  };
  #+END_SRC
  You may also need to add users to the ~audio~ group (see [[#users-management][Users Management]])
- 
+
 * TouchPad support
 To enable touchpad support through [[https://wiki.archlinux.org/index.php/Libinput][LibInput]] add
 #+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
@@ -983,6 +996,14 @@ To fix an issue with proton 5.13, steam now needs to be installed as a service
 following [[https://github.com/NixOS/nixpkgs/pull/114024][pull request]] for details
 #+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
 programs.steam.enable = true;
+#+END_SRC
+
+* Gamemode
+Gamemode is a daemon/lib for linux that allows games to request a set of
+optimizations to be temporarily applied. Will generally be used with steam by
+adding the launch option ~gamemoderun %command$~
+#+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
+programs.gamemode.enable = true;
 #+END_SRC
 
 * Dropbox
@@ -1256,7 +1277,7 @@ home-manager.users.dalvescb = { pkgs, config, ... }: {
     #   name = "bin/dmenu";
     #   path = "${pkgs.rofi}/bin/rofi";
     # } ])
-    gnome3.adwaita-icon-theme
+    gnome.adwaita-icon-theme
     # dunst
     arc-icon-theme
     steam-run
@@ -1512,11 +1533,11 @@ gtk = {
   enable = true;
   iconTheme = {
     name = "Adwaita-dark";
-    package = pkgs.gnome3.adwaita-icon-theme;
+    package = pkgs.gnome.adwaita-icon-theme;
   };
   theme = {
     name = "Adwaita-dark";
-    package = pkgs.gnome3.adwaita-icon-theme;
+    package = pkgs.gnome.adwaita-icon-theme;
   };
 };
 #+END_SRC
@@ -1625,7 +1646,7 @@ services.dunst = {
   enable = true;
   iconTheme = {
     name = "Arc";
-    # package = pkgs.gnome3.adwaita-icon-theme;
+    # package = pkgs.gnome.adwaita-icon-theme;
     package = pkgs.arc-icon-theme;
     size = "16x16";
   };
@@ -1649,7 +1670,8 @@ services.dunst = {
 
 #  LocalWords:  UEFI unfree NixOS OpenSSH BTRFS subvolume subvolumes WiFi GPU
 #  LocalWords:  systemd's Nvidia VA API KDE mutably Bluetooth bluetooth distro
-#  LocalWords:  TouchPad nixos FlySpell XMonad Polybar compositing GTK Rofi
+#  LocalWords:  TouchPad nixos FlySpell XMonad Polybar compositing GTK Rofi lib
 #  LocalWords:  dmenu Dunst centric Dropbox nixpkgs Picom Xbox BetterLockscreen
 #  LocalWords:  buildFHSUserEnv direnv direnv's NoiseTorch conf ertm KWin dconf
-#  LocalWords:  xmonad TimeZone Systemd Config Alacritty
+#  LocalWords:  xmonad TimeZone Systemd Config Alacritty Gamemode GameMode
+#  LocalWords:  linux
