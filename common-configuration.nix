@@ -103,7 +103,7 @@
     gsmartcontrol
     smartmontools
     pkg-config
-    alsaLib
+    alsa-lib
     xorg.xrandr
     arandr
     killall
@@ -158,6 +158,7 @@
     etcher
     openrgb
     poppler
+    ditaa
     gnome-icon-theme
     gnome.gnome-tweaks
     gnome.dconf-editor
@@ -274,7 +275,7 @@
   services.xserver.desktopManager.gnome.enable = true;
   
   services.dbus.packages = [ pkgs.dconf ];
-  services.udev.packages = with pkgs; [ gnome3.gnome-settings-daemon ];
+  services.udev.packages = with pkgs; [ gnome.gnome-settings-daemon ];
   hardware.bluetooth.enable = true;
   services.blueman.enable = true;
   hardware.bluetooth.settings = {
@@ -283,21 +284,33 @@
       };
   };
   sound.enable = true;
-  hardware.pulseaudio = {
-     enable = true;
-     support32Bit = true;
-     # NixOS allows either a lightweight build (default) or full build of PulseAudio to be installed.
-     # Only the full build has Bluetooth support, so it must be selected here.
-     package = pkgs.pulseaudioFull;
+  # hardware.pulseaudio = {
+  #    enable = true;
+  #    support32Bit = true;
+  #    # NixOS allows either a lightweight build (default) or full build of PulseAudio to be installed.
+  #    # Only the full build has Bluetooth support, so it must be selected here.
+  #    package = pkgs.pulseaudioFull;
+  # };
+  hardware.pulseaudio.enable = false;
+  security.rtkit.enable = true;
+  services.pipewire = {
+   enable = true;
+   alsa.enable = true;
+   alsa.support32Bit = true;
+   pulse.enable = true;
+   # If you want to use JACK applications, uncomment this
+   #jack.enable = true;
   };
   services.xserver.libinput.enable = true;
   hardware.xpadneo.enable = true;
+  services.hardware.xow.enable = true;
   programs.zsh.enable = true;
   programs.fish.enable = true;
   hardware.openrazer.enable = true;
   services.emacs.enable = true;
   services.emacs.defaultEditor = true;
   programs.steam.enable = true;
+  programs.gamemode.enable = true;
   systemd.user.services.dropbox = {
       description = "Dropbox";
       wantedBy = [ "graphical-session.target" ];
@@ -366,7 +379,7 @@
       #   name = "bin/dmenu";
       #   path = "${pkgs.rofi}/bin/rofi";
       # } ])
-      gnome3.adwaita-icon-theme
+      gnome.adwaita-icon-theme
       # dunst
       arc-icon-theme
       steam-run
