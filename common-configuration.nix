@@ -404,7 +404,7 @@
          ];
     programs.alacritty.enable = true;
     programs.alacritty.settings = {
-      window.opacity = 0.9;
+      window.opacity = 1.0;
       font.normal = {
         family = "Source Code Pro";
         style = "Regular";
