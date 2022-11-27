@@ -43,8 +43,20 @@
             plasma5Packages = libsForQt5;
           }
     );
-  # in [ plasma-framework-overly ];  
-  in [ ];  # use no overlays atm
+    hls-overlay = (self: super:
+      let
+        disableCabalFlag = super.haskell.lib.disableCabalFlag;
+  
+        hslWithoutPlugins = super.haskellPackages.haskell-language-server.override  {
+          hls-fourmolu-plugin = null;
+          hls-ormolu-plugin = null;
+          # supportedGhcVersions = [ "884" "8107" "90" ];
+        };
+        withoutFourmoluFlag = disableCabalFlag hslWithoutPlugins "fourmolu";
+        hls = disableCabalFlag withoutFourmoluFlag "ormolu";
+      in { haskell-language-server = hls;  } );
+  # in [ plasma-framework-overly ];
+  in [ hls-overlay ];  # use no overlays atm
   environment.systemPackages = with pkgs; [
     wget
     ispell
@@ -67,7 +79,8 @@
     # plasma5.kwallet-pam
     # plasma5.sddm-kcm
     haskellPackages.stack
-    (haskell-language-server.override { supportedGhcVersions = [ "884" "8107" ]; })
+    # (haskell-language-server.override { supportedGhcVersions = [ "884" "8107" ]; })
+    haskell-language-server
     haskellPackages.Agda
     haskellPackages.implicit-hie
     cabal-install
@@ -303,7 +316,6 @@
   };
   services.xserver.libinput.enable = true;
   hardware.xpadneo.enable = true;
-  services.hardware.xow.enable = true;
   programs.zsh.enable = true;
   programs.fish.enable = true;
   hardware.openrazer.enable = true;
