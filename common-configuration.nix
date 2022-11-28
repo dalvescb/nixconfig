@@ -43,8 +43,20 @@
             plasma5Packages = libsForQt5;
           }
     );
-  # in [ plasma-framework-overly ];  
-  in [ ];  # use no overlays atm
+    hls-overlay = (self: super:
+      let
+        disableCabalFlag = super.haskell.lib.disableCabalFlag;
+  
+        hslWithoutPlugins = super.haskellPackages.haskell-language-server.override  {
+          hls-fourmolu-plugin = null;
+          hls-ormolu-plugin = null;
+          # supportedGhcVersions = [ "884" "8107" "90" ];
+        };
+        withoutFourmoluFlag = disableCabalFlag hslWithoutPlugins "fourmolu";
+        hls = disableCabalFlag withoutFourmoluFlag "ormolu";
+      in { haskell-language-server = hls;  } );
+  # in [ plasma-framework-overly ];
+  in [ hls-overlay ];  # use no overlays atm
   environment.systemPackages = with pkgs; [
     wget
     ispell
@@ -67,7 +79,8 @@
     # plasma5.kwallet-pam
     # plasma5.sddm-kcm
     haskellPackages.stack
-    (haskell-language-server.override { supportedGhcVersions = [ "884" "8107" ]; })
+    # (haskell-language-server.override { supportedGhcVersions = [ "884" "8107" ]; })
+    haskell-language-server
     haskellPackages.Agda
     haskellPackages.implicit-hie
     cabal-install
@@ -103,7 +116,7 @@
     gsmartcontrol
     smartmontools
     pkg-config
-    alsaLib
+    alsa-lib
     xorg.xrandr
     arandr
     killall
@@ -116,7 +129,7 @@
     vulkan-tools
     vulkan-loader
     vulkan-validation-layers
-    python27Packages.pygments
+    python37Packages.pygments
     ipopt
     docker
     # haskell.packages.ghc883.haskell-language-server
@@ -157,6 +170,10 @@
     libgtop
     sqlite
     bind
+    etcher
+    openrgb
+    poppler
+    ditaa
     gnome-icon-theme
     gnome.gnome-tweaks
     gnome.dconf-editor
@@ -224,6 +241,14 @@
                       DefaultTimeoutStopSec=5s
                       DefaultTimeoutStartSec=5s
                       '';
+  services.cron = {
+    enable = true;
+    systemCronJobs = [
+        # updates ip for duckdns
+        "*/5 * * * * root /home/dalvescb/duckdns/duck.sh >/dev/null 2>&1"
+      ];
+  };
+  services.openssh.enable = true;
   networking.networkmanager.enable = true;
   networking.firewall.allowedTCPPortRanges = [
     # KDE Connect
@@ -236,6 +261,11 @@
       from = 17500;
       to = 17500;
     }
+    # SSH
+    {
+      from = 22;
+      to = 22;
+    } 
   ];
   
   networking.firewall.allowedUDPPortRanges = [
@@ -249,6 +279,11 @@
       from = 17500;
       to = 17500;
     }
+    # SSH
+    {
+      from = 22;
+      to = 22;
+    }
   ];
   services.xserver.enable = true;
   # services.xserver.displayManager.gdm.enable = true;
@@ -256,7 +291,7 @@
   services.xserver.desktopManager.gnome.enable = true;
   
   services.dbus.packages = [ pkgs.dconf ];
-  services.udev.packages = with pkgs; [ gnome3.gnome-settings-daemon ];
+  services.udev.packages = with pkgs; [ gnome.gnome-settings-daemon ];
   hardware.bluetooth.enable = true;
   services.blueman.enable = true;
   hardware.bluetooth.settings = {
@@ -265,23 +300,32 @@
       };
   };
   sound.enable = true;
-  hardware.pulseaudio = {
-     enable = true;
-     support32Bit = true;
-     # NixOS allows either a lightweight build (default) or full build of PulseAudio to be installed.
-     # Only the full build has Bluetooth support, so it must be selected here.
-     package = pkgs.pulseaudioFull;
+  # hardware.pulseaudio = {
+  #    enable = true;
+  #    support32Bit = true;
+  #    # NixOS allows either a lightweight build (default) or full build of PulseAudio to be installed.
+  #    # Only the full build has Bluetooth support, so it must be selected here.
+  #    package = pkgs.pulseaudioFull;
+  # };
+  hardware.pulseaudio.enable = false;
+  security.rtkit.enable = true;
+  services.pipewire = {
+   enable = true;
+   alsa.enable = true;
+   alsa.support32Bit = true;
+   pulse.enable = true;
+   # If you want to use JACK applications, uncomment this
+   #jack.enable = true;
   };
   services.xserver.libinput.enable = true;
   hardware.xpadneo.enable = true;
   programs.zsh.enable = true;
   programs.fish.enable = true;
   hardware.openrazer.enable = true;
-  # Enable the OpenSSH daemon.
-  services.openssh.enable = true;
   services.emacs.enable = true;
   services.emacs.defaultEditor = true;
   programs.steam.enable = true;
+  programs.gamemode.enable = true;
   systemd.user.services.dropbox = {
       description = "Dropbox";
       wantedBy = [ "graphical-session.target" ];
@@ -310,11 +354,14 @@
   
   #  this was added to fix the following error when using buildStackProject
   # error: derivation '/nix/store/5sdvfa4fg9rsrqnl120ji9gnn6fa15gc-Coconut-env.drv' has '__noChroot' set, but that's not allowed when 'sandbox' is 'true'
-  nix.useSandbox = false;
+  nix.settings.sandbox = false;
   nix.extraOptions = ''
                    keep-outputs = true
                    keep-derivations = true
                    '';
+  nixpkgs.config.permittedInsecurePackages = [
+                  "electron-12.2.3"
+                ];
   # enables auto-updating
   system.autoUpgrade.enable = false;
   system.autoUpgrade.allowReboot = false;
@@ -328,6 +375,7 @@
   system.stateVersion = "20.09"; # Did you read the comment?
   home-manager.users.dalvescb = { pkgs, config, ... }: {
     nixpkgs.config.allowUnfree = true;
+    home.stateVersion = "20.09";
     home.packages = with pkgs; [
       gimp
       pavucontrol
@@ -346,7 +394,7 @@
       #   name = "bin/dmenu";
       #   path = "${pkgs.rofi}/bin/rofi";
       # } ])
-      gnome3.adwaita-icon-theme
+      gnome.adwaita-icon-theme
       # dunst
       arc-icon-theme
       steam-run
@@ -384,7 +432,7 @@
          ];
     programs.alacritty.enable = true;
     programs.alacritty.settings = {
-      window.opacity = 0.9;
+      window.opacity = 1.0;
       font.normal = {
         family = "Source Code Pro";
         style = "Regular";
@@ -404,15 +452,6 @@
       font.size = 14.0;
       import = [ "~/nixconfig/alacritty/dracula.yml" ];
       key_bindings = [
-        {
-          key = "Escape";
-          action = "ToggleViMode";
-        }
-        {
-          key = "LBracket";
-          mods = "Control";
-          action = "ToggleViMode";
-        }
         {
           key = "N";
           mods = "Control|Shift";
