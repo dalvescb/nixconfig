@@ -56,7 +56,7 @@
         hls = disableCabalFlag withoutFourmoluFlag "ormolu";
       in { haskell-language-server = hls;  } );
   # in [ plasma-framework-overly ];
-  in [ hls-overlay ];  # use no overlays atm
+  in [ ];  # use no overlays atm
   environment.systemPackages = with pkgs; [
     wget
     ispell
@@ -79,8 +79,8 @@
     # plasma5.kwallet-pam
     # plasma5.sddm-kcm
     haskellPackages.stack
-    # (haskell-language-server.override { supportedGhcVersions = [ "884" "8107" ]; })
-    haskell-language-server
+    (haskell-language-server.override { supportedGhcVersions = [ "902" "924" ]; })
+    # haskell-language-server
     haskellPackages.Agda
     haskellPackages.implicit-hie
     cabal-install
@@ -346,7 +346,7 @@
   ];
   
   nix.settings.substituters = [
-    "https://hydra.iohk.io" # Binary Cache for Haskell.nix
+    "https://cache.iog.io" # Binary Cache for Haskell.nix
   ];
   
   #  this was added to fix the following error when using buildStackProject

@@ -1,6 +1,8 @@
-1a8e35d2 HEAD@{0}: pull: Fast-forward
-5427f3d1 HEAD@{1}: pull: Fast-forward
-273598f5 HEAD@{2}: pull: Fast-forward
-c13ffa3e HEAD@{3}: pull: Fast-forward
-781d25b3 HEAD@{4}: pull: Fast-forward
-0dab8137 HEAD@{5}: clone: from github.com:nix-community/home-manager.git
+054d9e31 HEAD@{0}: pull: Fast-forward
+1bdbebc3 HEAD@{1}: pull: Fast-forward
+1a8e35d2 HEAD@{2}: pull: Fast-forward
+5427f3d1 HEAD@{3}: pull: Fast-forward
+273598f5 HEAD@{4}: pull: Fast-forward
+c13ffa3e HEAD@{5}: pull: Fast-forward
+781d25b3 HEAD@{6}: pull: Fast-forward
+0dab8137 HEAD@{7}: clone: from github.com:nix-community/home-manager.git
