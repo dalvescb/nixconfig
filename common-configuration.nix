@@ -172,6 +172,8 @@
     openrgb
     poppler
     ditaa
+    texlab
+    ltex-ls
     gnome-icon-theme
     gnome.gnome-tweaks
     gnome.dconf-editor
