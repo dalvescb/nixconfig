@@ -518,7 +518,7 @@ environment.systemPackages = with pkgs; [
   vulkan-tools
   vulkan-loader
   vulkan-validation-layers
-  python37Packages.pygments
+  python311Packages.pygments
   ipopt
   docker
   # haskell.packages.ghc883.haskell-language-server
@@ -563,6 +563,7 @@ environment.systemPackages = with pkgs; [
   ditaa
   texlab
   ltex-ls
+  html-tidy
   gnome-icon-theme
   gnome.gnome-tweaks
   gnome.dconf-editor

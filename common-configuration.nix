@@ -129,7 +129,7 @@
     vulkan-tools
     vulkan-loader
     vulkan-validation-layers
-    python37Packages.pygments
+    python311Packages.pygments
     ipopt
     docker
     # haskell.packages.ghc883.haskell-language-server
@@ -174,6 +174,7 @@
     ditaa
     texlab
     ltex-ls
+    html-tidy
     gnome-icon-theme
     gnome.gnome-tweaks
     gnome.dconf-editor
