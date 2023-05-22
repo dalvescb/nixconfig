@@ -175,6 +175,7 @@
     texlab
     ltex-ls
     html-tidy
+    dolphin-emu
     gnome-icon-theme
     gnome.gnome-tweaks
     gnome.dconf-editor
