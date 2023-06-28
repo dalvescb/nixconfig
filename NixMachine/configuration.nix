@@ -35,7 +35,8 @@
   networking.interfaces.eno2.useDHCP = true;
   networking.interfaces.wlo1.useDHCP = true;
 
-  hardware.video.hidpi.enable = false;
+  # hardware.video.hidpi.enable = false;
+  # this got deprecated in upgarde, with the suggestion to configure fonts.fontconfig manually
 
   services.hardware.openrgb.motherboard = "intel";
   services.hardware.openrgb.enable = true;
