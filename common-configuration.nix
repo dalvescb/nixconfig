@@ -81,6 +81,7 @@
     haskellPackages.stack
     # (haskell-language-server.override { supportedGhcVersions = [ "902" "924" ]; })
     haskell-language-server
+    haskellPackages.Cabal-syntax
     haskellPackages.Agda
     haskellPackages.implicit-hie
     cabal-install
@@ -177,6 +178,16 @@
     html-tidy
     dolphin-emu
     sqlite
+    elmPackages.elm
+    elmPackages.nodejs
+    elmPackages.elm-language-server
+    elmPackages.elm-test
+    elmPackages.elm-format
+    elmPackages.elm-json
+    elmPackages.elm-review
+    elmPackages.elm-live
+    elm2nix
+    thunderbird
     gnome-icon-theme
     gnome.gnome-tweaks
     gnome.dconf-editor
