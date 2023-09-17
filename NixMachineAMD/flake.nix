@@ -2,17 +2,17 @@
   description = "A very basic flake";
 
   inputs = {
-    nixpkgs.url = "github.nixos/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     home-manager = {
       url = github:nix-community/home-manager;
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 
-  outputs = { self, nixpkgs, home-manager }: {
+  outputs = { self, nixpkgs, home-manager }:
     let
       system = "x86_64-linux";
-      pkgs = improt nixpkgs {
+      pkgs = import nixpkgs {
         inherit system;
         config.allowUnfree = true;
       };
@@ -29,7 +29,7 @@
                         home-manager.users.dalvescb = {
                           imports = [ /home/dalvescb/nixconfig/home.nix ];
                         };
-                      };
+                      }
                     ];
         };
 
