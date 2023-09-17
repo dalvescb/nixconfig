@@ -22,4 +22,8 @@
     "nixos-config=/home/dalvescb/nixconfig/${config.networking.hostName}/configuration.nix"
   ];
 
+  nix = {
+    package = pkgs.nixFlakes;
+    extraOptions = "experimental-features = nix-command flakes";
+  };
 }
