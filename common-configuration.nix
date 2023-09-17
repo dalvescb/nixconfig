@@ -4,7 +4,7 @@
 { config, pkgs, ... }:
 
 {
-  imports = [ <home-manager/nixos> ];
+  imports = [ ];
   nixpkgs.overlays = let
     # this overlay is just a tmp fix for a steam update issue, track here https://github.com/ValveSoftware/steam-runtime/issues/462
     # remove me when the issue is fixed

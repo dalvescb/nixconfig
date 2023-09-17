@@ -318,9 +318,9 @@ sudo nixos-rebuild switch --upgrade
 
     networking.hostName = "<hostname>"; # replace with actual hostname
     nix.nixPath = [
-      "home-manager=/nix/var/nix/profiles/per-user/root/channels/home-manager"
-      "nixpkgs=/nix/var/nix/profiles/per-user/root/channels/nixos/nixpkgs"
-      "nixos-config=/home/<user>/nixconfig/${config.networking.hostName}/configuration.nix"
+      # "home-manager=/nix/var/nix/profiles/per-user/root/channels/home-manager"
+      # "nixpkgs=/nix/var/nix/profiles/per-user/root/channels/nixos/nixpkgs"
+      # "nixos-config=/home/<user>/nixconfig/${config.networking.hostName}/configuration.nix"
     ];
 
 
@@ -372,7 +372,7 @@ NixOS]], then using ~org-babel-tangle~ from within emacs.
 * Imports
 Import other modules (and [[https://nix-community.github.io/home-manager/index.html#sec-install-nixos-module][Home Manager]]) here
 #+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
-imports = [ <home-manager/nixos> ];
+imports = [ ];
 #+END_SRC
 *NOTE* to import home-manager this way you need to add it to nix channels with
 #+BEGIN_SRC shell :tangle no
