@@ -188,6 +188,7 @@
     elmPackages.elm-live
     elm2nix
     thunderbird
+    silver-searcher
     gnome-icon-theme
     gnome.gnome-tweaks
     gnome.dconf-editor
