@@ -81,7 +81,7 @@
     haskellPackages.stack
     # (haskell-language-server.override { supportedGhcVersions = [ "902" "924" ]; })
     haskell-language-server
-    haskellPackages.Cabal-syntax
+    # haskellPackages.Cabal-syntax
     haskellPackages.Agda
     haskellPackages.implicit-hie
     cabal-install
@@ -135,7 +135,7 @@
     docker
     # haskell.packages.ghc883.haskell-language-server
     glmark2
-    ripgrep
+    # ripgrep
     ripgrep-all
     # dropbox - we don't need this in the environment. systemd unit pulls it in
     dropbox-cli

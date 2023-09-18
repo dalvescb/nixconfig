@@ -24,7 +24,7 @@
           inherit system;
           modules = [ ./NixMachine/configuration.nix
                       home-manager.nixosModules.home-manager {
-                        home-manager.userGlobalPkgs = true;
+                        home-manager.useGlobalPkgs = true;
                         home-manager.useUserPackages = true;
                         home-manager.users.dalvescb = {
                           imports = [ ./home.nix ];

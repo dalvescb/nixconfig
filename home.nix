@@ -2,7 +2,7 @@
 { config, pkgs, ... }:
 {
   home.username = "dalvescb";
-  home.homeDirectory = "home/dalvescb";
+  home.homeDirectory = "/home/dalvescb";
   home.stateVersion = "20.09";
   programs.home-manager.enable = true;
 

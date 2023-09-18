@@ -11,7 +11,7 @@
     extraGroups = [ "wheel" "networkmanager" "plugdev" "audio" ];
     shell = pkgs.zsh;
     hashedPassword = "$6$5xohALmPq$PRsYaQ.XCP8FwwMZ6D15jwddZoH/joy1X8yt4VbTyrEaHW5B7IaVxMk5mtl5aMnn98m3qLy6LYZwtmU86jm6g1";
-    openssh.authorizedKeys.keyFiles = [ "/home/dalvescb/nixconfig/NixMachine/cdalves.pub" ];
+    openssh.authorizedKeys.keyFiles = [ ./cdalves.pub ];
     # generate me with mkpasswd -m sha-512
   };
 
