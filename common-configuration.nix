@@ -193,6 +193,7 @@
     gnome.gnome-tweaks
     gnome.dconf-editor
     gnomeExtensions.appindicator
+    gnomeExtensions.notes
     gnomeExtensions.just-perfection
     gnomeExtensions.gsconnect
     gnomeExtensions.another-window-session-manager
