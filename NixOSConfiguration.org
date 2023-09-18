@@ -525,7 +525,7 @@ environment.systemPackages = with pkgs; [
   # haskell.packages.ghc883.haskell-language-server
   glmark2
   # ripgrep
-  ripgrep-all
+  # ripgrep-all
   # dropbox - we don't need this in the environment. systemd unit pulls it in
   dropbox-cli
   nodePackages.mermaid-cli
@@ -1289,7 +1289,7 @@ need the [[https://rycee.gitlab.io/home-manager/][Home Manager]] add on
 { config, pkgs, ... }:
 {
   home.username = "dalvescb";
-  home.homeDirectory = "home/dalvescb";
+  home.homeDirectory = "/home/dalvescb";
   home.stateVersion = "20.09";
   programs.home-manager.enable = true;
 

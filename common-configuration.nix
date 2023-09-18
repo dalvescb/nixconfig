@@ -136,7 +136,7 @@
     # haskell.packages.ghc883.haskell-language-server
     glmark2
     # ripgrep
-    ripgrep-all
+    # ripgrep-all
     # dropbox - we don't need this in the environment. systemd unit pulls it in
     dropbox-cli
     nodePackages.mermaid-cli
