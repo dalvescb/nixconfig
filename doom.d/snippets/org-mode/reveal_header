@@ -1,0 +1,31 @@
+# -*- mode: snippet -*-
+# name: reveal_header
+# key: s_reveal
+# group: custom
+# --
+* Header :ignore:
+# -*- mode: org; -*-
+
+
+
+#+REVEAL_ROOT: https://cdn.jsdelivr.net/npm/reveal.js@3.9.0
+#+REVEAL_VERSION: 3.9.0
+#+REVEAL_THEME: sky
+
+#+OPTIONS: reveal_title_slide:auto num:nil toc:nil timestamp:nil
+
+#+MACRO: color @@html:<font color="$1">$2</font>@@
+#+MACRO: caption @@html:<font color="#5748D4">$1</font>@@
+#+MACRO: alert @@html:<font color="#4E03FC">$1</font>@@
+
+#+REVEAL_EXTRA_CSS: ./reveal_extra.css
+# add a reveal_extra.css to the current directory (use snippet reveal_css)
+# To load Org-reveal, type “M-x load-library”, then type “ox-reveal”.
+
+
+#+Title: ${1:Title}
+#+Date: ${2:`(format-time-string "%Y-%m-%d")`}
+#+Email: ${3:curtis.dalves@gmail.com}
+#+Author: ${4:Curtis D'Alves}
+
+* ${0:Section 1}

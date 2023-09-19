@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: caption
+# key: s_caption
+# group: custom
+# --
+#+CAPTION: $0

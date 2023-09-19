@@ -1,0 +1,19 @@
+# -*- mode: snippet -*-
+# name: docker_run
+# key: s_docker_run
+# group: docker
+# type: command
+# --
+(edit-tmp-buffer '("docker run ${1:ubuntu\:18.04} ${2:echo 'hello'}"
+                   "  # run container named ubuntu with command echo"
+                   "docker run -it $1"
+                   "  # run linking stdin to attached terminal"
+                   "docker run -d $1 "
+                   "  # run detached from terminal"
+                   "docker run -p 80:8000 $1 "
+                   "  # map port 8000 (in container) to 80 (on host)"
+                   "docker run -v /opt/datadir:/var/lib/data $1 "
+                   "  # map path /var/lib/data in container to /opt/datadir"
+                   "docker run -e APP_COLOR=blue $1 "
+                   "  # run container with environment variable APP_COLOR"
+                 ))

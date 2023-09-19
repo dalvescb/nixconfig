@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: docker_build
+# key: s_docker_build
+# group: docker
+# type: command
+# --
+(edit-tmp-buffer '("docker build -t cdalves/${1:app-name} ${2:path/to/Dockerfile} ."
+                   "docker push cdalves/$1"))

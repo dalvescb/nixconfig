@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: note
+# key: s_note
+# group: custom
+# --
+#+BEGIN_NOTES
+$0
+#+END_NOTES

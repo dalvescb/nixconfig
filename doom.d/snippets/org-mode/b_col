@@ -1,0 +1,10 @@
+# -*- mode: snippet -*-
+# name: b_col
+# key: <bmcol
+# --
+*** ${1:Block Title}                                              :BMCOL:B_block:
+:PROPERTIES:
+:BEAMER_col: ${2:0.45}
+:BEAMER_env: block
+:END:
+${0:column content}

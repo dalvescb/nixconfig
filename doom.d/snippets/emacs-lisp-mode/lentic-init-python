@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# name: lentic-init-python
+# key: s_lentic-init-python
+# group: custom
+# --
+((python-mode
+  .
+  ((lentic-init . lentic-python-org-init)
+  (eval . (require 'm-buffer-macro nil t)))))

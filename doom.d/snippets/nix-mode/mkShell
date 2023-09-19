@@ -1,0 +1,11 @@
+# -*- mode: snippet -*-
+# name: mkShell
+# key: s_mkShell
+# --
+{ pkgs ? import <nixpkgs> {} }:
+pkgs.mkShell {
+  src = "./";
+  buildInputs = with pkgs; [
+    gcc
+  ];
+}

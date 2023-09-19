@@ -7,9 +7,10 @@
       url = github:nix-community/home-manager;
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    nix-doom-emacs.url = "github:nix-community/nix-doom-emacs";
   };
 
-  outputs = { self, nixpkgs, home-manager }:
+  outputs = { self, nixpkgs, home-manager, nix-doom-emacs, ... } @ inputs:
     let
       system = "x86_64-linux";
       pkgs = import nixpkgs {
@@ -18,6 +19,11 @@
       };
 
       lib = nixpkgs.lib;
+
+      doom-emacs = nix-doom-emacs.packages.${system}.default.override {
+        doomPrivateDir = ./doom.d;
+      };
+
     in {
       nixosConfigurations = {
         NixMachine = lib.nixosSystem {
@@ -31,6 +37,7 @@
                         };
                       }
                     ];
+          specialArgs.flake-inputs = inputs // { inherit doom-emacs;  };
         };
        # hmConfig is not necessary? Replaced with declaration in nixosConfigurations.NixMachine.modules?
         hmConfig = {

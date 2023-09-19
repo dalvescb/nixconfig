@@ -1,0 +1,15 @@
+# -*- mode: snippet -*-
+# name: haddock_module
+# key: s_haddock_module
+# group: haddock
+# --
+{-|
+Module      : ${1:Module.Name}
+Copyright   :  (c) ${2:Curtis D'Alves 2020}
+License     :  GPL (see the LICENSE file)
+Maintainer  :  ${3:curtis.dalves@gmail.com}
+Stability   :  ${4:experimental}
+Portability :  portable
+
+${0:Description}
+-}

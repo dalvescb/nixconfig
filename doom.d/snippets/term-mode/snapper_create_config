@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# name: snapper_create_config
+# key: s_snapper_create_config
+# group: snapper
+# type: command
+# --
+(edit-tmp-buffer '("snapper -c ${1:name} create-config ${0:/}"
+                   "  # configure in /etc/snapper/configs/$1"
+                   "  # $0 be the mounted subvolume"))

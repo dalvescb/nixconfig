@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: patchShebangs
+# key: s_patchShebangs
+# --
+configurePhase= ''
+patchShebangs run_tests.sh
+'';

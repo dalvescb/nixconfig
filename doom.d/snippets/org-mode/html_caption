@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: html_caption
+# key: <caption
+# --
+{{{caption($0)}}}

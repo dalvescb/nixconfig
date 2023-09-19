@@ -1,0 +1,10 @@
+# -*- mode: snippet -*-
+# name: reveal_css
+# key: s_reveal_css
+# --
+
+.reveal h1 {font-size: 2.5em; color: #5748D4}
+.reveal h2 {color: #5748D4}
+.reveal h3 {color: #5748D4}
+h2.author {font-size: 1.5em; color: black }
+h2.date {font-size: 1.5em; color: black }

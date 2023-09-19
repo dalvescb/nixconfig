@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: docker_list_containers
+# key: s_docker_list_containers
+# group: docker
+# type: command
+# --
+(edit-tmp-buffer '("docker container ls -a"))

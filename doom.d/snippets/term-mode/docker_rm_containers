@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: docker_rm_containers
+# key: s_docker_rm_containers
+# group: docker
+# type: command
+# --
+(edit-tmp-buffer '("docker container rm ${0:ContainerID}"))

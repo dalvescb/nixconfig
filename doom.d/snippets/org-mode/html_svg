@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: html_svg
+# key: s_html_svg
+# group: custom
+# --
+#+begin_export html
+<img src="${0:figures/something.svg}" style="background:none; border:none; box-shadow:none;" />
+#+end_export

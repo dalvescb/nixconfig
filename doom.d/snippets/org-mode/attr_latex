@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: attr_latex
+# key: s_attr_latex
+# group: custom
+# --
+#+ATTR_LATEX: $0

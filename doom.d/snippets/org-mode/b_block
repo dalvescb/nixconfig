@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# name: b_block
+# key: <bmblock
+# --
+*** ${1:Basic Block Title}                                         :B_block:
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+${0:basic block content}

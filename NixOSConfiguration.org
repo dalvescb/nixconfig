@@ -362,7 +362,7 @@ NixOS]], then using ~org-babel-tangle~ from within emacs.
     #+BEGIN_SRC nix :tangle common-configuration.nix :noweb yes
     # Edit this configuration file to include configuration common between hosts
     # NOTE this was generated from the org file NixOSConfiguration.org
-    { config, pkgs, ... }:
+    { config, pkgs, flake-inputs, ... }:
 
     {
       <<insert-config-here>>
@@ -446,11 +446,15 @@ Install packages system-wide by adding them to ~environment.systemPackages~.
 *NOTE* multiple declarations (between modules) will result in /merging/ of this
 list, so not necessarily all installed system packages need to be located here
 #+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
-environment.systemPackages = with pkgs; [
+environment.systemPackages = let
+    system = "x86_64-linux";
+    doom-emacs = flake-inputs.doom-emacs;
+in with pkgs; [
   wget
-  ispell
+  # ispell
   vim
-  emacs
+  # emacs
+  doom-emacs
   git
   imagemagick
   subversion

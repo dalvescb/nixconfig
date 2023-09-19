@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: btrfs_sub_list
+# key: s_btrfs_sub_list
+# group: btrfs
+# type: command
+# --
+(edit-tmp-buffer '("btrfs subvolume list -p ${0:/}"))

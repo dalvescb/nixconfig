@@ -1,0 +1,18 @@
+# -*- mode: snippet -*-
+# name: beamer_header
+# key: s_beamer
+# group: custom
+# --
+#+TITLE: ${1:Title}
+#+AUTHOR: ${2:Curtis D'Alves}
+#+OPTIONS: H:2 toc:t num:t
+#+LATEX_CLASS: beamer
+#+LATEX_CLASS_OPTIONS: [presentation]
+#+BEAMER_THEME: Madrid
+#+COLUMNS: %45ITEM %10BEAMER_ENV(Env) %10BEAMER_ACT(Act) %4BEAMER_COL(Col)
+#+LATEX_HEADER_EXTRA: \usepackage{amsmath, amssymb}
+
+* ${3:Section 1}
+
+** ${4:Frame 1}
+   $0

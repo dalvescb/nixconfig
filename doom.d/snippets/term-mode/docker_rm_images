@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: docker_rm_images
+# key: s_docker_rm_images
+# group: docker
+# type: command
+# --
+(edit-tmp-buffer '("docker image rm ${0:ImageID}"))

@@ -1,0 +1,14 @@
+# -*- mode: snippet -*-
+# name: snapper_create_snapshot
+# key: s_snapper_create_snapshot
+# group: snapper
+# type: command
+# --
+(edit-tmp-buffer '("snapper -c ${1:configname} create -c timeline --description ${0:MyDescription}"
+                   "  # create a snapshot with timeline cleanup policy"
+                   "snapper -c ${1:configname} create -c number -t pre -p --description ${0:PreDescription}"
+                   "  # will print pre-number"
+                   "snapper -c ${1:configname} create -c number -t post --pre-number N --description ${0:PostDescription}"
+                   "  # changing N to pre-number creates pre-post pair"
+                   "  # undo pre-post (with say #'s 2,3): snapper undochange 2..3"
+                   ))

@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name:haskell-src
+# key: s_haskell
+# group: custom
+# --
+#+BEGIN_SRC haskell :results value
+$0
+#+END_SRC

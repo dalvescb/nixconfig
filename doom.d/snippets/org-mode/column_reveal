@@ -1,0 +1,12 @@
+# -*- mode: snippet -*-
+# name: column_reveal
+# key: s_column_reveal
+# group: custom
+# --
+#+REVEAL_HTML: <div class="column" style="float:left; width: 50%">
+${1:Column 1}
+#+REVEAL_HTML: </div>
+
+#+REVEAL_HTML: <div class="column" style="float:right; width: 50%">
+${0:Column 2}
+#+REVEAL_HTML: </div> 

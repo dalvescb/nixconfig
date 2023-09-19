@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: btrfs_sub_delete
+# key: s_btrfs_sub_delete
+# group: btrfs
+# type: command
+# --
+(edit-tmp-buffer '("btrfs subvolume delete ${0:/path/to/subvolume}"))

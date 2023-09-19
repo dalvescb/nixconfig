@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: elisp
+# key: s_elisp
+# group: custom
+# --
+#+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
+$0
+#+END_SRC

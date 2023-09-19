@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: btrfs_sub_create
+# key: s_btrfs_sub_create
+# group: btrfs
+# type: command
+# --
+(edit-tmp-buffer '("btrfs subvolume create ${0:/mnt}"))

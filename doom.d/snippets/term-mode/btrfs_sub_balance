@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: btrfs_sub_balance
+# key: s_btrfs_sub_balance
+# group: btrfs
+# type: command
+# --
+(edit-tmp-buffer '("btrfs balance start /" "btrfs balance status /"))

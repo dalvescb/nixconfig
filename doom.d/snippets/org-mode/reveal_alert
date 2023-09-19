@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: html_alert
+# key: s_alert
+# group: custom
+# --
+{{{alert($0)}}}

@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: begin_latex
+# key: s_begin_latex
+# group: custom
+# --
+#+BEGIN_LATEX
+$0
+#+END_LATEX

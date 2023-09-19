@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: html_color
+# key: s_color
+# group: custom
+# --
+{{{color(${1:red},$0)}}}
