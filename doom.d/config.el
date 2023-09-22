@@ -95,6 +95,22 @@
 
 (map! "C-c t" #'vterm)
 
+(map! "C-c i" #'helm-imenu)
+
+(map! "C-c l" #'lsp)
+;; (map! "C-c h" #'lsp-ui-doc-show)
+
+
+;; set localleader key to both , (like spacemacs) and SPC-m (like doom)
+(setq doom-localleader-key ",")
+
+;; Also use SPC m for localleader
+(defun my/call-localleader ()
+  (interactive)
+  (setq unread-command-events (listify-key-sequence ",")))
+
+(map! :leader (:desc "localleader" "m" #'my/call-localleader))
+
 ;; org reveal
 (after! org
   (load-library "ox-reveal"))
