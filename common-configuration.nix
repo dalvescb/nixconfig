@@ -62,7 +62,7 @@
           doom-emacs = flake-inputs.doom-emacs;
       in with pkgs; [
         wget
-        # ispell
+        ispell
         vim
         # emacs
         doom-emacs
@@ -140,6 +140,13 @@
         # haskell.packages.ghc883.haskell-language-server
         glmark2
         # ripgrep
+      
+        (ripgrep.overrideAttrs (old: {
+                      doInstallCheck = false;
+              }))
+        (ripgrep-all.overrideAttrs (old: {
+                      doInstallCheck = false;
+              }))
         # ripgrep-all
         # dropbox - we don't need this in the environment. systemd unit pulls it in
         dropbox-cli
