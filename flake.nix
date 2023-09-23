@@ -39,6 +39,21 @@
                     ];
           specialArgs.flake-inputs = inputs // { inherit doom-emacs;  };
         };
+
+        NixMachineAMD = lib.nixosSystem {
+          inherit system;
+          modules = [ ./NixMachineAMD/configuration.nix
+                      home-manager.nixosModules.home-manager {
+                        home-manager.useGlobalPkgs = true;
+                        home-manager.useUserPackages = true;
+                        home-manager.users.dalvescb = {
+                          imports = [ ./home.nix ];
+                        };
+                      }
+                    ];
+          specialArgs.flake-inputs = inputs // { inherit doom-emacs;  };
+        };
+
        # hmConfig is not necessary? Replaced with declaration in nixosConfigurations.NixMachine.modules?
         hmConfig = {
           dalvescb =
