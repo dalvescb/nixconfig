@@ -193,6 +193,7 @@
         clang-tools
         clangStdenv
         bear
+        cmake
         elmPackages.elm
         elmPackages.nodejs
         elmPackages.elm-language-server
