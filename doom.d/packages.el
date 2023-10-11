@@ -54,3 +54,4 @@
 (package! ox-reveal)
 (package! evil-iedit-state)
 (package! evil-mc)
+(package! leetcode)

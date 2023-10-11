@@ -189,6 +189,10 @@
         html-tidy
         dolphin-emu
         sqlite
+        clang
+        clang-tools
+        clangStdenv
+        bear
         elmPackages.elm
         elmPackages.nodejs
         elmPackages.elm-language-server
