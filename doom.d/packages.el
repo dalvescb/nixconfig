@@ -55,3 +55,4 @@
 (package! evil-iedit-state)
 (package! evil-mc)
 (package! leetcode)
+(package! skeletor)
