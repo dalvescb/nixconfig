@@ -60,7 +60,29 @@
       environment.systemPackages = let
           system = "x86_64-linux";
           doom-emacs = flake-inputs.doom-emacs;
+          my-cookies =
+              # ...
+              (
+                  pkgs.python3Packages.buildPythonPackage rec {
+                  pname = "my-cookies";
+                  version = "0.1.3";
+                  # src = pkgs.python3Packages.fetchPypi {
+                  #     inherit pname version;
+                  #     sha256 = "ddee63d0714e5d4c94a3a61550a4276dac6f014b43a114f31aa5bc1d47f3ad0f";
+                  # };
+                  src = pkgs.fetchurl {
+                    url = "https://files.pythonhosted.org/packages/8c/3e/bcebe0f7b2d2a622fe9ea181bedcdce6dc70eed480a098e4f0b1569b1da3/my_cookies-0.1.3.tar.gz";
+                    hash = "sha256-3e5j0HFOXUyUo6YVUKQnbaxvAUtDoRTzGqW8HUfzrQ8=";
+                  };
+                  doCheck = false;
+                  propagatedBuildInputs = [
+                      # Specify dependencies
+                      # pkgs.python3Packages.numpy
+                  ];
+                  }
+              );
       in with pkgs; [
+        my-cookies
         wget
         ispell
         vim
