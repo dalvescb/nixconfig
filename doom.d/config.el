@@ -102,14 +102,14 @@
 
 
 ;; set localleader key to both , (like spacemacs) and SPC-m (like doom)
-(setq doom-localleader-key ",")
+;; (setq doom-localleader-key ",")
 
 ;; Also use SPC m for localleader
-(defun my/call-localleader ()
-  (interactive)
-  (setq unread-command-events (listify-key-sequence ",")))
+;; (defun my/call-localleader ()
+;;   (interactive)
+;;   (setq unread-command-events (listify-key-sequence ",")))
 
-(map! :leader (:desc "localleader" "m" #'my/call-localleader))
+;; (map! :leader (:desc "localleader" "m" #'my/call-localleader))
 
 ;; org reveal
 (after! org
