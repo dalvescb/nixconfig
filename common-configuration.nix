@@ -377,6 +377,7 @@
       programs.fish.enable = true;
       hardware.openrazer.enable = true;
       services.emacs.enable = true;
+      services.emacs.package = flake-inputs.doom-emacs;
       services.emacs.defaultEditor = true;
       programs.steam.enable = true;
       programs.gamemode.enable = true;
