@@ -56,3 +56,4 @@
 (package! evil-mc)
 (package! leetcode)
 (package! skeletor)
+(package! atomic-chrome)
