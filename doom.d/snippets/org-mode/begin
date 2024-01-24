@@ -1,8 +1,0 @@
-# -*- mode: snippet -*-
-# name: begin
-# key: s_begin
-# group: custom
-# --
-#+BEGIN_$1
-$0
-#+END_$1

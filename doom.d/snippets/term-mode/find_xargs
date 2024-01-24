@@ -1,7 +1,0 @@
-# -*- mode: snippet -*-
-# name: find_xargs
-# key: s_find_xargs
-# group: find
-# type: command
-# --
-(edit-tmp-buffer '("find . -name ${1:name} -type f | xargs -0 -i ${2:cmd} ${0:\{\}}"))

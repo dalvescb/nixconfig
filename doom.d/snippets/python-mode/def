@@ -1,9 +1,0 @@
-# -*- mode: snippet -*-
-# name: def
-# key: s_def
-# --
-def ${1:name}($2):
-    \'\'\'$3
-    ${2:$(python-args-to-docstring-numpy)}
-    \'\'\'
-    $0

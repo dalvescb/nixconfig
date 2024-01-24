@@ -1,7 +1,0 @@
-# -*- mode: snippet -*-
-# name: format_ext4
-# key: s_format_ext4
-# group: format
-# type: command
-# --
-(edit-tmp-buffer '("mkfs.ext4 ${1:/dev/sdX}" "e2label $1 ${0:ARCH_LABEL}"))

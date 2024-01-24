@@ -32,6 +32,9 @@
     alacritty
   ];
 
+  home.sessionPath = [
+      "$HOME/.config/emacs/bin"
+      ];
   programs.zsh.enable = true;
   programs.zsh.oh-my-zsh.enable = true;
   programs.zsh.oh-my-zsh.plugins = [ "git" ];

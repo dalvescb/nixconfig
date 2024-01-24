@@ -73,6 +73,8 @@
 - [[#gamemode][Gamemode]]
 - [[#dropbox][Dropbox]]
 - [[#noisetorch][NoiseTorch]]
+- [[#plex-media-server][Plex Media Server]]
+  - [[#nix-plex-services][Nix Plex Services]]
 - [[#nixconf][Nix.conf]]
 - [[#nix-extra-options][Nix Extra Options]]
 - [[#nix-permitted-insecure-packages][Nix Permitted Insecure Packages]]
@@ -84,6 +86,7 @@
   - [[#root-rollback-removed][Root Rollback #REMOVED]]
   - [[#copying-files-to-persist][Copying Files to Persist]]
 - [[#home-manager][Home Manager]]
+  - [[#path-variable][Path Variable]]
   - [[#shell-configuration][Shell Configuration]]
     - [[#shell-aliases][Shell Aliases]]
   - [[#alacritty][Alacritty]]
@@ -471,12 +474,15 @@ environment.systemPackages = let
             }
         );
 in with pkgs; [
+  aircrack-ng
+  crunch
+  kodi
   my-cookies
   wget
   ispell
   vim
   # emacs
-  doom-emacs
+  # doom-emacs
   git
   imagemagick
   subversion
@@ -1057,7 +1063,7 @@ To install and enable the systemd user service for the Emacs daemon, add the
 following
 #+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
 services.emacs.enable = true;
-services.emacs.package = flake-inputs.doom-emacs;
+# services.emacs.package = flake-inputs.doom-emacs;
 services.emacs.defaultEditor = true;
 #+END_SRC
 
@@ -1106,6 +1112,17 @@ or Pipewire (it requires the setcap wrapper to run properly and thus needs to be
 enabled as a service)
 #+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
 programs.noisetorch.enable = true;
+#+END_SRC
+
+* Plex Media Server
+[[https://nixos.wiki/wiki/Plex][Plex]] allows you to aggregate all your personal media and access it anywhere. See
+[[https://nixos.wiki/wiki/Plexreddit.com/r/Piracy/comments/12wh7ym/a_hopefully_beginner_friendly_guide_to_using_plex/][this 2023 reddit thread]] for an explanation of how to set it up with other services to "acquire media"
+** Nix Plex Services
+#+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
+services.plex = {
+  enable = true;
+  openFirewall = true;
+};
 #+END_SRC
 
 * Nix.conf
@@ -1366,6 +1383,14 @@ need the [[https://rycee.gitlab.io/home-manager/][Home Manager]] add on
 #+END_SRC
 *NOTE*: You need to import home-manager before using it (see [[#imports][Imports]]). All the
  following home-manager specific configurations are inserted into ~<<insert-home-here>>~
+
+** Path Variable
+Add extra directories to your PATH here
+#+BEGIN_SRC nix :tangle no :noweb-ref insert-home-here
+home.sessionPath = [
+    "$HOME/.config/emacs/bin"
+    ];
+#+END_SRC
 
 ** Shell Configuration
 I use zsh with a couple of non-standard plugins

@@ -1,7 +1,0 @@
-# -*- mode: snippet -*-
-# name: docker_list_images
-# key: s_docker_list_images
-# group: docker
-# type: command
-# --
-(edit-tmp-buffer '("docker image ls"))

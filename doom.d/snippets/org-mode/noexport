@@ -1,7 +1,0 @@
-# -*- mode: snippet -*-
-# name: noexport
-# key: s_noexport
-# --
-
-#+EXCLUDE_TAGS: noexport
-* ${1:Heading}                                                            :noexport:

@@ -1,7 +1,0 @@
-# -*- mode: snippet -*-
-# name: format_efi
-# key: s_format_efi
-# group: format
-# type: command
-# --
-(edit-tmp-buffer '("mkfs.vfat -F32 -n EFI ${1:/dev/sdX}" "fatlabel $1 ${0:ARCH_LABEL}"))

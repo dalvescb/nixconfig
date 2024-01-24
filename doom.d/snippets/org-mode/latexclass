@@ -1,6 +1,0 @@
-# -*- mode: snippet -*-
-# name: latexclass
-# key: s_latexclass
-# group: custom
-# --
-#+LaTeX_CLASS: ${1:customarticle}

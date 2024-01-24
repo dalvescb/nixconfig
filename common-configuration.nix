@@ -82,12 +82,15 @@
                   }
               );
       in with pkgs; [
+        aircrack-ng
+        crunch
+        kodi
         my-cookies
         wget
         ispell
         vim
         # emacs
-        doom-emacs
+        # doom-emacs
         git
         imagemagick
         subversion
@@ -377,7 +380,7 @@
       programs.fish.enable = true;
       hardware.openrazer.enable = true;
       services.emacs.enable = true;
-      services.emacs.package = flake-inputs.doom-emacs;
+      # services.emacs.package = flake-inputs.doom-emacs;
       services.emacs.defaultEditor = true;
       programs.steam.enable = true;
       programs.gamemode.enable = true;
@@ -399,6 +402,10 @@
           };
         };
       programs.noisetorch.enable = true;
+      services.plex = {
+        enable = true;
+        openFirewall = true;
+      };
       nix.settings.trusted-public-keys = [
         "hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ=" # Binary Cache for Haskell.nix
       ];

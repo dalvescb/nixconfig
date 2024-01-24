@@ -1,6 +1,0 @@
-# -*- mode: snippet -*-
-# name: entails
-# key: <entails
-# --
-≡⟨${1:?}⟩
-  ${0:?}

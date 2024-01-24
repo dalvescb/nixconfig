@@ -1,7 +1,0 @@
-# -*- mode: snippet -*-
-# name: btrfs_mount
-# key: s_btrfs_mount
-# group: btrfs
-# type: command
-# --
-(edit-tmp-buffer '("mount -o noatime,compress=lzo,space_cache,subvol=${1:@} /dev/${2:sdX} ${0:/mnt}"))

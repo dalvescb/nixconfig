@@ -1,6 +1,0 @@
-# -*- mode: snippet -*-
-# name: reveal_section
-# key: s_reveal_section
-# group: custom
-# --
-* {{{caption($0)}}}

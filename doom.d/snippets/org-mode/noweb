@@ -1,8 +1,0 @@
-# -*- mode: snippet -*-
-# name: noweb
-# key: s_noweb
-# group: custom
-# --
-#+BEGIN_SRC ${1:emacs-lisp} :tangle no :noweb-ref ${2:label}
-$0
-#+END_SRC

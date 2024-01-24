@@ -1,9 +1,0 @@
-# -*- mode: snippet -*-
-# name: django_settings_static
-# key: s_django_setttings_static
-# --
-STATIC_URL = '/static/'
-STATIC_ROOT = '/home/static/'
-STATICFILES_DIRS = [
-                 os.path.join(BASE_DIR, "static"),
-                 ]

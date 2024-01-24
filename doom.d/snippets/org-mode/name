@@ -1,6 +1,0 @@
-# -*- mode: snippet -*-
-# name: name
-# key: s_name
-# group: custom
-# --
-#+NAME: ${1:fig}:$0
