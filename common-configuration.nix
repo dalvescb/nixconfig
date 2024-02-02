@@ -129,7 +129,7 @@
         unrar
         mattermost-desktop
         slack
-        teams
+        # teams
         zoom-us
         snapper
         # steam
@@ -234,7 +234,7 @@
         gnome.gnome-tweaks
         gnome.dconf-editor
         gnomeExtensions.appindicator
-        gnomeExtensions.notes
+        # gnomeExtensions.notes
         gnomeExtensions.just-perfection
         gnomeExtensions.gsconnect
         gnomeExtensions.another-window-session-manager
@@ -380,7 +380,11 @@
       programs.fish.enable = true;
       hardware.openrazer.enable = true;
       services.emacs.enable = true;
-      # services.emacs.package = flake-inputs.doom-emacs;
+      services.emacs.package = with pkgs; (
+        (emacsPackagesFor emacs).emacsWithPackages (
+          epkgs: [ epkgs.vterm ]
+        )
+      );
       services.emacs.defaultEditor = true;
       programs.steam.enable = true;
       programs.gamemode.enable = true;
@@ -422,7 +426,7 @@
                        keep-derivations = true
                        '';
       nixpkgs.config.permittedInsecurePackages = [
-                      "electron-12.2.3"
+                      "electron-19.1.9"
                     ];
       # enables auto-updating
       system.autoUpgrade.enable = false;

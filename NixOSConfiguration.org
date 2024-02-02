@@ -521,7 +521,7 @@ in with pkgs; [
   unrar
   mattermost-desktop
   slack
-  teams
+  # teams
   zoom-us
   snapper
   # steam
@@ -626,7 +626,7 @@ in with pkgs; [
   gnome.gnome-tweaks
   gnome.dconf-editor
   gnomeExtensions.appindicator
-  gnomeExtensions.notes
+  # gnomeExtensions.notes
   gnomeExtensions.just-perfection
   gnomeExtensions.gsconnect
   gnomeExtensions.another-window-session-manager
@@ -1063,7 +1063,11 @@ To install and enable the systemd user service for the Emacs daemon, add the
 following
 #+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
 services.emacs.enable = true;
-# services.emacs.package = flake-inputs.doom-emacs;
+services.emacs.package = with pkgs; (
+  (emacsPackagesFor emacs).emacsWithPackages (
+    epkgs: [ epkgs.vterm ]
+  )
+);
 services.emacs.defaultEditor = true;
 #+END_SRC
 
@@ -1155,7 +1159,7 @@ nix.extraOptions = ''
 Add any packages marked as insecure that you want to build here anyways
 #+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
 nixpkgs.config.permittedInsecurePackages = [
-                "electron-12.2.3"
+                "electron-19.1.9"
               ];
 #+END_SRC
 * System Upgrades
