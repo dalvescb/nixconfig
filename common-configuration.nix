@@ -117,7 +117,7 @@
         ghc
         python3Full
         snapper
-        python38Packages.setuptools
+        python312Packages.setuptools
         # emacs26Packages.agda2-mode
         agda
         agda-pkg
@@ -199,13 +199,12 @@
         libsForQt5.knotifications
         libsForQt5.sddm-kcm
         libsForQt5.konqueror
-        rnix-lsp
         spotify
         webtorrent_desktop
         transmission-qt
         kgraphviewer
         libgtop
-        etcher
+        # etcher
         openrgb
         poppler
         ditaa
@@ -349,6 +348,9 @@
       
       services.dbus.packages = [ pkgs.dconf ];
       services.udev.packages = with pkgs; [ gnome.gnome-settings-daemon ];
+      
+      programs.kdeconnect.enable = true;
+      programs.kdeconnect.package = pkgs.gnomeExtensions.gsconnect;
       hardware.bluetooth.enable = true;
       services.blueman.enable = true;
       hardware.bluetooth.settings = {
