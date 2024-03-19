@@ -82,6 +82,7 @@
                   }
               );
       in with pkgs; [
+        plex-media-player
         aircrack-ng
         crunch
         kodi
@@ -235,7 +236,7 @@
         gnomeExtensions.appindicator
         # gnomeExtensions.notes
         gnomeExtensions.just-perfection
-        gnomeExtensions.gsconnect
+        # gnomeExtensions.gsconnect
         gnomeExtensions.another-window-session-manager
         gnomeExtensions.vitals
         # gnomeExtensions.freon
@@ -411,6 +412,7 @@
       services.plex = {
         enable = true;
         openFirewall = true;
+        user="dalvescb";
       };
       nix.settings.trusted-public-keys = [
         "hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ=" # Binary Cache for Haskell.nix

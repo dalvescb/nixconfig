@@ -474,6 +474,7 @@ environment.systemPackages = let
             }
         );
 in with pkgs; [
+  plex-media-player
   aircrack-ng
   crunch
   kodi
@@ -627,7 +628,7 @@ in with pkgs; [
   gnomeExtensions.appindicator
   # gnomeExtensions.notes
   gnomeExtensions.just-perfection
-  gnomeExtensions.gsconnect
+  # gnomeExtensions.gsconnect
   gnomeExtensions.another-window-session-manager
   gnomeExtensions.vitals
   # gnomeExtensions.freon
@@ -1121,13 +1122,14 @@ programs.noisetorch.enable = true;
 #+END_SRC
 
 * Plex Media Server
-[[https://nixos.wiki/wiki/Plex][Plex]] allows you to aggregate all your personal media and access it anywhere. See
-[[https://nixos.wiki/wiki/Plexreddit.com/r/Piracy/comments/12wh7ym/a_hopefully_beginner_friendly_guide_to_using_plex/][this 2023 reddit thread]] for an explanation of how to set it up with other services to "acquire media"
+[[https://nixos.wiki/wiki/Plex][Plex]] allows you to aggregate all your personal media and access it anywhere.
+Go to http://127.0.0.1:32400/web/ to configure
 ** Nix Plex Services
 #+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
 services.plex = {
   enable = true;
   openFirewall = true;
+  user="dalvescb";
 };
 #+END_SRC
 
