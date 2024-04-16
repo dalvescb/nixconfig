@@ -8,8 +8,8 @@
   imports =
     [
       ./hardware-configuration.nix
-      /home/dalvescb/nixconfig/common-configuration.nix
-      /home/dalvescb/nixconfig/nvidiaprime.nix
+      ../nixconfig/common-configuration.nix
+      ../nixconfig/nvidiaprime.nix
       ./user-configuration.nix
     ];
 
