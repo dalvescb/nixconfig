@@ -1,10 +1,10 @@
 # [[file:NixOSConfiguration.org::*Template][Template:1]]
 # Edit this configuration file to include configuration common between hosts
 # NOTE this was generated from the org file NixOSConfiguration.org
-{ config, pkgs, ... }:
+{ config, pkgs, flake-inputs, ... }:
 
 {
-  imports = [ <home-manager/nixos> ];
+  imports = [ ];
   nixpkgs.overlays = let
     # this overlay is just a tmp fix for a steam update issue, track here https://github.com/ValveSoftware/steam-runtime/issues/462
     # remove me when the issue is fixed
@@ -57,11 +57,41 @@
       in { haskell-language-server = hls;  } );
   # in [ plasma-framework-overly ];
   in [ ];  # use no overlays atm
-  environment.systemPackages = with pkgs; [
+  environment.systemPackages = let
+      system = "x86_64-linux";
+      doom-emacs = flake-inputs.doom-emacs;
+      my-cookies =
+          # ...
+          (
+              pkgs.python3Packages.buildPythonPackage rec {
+              pname = "my-cookies";
+              version = "0.1.3";
+              # src = pkgs.python3Packages.fetchPypi {
+              #     inherit pname version;
+              #     sha256 = "ddee63d0714e5d4c94a3a61550a4276dac6f014b43a114f31aa5bc1d47f3ad0f";
+              # };
+              src = pkgs.fetchurl {
+                url = "https://files.pythonhosted.org/packages/8c/3e/bcebe0f7b2d2a622fe9ea181bedcdce6dc70eed480a098e4f0b1569b1da3/my_cookies-0.1.3.tar.gz";
+                hash = "sha256-3e5j0HFOXUyUo6YVUKQnbaxvAUtDoRTzGqW8HUfzrQ8=";
+              };
+              doCheck = false;
+              propagatedBuildInputs = [
+                  # Specify dependencies
+                  # pkgs.python3Packages.numpy
+              ];
+              }
+          );
+  in with pkgs; [
+    plex-media-player
+    aircrack-ng
+    crunch
+    kodi
+    my-cookies
     wget
     ispell
     vim
-    emacs
+    # emacs
+    # doom-emacs
     git
     imagemagick
     subversion
@@ -81,14 +111,14 @@
     haskellPackages.stack
     # (haskell-language-server.override { supportedGhcVersions = [ "902" "924" ]; })
     haskell-language-server
-    haskellPackages.Cabal-syntax
+    # haskellPackages.Cabal-syntax
     haskellPackages.Agda
     haskellPackages.implicit-hie
     cabal-install
     ghc
     python3Full
     snapper
-    python38Packages.setuptools
+    python312Packages.setuptools
     # emacs26Packages.agda2-mode
     agda
     agda-pkg
@@ -100,7 +130,7 @@
     unrar
     mattermost-desktop
     slack
-    teams
+    # teams
     zoom-us
     snapper
     # steam
@@ -135,8 +165,15 @@
     docker
     # haskell.packages.ghc883.haskell-language-server
     glmark2
-    ripgrep
-    ripgrep-all
+    # ripgrep
+  
+    (ripgrep.overrideAttrs (old: {
+                  doInstallCheck = false;
+          }))
+    (ripgrep-all.overrideAttrs (old: {
+                  doInstallCheck = false;
+          }))
+    # ripgrep-all
     # dropbox - we don't need this in the environment. systemd unit pulls it in
     dropbox-cli
     nodePackages.mermaid-cli
@@ -163,15 +200,12 @@
     libsForQt5.knotifications
     libsForQt5.sddm-kcm
     libsForQt5.konqueror
-    rnix-lsp
     spotify
     webtorrent_desktop
     transmission-qt
     kgraphviewer
     libgtop
-    sqlite
-    bind
-    etcher
+    # etcher
     openrgb
     poppler
     ditaa
@@ -180,6 +214,11 @@
     html-tidy
     dolphin-emu
     sqlite
+    clang
+    clang-tools
+    clangStdenv
+    bear
+    cmake
     elmPackages.elm
     elmPackages.nodejs
     elmPackages.elm-language-server
@@ -190,12 +229,14 @@
     elmPackages.elm-live
     elm2nix
     thunderbird
+    silver-searcher
     gnome-icon-theme
     gnome.gnome-tweaks
     gnome.dconf-editor
     gnomeExtensions.appindicator
+    # gnomeExtensions.notes
     gnomeExtensions.just-perfection
-    gnomeExtensions.gsconnect
+    # gnomeExtensions.gsconnect
     gnomeExtensions.another-window-session-manager
     gnomeExtensions.vitals
     # gnomeExtensions.freon
@@ -309,6 +350,9 @@
   
   services.dbus.packages = [ pkgs.dconf ];
   services.udev.packages = with pkgs; [ gnome.gnome-settings-daemon ];
+  
+  programs.kdeconnect.enable = true;
+  programs.kdeconnect.package = pkgs.gnomeExtensions.gsconnect;
   hardware.bluetooth.enable = true;
   services.blueman.enable = true;
   hardware.bluetooth.settings = {
@@ -340,6 +384,11 @@
   programs.fish.enable = true;
   hardware.openrazer.enable = true;
   services.emacs.enable = true;
+  services.emacs.package = with pkgs; (
+    (emacsPackagesFor emacs).emacsWithPackages (
+      epkgs: [ epkgs.vterm ]
+    )
+  );
   services.emacs.defaultEditor = true;
   programs.steam.enable = true;
   programs.gamemode.enable = true;
@@ -361,6 +410,11 @@
       };
     };
   programs.noisetorch.enable = true;
+  services.plex = {
+    enable = true;
+    openFirewall = true;
+    user="dalvescb";
+  };
   nix.settings.trusted-public-keys = [
     "hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ=" # Binary Cache for Haskell.nix
   ];
@@ -377,7 +431,7 @@
                    keep-derivations = true
                    '';
   nixpkgs.config.permittedInsecurePackages = [
-                  "electron-12.2.3"
+                  "electron-19.1.9"
                 ];
   # enables auto-updating
   system.autoUpgrade.enable = false;
@@ -390,141 +444,6 @@
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "20.09"; # Did you read the comment?
-  home-manager.users.dalvescb = { pkgs, config, ... }: {
-    nixpkgs.config.allowUnfree = true;
-    home.stateVersion = "20.09";
-    home.packages = with pkgs; [
-      gimp
-      pavucontrol
-      xorg.xmessage
-      nitrogen
-      font-awesome
-      # font-awesome-ttf      # used by polybar
-      material-design-icons # used by polybar
-      xmonad-log
-      pasystray
-      blueman
-      networkmanagerapplet
-      networkmanager_dmenu
-      dmenu
-      # (pkgs.linkFarm "dmenu" [ {
-      #   name = "bin/dmenu";
-      #   path = "${pkgs.rofi}/bin/rofi";
-      # } ])
-      gnome.adwaita-icon-theme
-      # dunst
-      arc-icon-theme
-      steam-run
-      dconf2nix
-      alacritty
-    ];
-    
-    programs.zsh.enable = true;
-    programs.zsh.oh-my-zsh.enable = true;
-    programs.zsh.oh-my-zsh.plugins = [ "git" ];
-    programs.zsh.oh-my-zsh.theme = "amuse";
-    
-    programs.zsh.plugins = let
-      zsh-syntax-highlighting = {
-         name = "zsh-syntax-highlighting";
-         src = pkgs.fetchFromGitHub {
-           owner = "zsh-users";
-           repo = "zsh-syntax-highlighting";
-           rev = "0.7.1";
-           sha256 = "03r6hpb5fy4yaakqm3lbf4xcvd408r44jgpv4lnzl9asp4sb9qc0";
-         };
-       };
-      zsh-autosuggestions = {
-         name = "zsh-autosuggestions";
-         src = pkgs.fetchFromGitHub {
-           owner = "zsh-users";
-           repo = "zsh-autosuggestions";
-           rev = "v0.6.4";
-           sha256 = "0h52p2waggzfshvy1wvhj4hf06fmzd44bv6j18k3l9rcx6aixzn6";
-         };
-       };
-      in [ 
-          zsh-syntax-highlighting
-          zsh-autosuggestions
-         ];
-    programs.alacritty.enable = true;
-    programs.alacritty.settings = {
-      window.opacity = 1.0;
-      font.normal = {
-        family = "Source Code Pro";
-        style = "Regular";
-      };
-      font.bold = {
-        family = "Source Code Pro";
-        style = "Bold";
-      };
-      font.italic = {
-        family = "Source Code Pro";
-        style = "Italic";
-      };
-      font.bold_italic = {
-        family = "Source Code Pro";
-        style = "Bold Italic";
-      };
-      font.size = 14.0;
-      import = [ "~/nixconfig/alacritty/dracula.yml" ];
-      key_bindings = [
-        {
-          key = "N";
-          mods = "Control|Shift";
-          action = "SpawnNewInstance";
-        }
-      ];
-    };
-    programs.direnv.enable = true;
-    programs.direnv.nix-direnv.enable = true;
-    dconf.settings = {
-    
-      "desktop/wm/keybindings" = { 
-          "close"= "['<Shift><Super>c']";
-          "cycle-windows"= "['<Super>o']";
-          "cycle-windows-backward"= "['<Shift><Super>o']";
-          "maximize"="@as []";
-          "minimize"="@as []";
-          "move-to-monitor-left"= "['<Shift><Super>j']";
-          "move-to-monitor-right"= "['<Shift><Super>k']";
-          "move-to-workspace-1"= "['<Shift><Super>exclam']";
-          "move-to-workspace-2"= "['<Shift><Super>at']";
-          "move-to-workspace-3"= "['<Shift><Super>numbersign']";
-          "move-to-workspace-4"= "['<Shift><Super>dollar']";
-          "move-to-workspace-left"= "['<Shift><Super>h']";
-          "move-to-workspace-right"= "['<Shift><Super>l']";
-          "switch-input-source"= "@as []";
-          "switch-input-source-backward"= "@as []";
-          "switch-to-workspace-1"= "['<Super>1']";
-          "switch-to-workspace-2"= "['<Super>2']";
-          "switch-to-workspace-3"= "['<Super>3']";
-          "switch-to-workspace-4"= "['<Super>4']";
-          "switch-to-workspace-left"= "['<Super>h']";
-          "switch-to-workspace-right"= "['<Super>l']";
-          "toggle-fullscreen"= "['<Shift><Super>space']";
-          "toggle-maximized"= "['<Super>i']";
-        };
-      
-        "mutter/keybindings" = {
-          "switch-monitor" = "['XF86Display']";
-          "toggle-tiled-left" = "['<Super>j']";
-          "toggle-tiled-right" = "['<Super>k']";
-        };
-      
-        "settings-daemon/plugins/media-keys" = {
-          "screensaver" = "@as []";
-          "search" = "['<Super>p']";
-        };
-      };
-    programs.vscode.enable = true;
-    programs.vscode.package = pkgs.vscode-fhs;
-    home.keyboard = {
-      layout = "us";
-      options = [ "ctrl:swapcaps" ];
-      };
-    
-  };
   programs.zsh.shellAliases = { 
     e = "emacsclient";
     ec ="emacsclient -c";

@@ -20,6 +20,7 @@
     "nixpkgs=/home/dalvescb/nixpkgs"
     "nixos-config=/home/dalvescb/nixconfig/${config.networking.hostName}/configuration.nix"
   ];
+  nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
   networking.useDHCP = false;
   networking.interfaces.enp0s31f6.useDHCP = true;

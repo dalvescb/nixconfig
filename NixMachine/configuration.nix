@@ -8,8 +8,8 @@
   imports =
     [
       ./hardware-configuration.nix
-      /home/dalvescb/nixconfig/common-configuration.nix
-      /home/dalvescb/nixconfig/nvidia.nix
+      ../common-configuration.nix
+      ../nvidia.nix
       ./user-configuration.nix
     ];
 
@@ -21,6 +21,11 @@
     "nixpkgs=/home/dalvescb/nixpkgs"
     "nixos-config=/home/dalvescb/nixconfig/${config.networking.hostName}/configuration.nix"
   ];
+
+  nix = {
+    package = pkgs.nixFlakes;
+    extraOptions = "experimental-features = nix-command flakes";
+  };
 
   # set host specific env vars here
   environment.variables =
