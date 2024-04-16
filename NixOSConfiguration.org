@@ -634,7 +634,7 @@ in with pkgs; [
   # gnomeExtensions.freon
   gnomeExtensions.dash-to-panel
   gnomeExtensions.sound-output-device-chooser
-  gnomeExtensions.gtk-title-bar
+  # gnomeExtensions.gtk-title-bar
 ];
 #+END_SRC
 

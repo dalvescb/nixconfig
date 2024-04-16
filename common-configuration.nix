@@ -242,7 +242,7 @@
     # gnomeExtensions.freon
     gnomeExtensions.dash-to-panel
     gnomeExtensions.sound-output-device-chooser
-    gnomeExtensions.gtk-title-bar
+    # gnomeExtensions.gtk-title-bar
   ];
   # Use the GRUB 2 boot loader (with EFI support)
   boot.loader.grub.enable = true;
