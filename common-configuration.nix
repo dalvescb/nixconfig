@@ -79,8 +79,9 @@
     # plasma5.kwallet-pam
     # plasma5.sddm-kcm
     haskellPackages.stack
-    (haskell-language-server.override { supportedGhcVersions = [ "902" "924" ]; })
-    # haskell-language-server
+    # (haskell-language-server.override { supportedGhcVersions = [ "902" "924" ]; })
+    haskell-language-server
+    haskellPackages.Cabal-syntax
     haskellPackages.Agda
     haskellPackages.implicit-hie
     cabal-install
@@ -178,6 +179,17 @@
     ltex-ls
     html-tidy
     dolphin-emu
+    sqlite
+    elmPackages.elm
+    elmPackages.nodejs
+    elmPackages.elm-language-server
+    elmPackages.elm-test
+    elmPackages.elm-format
+    elmPackages.elm-json
+    elmPackages.elm-review
+    elmPackages.elm-live
+    elm2nix
+    thunderbird
     gnome-icon-theme
     gnome.gnome-tweaks
     gnome.dconf-editor
@@ -218,7 +230,8 @@
   fonts = {
     fonts = with pkgs; [
         dejavu_fonts
-        (nerdfonts.override { fonts = [ "DejaVuSansMono" ]; } )
+        # (nerdfonts.override { fonts = [ "DejaVuSansMono" ]; } )
+        nerdfonts
         source-code-pro
         emacs-all-the-icons-fonts
         jetbrains-mono
