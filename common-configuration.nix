@@ -190,6 +190,7 @@
         gnome-icon-theme
         gnome.gnome-tweaks
         gnome.dconf-editor
+        gnome.gnome-remote-desktop
         gnomeExtensions.appindicator
         # gnomeExtensions.notes
         gnomeExtensions.just-perfection
@@ -280,7 +281,12 @@
         {
           from = 22;
           to = 22;
-        } 
+        }
+        # gnome-remote-desktop
+        {
+          from = 3389;
+          to = 3389;
+        }
       ];
       
       networking.firewall.allowedUDPPortRanges = [
@@ -299,18 +305,21 @@
           from = 22;
           to = 22;
         }
+        # gnome-remote-desktop
+        {
+          from = 3389;
+          to = 3389;
+        }
       ];
       services.xserver.enable = true;
-      # services.xserver.displayManager.gdm.enable = true;
-      services.xserver.displayManager.lightdm.enable = true;
-      services.xserver.desktopManager.gnome.enable = true;
-      services.gnome.gnome-remote-desktop.enable = true;
+      services.xserver.displayManager.sddm.enable = true;
+      services.xserver.desktopManager.plasma5.enable = true;
       
-      services.dbus.packages = [ pkgs.dconf ];
-      services.udev.packages = with pkgs; [ gnome.gnome-settings-daemon ];
+      services.xrdp.enable = true;
+      services.xrdp.defaultWindowManager = "startplasma-x11";
+      services.xrdp.openFirewall = true;
       
-      programs.kdeconnect.enable = true;
-      programs.kdeconnect.package = pkgs.gnomeExtensions.gsconnect;
+      services.logind.lidSwitchExternalPower = "ignore";
       hardware.bluetooth.enable = true;
       services.blueman.enable = true;
       hardware.bluetooth.settings = {

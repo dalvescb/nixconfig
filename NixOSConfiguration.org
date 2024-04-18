@@ -59,6 +59,7 @@
 - [[#desktop-environment][Desktop Environment]]
   - [[#gnome-3][Gnome 3]]
   - [[#kde-plasma5][KDE Plasma5]]
+  - [[#kde-plasma5--xmonad][KDE Plasma5 + XMONAD]]
   - [[#none--xmonad][None + Xmonad]]
 - [[#bluetooth][Bluetooth]]
 - [[#sounds-settings][Sounds Settings]]
@@ -576,6 +577,7 @@ in with pkgs; [
   gnome-icon-theme
   gnome.gnome-tweaks
   gnome.dconf-editor
+  gnome.gnome-remote-desktop
   gnomeExtensions.appindicator
   # gnomeExtensions.notes
   gnomeExtensions.just-perfection
@@ -739,6 +741,7 @@ networking.networkmanager.enable = true;
 Open TCP/UDP ports on which incoming connects are accepted:
   - *KDE Connect* ports: 1714-1764
   - *Dropbox* ports: 17500
+  - *XRDP* ports: 3389
 #+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
 networking.firewall.allowedTCPPortRanges = [
   # KDE Connect
@@ -755,7 +758,12 @@ networking.firewall.allowedTCPPortRanges = [
   {
     from = 22;
     to = 22;
-  } 
+  }
+  # gnome-remote-desktop
+  {
+    from = 3389;
+    to = 3389;
+  }
 ];
 
 networking.firewall.allowedUDPPortRanges = [
@@ -773,6 +781,11 @@ networking.firewall.allowedUDPPortRanges = [
   {
     from = 22;
     to = 22;
+  }
+  # gnome-remote-desktop
+  {
+    from = 3389;
+    to = 3389;
   }
 ];
 #+END_SRC
@@ -842,12 +855,18 @@ integrated) using Nvidia Optimus via the following configuration
 
 * Desktop Environment
 ** Gnome 3
-#+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
+#+BEGIN_SRC nix :tangle no
 services.xserver.enable = true;
 # services.xserver.displayManager.gdm.enable = true;
 services.xserver.displayManager.lightdm.enable = true;
 services.xserver.desktopManager.gnome.enable = true;
-services.gnome.gnome-remote-desktop.enable = true;
+
+services.xrdp.enable = true;
+services.xrdp.port = 3389;
+services.xrdp.defaultWindowManager = "gnome-remote-desktop";
+services.xrdp.openFirewall = true;
+
+services.logind.lidSwitchExternalPower = "ignore";
 
 services.dbus.packages = [ pkgs.dconf ];
 services.udev.packages = with pkgs; [ gnome.gnome-settings-daemon ];
@@ -857,6 +876,20 @@ programs.kdeconnect.package = pkgs.gnomeExtensions.gsconnect;
 #+END_SRC
 
 ** KDE Plasma5
+
+#+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
+services.xserver.enable = true;
+services.xserver.displayManager.sddm.enable = true;
+services.xserver.desktopManager.plasma5.enable = true;
+
+services.xrdp.enable = true;
+services.xrdp.defaultWindowManager = "startplasma-x11";
+services.xrdp.openFirewall = true;
+
+services.logind.lidSwitchExternalPower = "ignore";
+#+END_SRC
+
+** KDE Plasma5 + XMONAD
 #+BEGIN_SRC nix :tangle no
 services.xserver.enable = true;
 # services.xserver.displayManager.lightdm.enable = true;
@@ -864,10 +897,10 @@ services.xserver.displayManager.sddm.enable = true;
 services.xserver.desktopManager.plasma5.enable = true;
 
 # services.xserver.displayManager.defaultSession = "none+xmonad";
-services.xserver.windowManager.xmonad = {
-    enable = true;
-    enableContribAndExtras = true;
-  };
+# services.xserver.windowManager.xmonad = {
+#     enable = true;
+#     enableContribAndExtras = true;
+#   };
 #+END_SRC
 
 Global Theme doesn't seem to work (for downloading/installing new themes) but
