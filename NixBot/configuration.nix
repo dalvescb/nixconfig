@@ -8,8 +8,8 @@
   imports =
     [
       ./hardware-configuration.nix
-      ../nixconfig/common-configuration.nix
-      ../nixconfig/nvidiaprime.nix
+      ../common-configuration.nix
+      ../nvidiaprime.nix
       ./user-configuration.nix
     ];
 
@@ -26,8 +26,8 @@
   networking.interfaces.enp0s31f6.useDHCP = true;
   networking.interfaces.wlp82s0.useDHCP = true;
   # networking.networkmanager.dns = "systemd-resolved";
-  networking.networkmanager.insertNameservers = [ "8.8.8.8" "8.8.4.4" ];
-  networking.nameservers = [ "8.8.8.8" "8.8.4.4" ];
+  # networking.networkmanager.insertNameservers = [ "8.8.8.8" "8.8.4.4" ];
+  # networking.nameservers = [ "8.8.8.8" "8.8.4.4" ];
 
   hardware.enableAllFirmware = true;
 

@@ -83,9 +83,6 @@
           );
   in with pkgs; [
     plex-media-player
-    aircrack-ng
-    crunch
-    kodi
     my-cookies
     wget
     ispell
@@ -95,43 +92,26 @@
     git
     imagemagick
     subversion
-    firefox-bin
     chromium
     brave
-    discord
     nix-index
     libva
     libva-utils
-    razergenie
-    linuxPackages_5_15.openrazer
     pciutils
     arc-kde-theme
     # plasma5.kwallet-pam
     # plasma5.sddm-kcm
-    haskellPackages.stack
     # (haskell-language-server.override { supportedGhcVersions = [ "902" "924" ]; })
-    haskell-language-server
     # haskellPackages.Cabal-syntax
-    haskellPackages.Agda
-    haskellPackages.implicit-hie
-    cabal-install
-    ghc
     python3Full
-    snapper
     python312Packages.setuptools
     # emacs26Packages.agda2-mode
-    agda
-    agda-pkg
-    texlive.combined.scheme-full
     # alacritty
     libsForQt5.ark
     zip
     unzip
     unrar
-    mattermost-desktop
-    slack
     # teams
-    zoom-us
     snapper
     # steam
     # steam-run
@@ -143,7 +123,6 @@
     libsForQt5.okular
     xorg.xkill
     htop
-    linuxPackages_5_15.xpadneo
     gsmartcontrol
     smartmontools
     pkg-config
@@ -154,9 +133,6 @@
     libnotify
     jupyter
     pandoc
-    libreoffice
-    rnnoise-plugin
-    noisetorch
     vulkan-tools
     vulkan-loader
     vulkan-validation-layers
@@ -176,13 +152,7 @@
     # ripgrep-all
     # dropbox - we don't need this in the environment. systemd unit pulls it in
     dropbox-cli
-    nodePackages.mermaid-cli
-    graphviz
-    xdot
-    haskellPackages.graphmod
-    obs-studio
     vlc
-    haruna
     mkvtoolnix
     niv
     shotcut
@@ -200,7 +170,6 @@
     libsForQt5.knotifications
     libsForQt5.sddm-kcm
     libsForQt5.konqueror
-    spotify
     webtorrent_desktop
     transmission-qt
     kgraphviewer
@@ -209,26 +178,14 @@
     openrgb
     poppler
     ditaa
-    texlab
     ltex-ls
     html-tidy
-    dolphin-emu
     sqlite
     clang
     clang-tools
     clangStdenv
     bear
     cmake
-    elmPackages.elm
-    elmPackages.nodejs
-    elmPackages.elm-language-server
-    elmPackages.elm-test
-    elmPackages.elm-format
-    elmPackages.elm-json
-    elmPackages.elm-review
-    elmPackages.elm-live
-    elm2nix
-    thunderbird
     silver-searcher
     gnome-icon-theme
     gnome.gnome-tweaks
@@ -260,7 +217,7 @@
   boot.supportedFilesystems = [ "btrfs" "ntfs" ];
   hardware.enableAllFirmware = true;
   boot.extraModprobeConfig = '' options bluetooth disable_ertm=1 '';
-  boot.kernelPackages = pkgs.linuxPackages_5_15;
+  # boot.kernelPackages = pkgs.linuxPackages_5_15;
   time.timeZone = "America/Toronto";
   i18n.defaultLocale = "en_US.UTF-8";
   console = {
@@ -382,7 +339,6 @@
   hardware.xpadneo.enable = true;
   programs.zsh.enable = true;
   programs.fish.enable = true;
-  hardware.openrazer.enable = true;
   services.emacs.enable = true;
   services.emacs.package = with pkgs; (
     (emacsPackagesFor emacs).emacsWithPackages (
@@ -390,26 +346,6 @@
     )
   );
   services.emacs.defaultEditor = true;
-  programs.steam.enable = true;
-  programs.gamemode.enable = true;
-  systemd.user.services.dropbox = {
-      description = "Dropbox";
-      wantedBy = [ "graphical-session.target" ];
-      environment = {
-        QT_PLUGIN_PATH = "/run/current-system/sw/" + pkgs.qt5.qtbase.qtPluginPrefix;
-        QML2_IMPORT_PATH = "/run/current-system/sw/" + pkgs.qt5.qtbase.qtQmlPrefix;
-      };
-      serviceConfig = {
-        ExecStart = "${pkgs.dropbox.out}/bin/dropbox";
-        ExecReload = "${pkgs.coreutils.out}/bin/kill -HUP $MAINPID";
-        KillMode = "control-group"; # upstream recommends process
-        Restart = "on-failure";
-        PrivateTmp = true;
-        ProtectSystem = "full";
-        Nice = 10;
-      };
-    };
-  programs.noisetorch.enable = true;
   services.plex = {
     enable = true;
     openFirewall = true;

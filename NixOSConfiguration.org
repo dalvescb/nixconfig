@@ -40,7 +40,6 @@
   - [[#disable-ertm][Disable ertm]]
 - [[#kernel][Kernel]]
   - [[#kernel-modules][Kernel Modules]]
-- [[#virtual-box][Virtual Box]]
 - [[#system-settings][System Settings]]
   - [[#timezone][TimeZone]]
   - [[#locale][Locale]]
@@ -67,12 +66,7 @@
   - [[#xbox-controller-support][Xbox controller support]]
 - [[#shell-environment][Shell Environment]]
 - [[#users-management][Users Management]]
-- [[#open-razer][Open Razer]]
 - [[#emacs-daemon][Emacs Daemon]]
-- [[#steam][Steam]]
-- [[#gamemode][Gamemode]]
-- [[#dropbox][Dropbox]]
-- [[#noisetorch][NoiseTorch]]
 - [[#plex-media-server][Plex Media Server]]
   - [[#nix-plex-services][Nix Plex Services]]
 - [[#nixconf][Nix.conf]]
@@ -475,9 +469,6 @@ environment.systemPackages = let
         );
 in with pkgs; [
   plex-media-player
-  aircrack-ng
-  crunch
-  kodi
   my-cookies
   wget
   ispell
@@ -487,43 +478,26 @@ in with pkgs; [
   git
   imagemagick
   subversion
-  firefox-bin
   chromium
   brave
-  discord
   nix-index
   libva
   libva-utils
-  razergenie
-  linuxPackages_5_15.openrazer
   pciutils
   arc-kde-theme
   # plasma5.kwallet-pam
   # plasma5.sddm-kcm
-  haskellPackages.stack
   # (haskell-language-server.override { supportedGhcVersions = [ "902" "924" ]; })
-  haskell-language-server
   # haskellPackages.Cabal-syntax
-  haskellPackages.Agda
-  haskellPackages.implicit-hie
-  cabal-install
-  ghc
   python3Full
-  snapper
   python312Packages.setuptools
   # emacs26Packages.agda2-mode
-  agda
-  agda-pkg
-  texlive.combined.scheme-full
   # alacritty
   libsForQt5.ark
   zip
   unzip
   unrar
-  mattermost-desktop
-  slack
   # teams
-  zoom-us
   snapper
   # steam
   # steam-run
@@ -535,7 +509,6 @@ in with pkgs; [
   libsForQt5.okular
   xorg.xkill
   htop
-  linuxPackages_5_15.xpadneo
   gsmartcontrol
   smartmontools
   pkg-config
@@ -546,9 +519,6 @@ in with pkgs; [
   libnotify
   jupyter
   pandoc
-  libreoffice
-  rnnoise-plugin
-  noisetorch
   vulkan-tools
   vulkan-loader
   vulkan-validation-layers
@@ -568,13 +538,7 @@ in with pkgs; [
   # ripgrep-all
   # dropbox - we don't need this in the environment. systemd unit pulls it in
   dropbox-cli
-  nodePackages.mermaid-cli
-  graphviz
-  xdot
-  haskellPackages.graphmod
-  obs-studio
   vlc
-  haruna
   mkvtoolnix
   niv
   shotcut
@@ -592,7 +556,6 @@ in with pkgs; [
   libsForQt5.knotifications
   libsForQt5.sddm-kcm
   libsForQt5.konqueror
-  spotify
   webtorrent_desktop
   transmission-qt
   kgraphviewer
@@ -601,26 +564,14 @@ in with pkgs; [
   openrgb
   poppler
   ditaa
-  texlab
   ltex-ls
   html-tidy
-  dolphin-emu
   sqlite
   clang
   clang-tools
   clangStdenv
   bear
   cmake
-  elmPackages.elm
-  elmPackages.nodejs
-  elmPackages.elm-language-server
-  elmPackages.elm-test
-  elmPackages.elm-format
-  elmPackages.elm-json
-  elmPackages.elm-review
-  elmPackages.elm-live
-  elm2nix
-  thunderbird
   silver-searcher
   gnome-icon-theme
   gnome.gnome-tweaks
@@ -674,18 +625,10 @@ boot.extraModprobeConfig = '' options bluetooth disable_ertm=1 '';
 See [[https://nixos.wiki/wiki/Linux_kernel][NixOS Wiki Linux Kernel]] for details on selecting a kernel. If you don't
 specify a kernel, it'll default to a the "latest" lts kernel
 #+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
-boot.kernelPackages = pkgs.linuxPackages_5_15;
+# boot.kernelPackages = pkgs.linuxPackages_5_15;
 #+END_SRC
 ** Kernel Modules
 Set kernel modules to be loaded here
-
-* Virtual Box
-If installing NixOS inside of a virtual box (which is a great way to develop a
-config) make sure to enable Guest Additions to get some nice extra features
-including much better video support (add this to your hosts ~configuration.nix~)
-  #+BEGIN_SRC nix :tangle no 
-  virtualisation.virtualbox.guest.enable = true;
-  #+END_SRC
 
 * System Settings
 ** TimeZone
@@ -1053,15 +996,6 @@ An example of this file is
 }
 #+END_SRC
 
-* Open Razer
-In order to use *razergenie* (installed in [[#system-packages][System Packages]]) to configure rgb for
-razer peripherals, you need to enable the open razer daemon with
-#+BEGIN_SRC nixos :tangle no :noweb-ref insert-config-here
-hardware.openrazer.enable = true;
-#+END_SRC
-You also need to add your user to the ~plugdev~ group in your user configuration
-(see  [[#users-management][Users Management]])
-
 * Emacs Daemon
 To install and enable the systemd user service for the Emacs daemon, add the
 following
@@ -1073,53 +1007,6 @@ services.emacs.package = with pkgs; (
   )
 );
 services.emacs.defaultEditor = true;
-#+END_SRC
-
-* Steam
-To fix an issue with proton 5.13, steam now needs to be installed as a service
-(for the foreseeable future?), and not in ~environment.system-packages~. See the
-following [[https://github.com/NixOS/nixpkgs/pull/114024][pull request]] for details
-#+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
-programs.steam.enable = true;
-#+END_SRC
-
-* Gamemode
-Gamemode is a daemon/lib for linux that allows games to request a set of
-optimizations to be temporarily applied. Will generally be used with steam by
-adding the launch option ~gamemoderun %command$~
-#+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
-programs.gamemode.enable = true;
-#+END_SRC
-
-* Dropbox
-Unfortunately there's no Dropbox module in nixpkgs, however the [[https://nixos.wiki/wiki/Dropbox][NixOS
-Wiki on Dropbox]] provides instructions for adding support via a service like so
-#+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
-systemd.user.services.dropbox = {
-    description = "Dropbox";
-    wantedBy = [ "graphical-session.target" ];
-    environment = {
-      QT_PLUGIN_PATH = "/run/current-system/sw/" + pkgs.qt5.qtbase.qtPluginPrefix;
-      QML2_IMPORT_PATH = "/run/current-system/sw/" + pkgs.qt5.qtbase.qtQmlPrefix;
-    };
-    serviceConfig = {
-      ExecStart = "${pkgs.dropbox.out}/bin/dropbox";
-      ExecReload = "${pkgs.coreutils.out}/bin/kill -HUP $MAINPID";
-      KillMode = "control-group"; # upstream recommends process
-      Restart = "on-failure";
-      PrivateTmp = true;
-      ProtectSystem = "full";
-      Nice = 10;
-    };
-  };
-#+END_SRC
-
-* NoiseTorch
-[[https://github.com/lawl/NoiseTorch][NoiseTorch]] is a real-time noise suppressor for Linux that works with PulseAudio
-or Pipewire (it requires the setcap wrapper to run properly and thus needs to be
-enabled as a service)
-#+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
-programs.noisetorch.enable = true;
 #+END_SRC
 
 * Plex Media Server
