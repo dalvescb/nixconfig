@@ -44,4 +44,10 @@
 
   # needed to persist logging during boot
   fileSystems."/var/log".neededForBoot = true;
+
+  # mount hdd - sda1 ext4 partition
+  fileSystems."/mnt/sda1" =
+    { device = "/dev/disk/by-uuid/0ad58a6a-f45e-455c-b8d6-7ce939d53694";
+      fsType = "ext4";
+    };
 }
