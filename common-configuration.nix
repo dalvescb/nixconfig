@@ -282,10 +282,20 @@
           from = 22;
           to = 22;
         }
-        # gnome-remote-desktop
+        # remote-desktop
         {
           from = 3389;
           to = 3389;
+        }
+        # sonarr
+        {
+          from = 8989;
+          to = 8989;
+        }
+        # radarr
+        {
+          from = 7878;
+          to = 7878;
         }
       ];
       
@@ -305,10 +315,20 @@
           from = 22;
           to = 22;
         }
-        # gnome-remote-desktop
+        # remote-desktop
         {
           from = 3389;
           to = 3389;
+        }
+        # sonarr
+        {
+          from = 8989;
+          to = 8989;
+        }
+        # radarr
+        {
+          from = 7878;
+          to = 7878;
         }
       ];
       services.xserver.enable = true;
@@ -356,9 +376,19 @@
         )
       );
       services.emacs.defaultEditor = true;
-      services.plex = {
+      services.jellyfin = {
         enable = true;
-        openFirewall = true;
+        openFirewall = true; # 8096
+        user="dalvescb";
+      };
+      services.sonarr = {
+        enable = true;
+        openFirewall = true; # 8989
+        user="dalvescb";
+      };
+      services.radarr = {
+        enable = true;
+        openFirewall = true; # 7878
         user="dalvescb";
       };
       nix.settings.trusted-public-keys = [

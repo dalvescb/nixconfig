@@ -70,6 +70,9 @@
 - [[#emacs-daemon][Emacs Daemon]]
 - [[#plex-media-server][Plex Media Server]]
   - [[#nix-plex-services][Nix Plex Services]]
+- [[#jellyfin-media-server][Jellyfin Media Server]]
+- [[#sonarr][Sonarr]]
+- [[#radarr][Radarr]]
 - [[#nixconf][Nix.conf]]
 - [[#nix-extra-options][Nix Extra Options]]
 - [[#nix-permitted-insecure-packages][Nix Permitted Insecure Packages]]
@@ -759,10 +762,20 @@ networking.firewall.allowedTCPPortRanges = [
     from = 22;
     to = 22;
   }
-  # gnome-remote-desktop
+  # remote-desktop
   {
     from = 3389;
     to = 3389;
+  }
+  # sonarr
+  {
+    from = 8989;
+    to = 8989;
+  }
+  # radarr
+  {
+    from = 7878;
+    to = 7878;
   }
 ];
 
@@ -782,10 +795,20 @@ networking.firewall.allowedUDPPortRanges = [
     from = 22;
     to = 22;
   }
-  # gnome-remote-desktop
+  # remote-desktop
   {
     from = 3389;
     to = 3389;
+  }
+  # sonarr
+  {
+    from = 8989;
+    to = 8989;
+  }
+  # radarr
+  {
+    from = 7878;
+    to = 7878;
   }
 ];
 #+END_SRC
@@ -1047,10 +1070,38 @@ services.emacs.defaultEditor = true;
 [[https://nixos.wiki/wiki/Plex][Plex]] allows you to aggregate all your personal media and access it anywhere.
 Go to http://127.0.0.1:32400/web/ to configure
 ** Nix Plex Services
-#+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
+#+BEGIN_SRC nix :tangle no 
 services.plex = {
   enable = true;
-  openFirewall = true;
+  openFirewall = true; # 32400
+  user="dalvescb";
+};
+#+END_SRC
+
+* Jellyfin Media Server
+[[https://nixos.wiki/wiki/Jellyfin][Jellyfin]] allows you to aggregate all your personal media and access it anywhere.
+Go to http://localhost:8097 to configure
+#+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
+services.jellyfin = {
+  enable = true;
+  openFirewall = true; # 8096
+  user="dalvescb";
+};
+#+END_SRC
+
+* Sonarr
+#+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
+services.sonarr = {
+  enable = true;
+  openFirewall = true; # 8989
+  user="dalvescb";
+};
+#+END_SRC
+* Radarr
+#+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
+services.radarr = {
+  enable = true;
+  openFirewall = true; # 7878
   user="dalvescb";
 };
 #+END_SRC
