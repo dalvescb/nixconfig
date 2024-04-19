@@ -73,6 +73,8 @@
 - [[#jellyfin-media-server][Jellyfin Media Server]]
 - [[#sonarr][Sonarr]]
 - [[#radarr][Radarr]]
+- [[#prowlarr][Prowlarr]]
+- [[#sabnzbd][Sabnzbd]]
 - [[#nixconf][Nix.conf]]
 - [[#nix-extra-options][Nix Extra Options]]
 - [[#nix-permitted-insecure-packages][Nix Permitted Insecure Packages]]
@@ -777,6 +779,16 @@ networking.firewall.allowedTCPPortRanges = [
     from = 7878;
     to = 7878;
   }
+  # sabnzbd
+  {
+    from = 8080;
+    to = 8080;
+  }
+  # sabnzbd web interface
+  {
+    from = 8090;
+    to = 8090;
+  }
 ];
 
 networking.firewall.allowedUDPPortRanges = [
@@ -809,6 +821,16 @@ networking.firewall.allowedUDPPortRanges = [
   {
     from = 7878;
     to = 7878;
+  }
+  # sabnzbd
+  {
+    from = 8080;
+    to = 8080;
+  }
+  # sabnzbd web interface
+  {
+    from = 8090;
+    to = 8090;
   }
 ];
 #+END_SRC
@@ -1097,12 +1119,31 @@ services.sonarr = {
   user="dalvescb";
 };
 #+END_SRC
+
 * Radarr
 #+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
 services.radarr = {
   enable = true;
   openFirewall = true; # 7878
   user="dalvescb";
+};
+#+END_SRC
+
+* Prowlarr
+#+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
+services.prowlarr = {
+  enable = true;
+  openFirewall = true; # 9696
+};
+#+END_SRC
+
+* Sabnzbd
+#+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
+services.sabnzbd = {
+  enable = true;
+  openFirewall = true; # 8080
+  user="dalvescb";
+  configFile = "./sabnzbd/sabnzbd.ini";
 };
 #+END_SRC
 

@@ -297,6 +297,16 @@
           from = 7878;
           to = 7878;
         }
+        # sabnzbd
+        {
+          from = 8080;
+          to = 8080;
+        }
+        # sabnzbd web interface
+        {
+          from = 8090;
+          to = 8090;
+        }
       ];
       
       networking.firewall.allowedUDPPortRanges = [
@@ -329,6 +339,16 @@
         {
           from = 7878;
           to = 7878;
+        }
+        # sabnzbd
+        {
+          from = 8080;
+          to = 8080;
+        }
+        # sabnzbd web interface
+        {
+          from = 8090;
+          to = 8090;
         }
       ];
       services.xserver.enable = true;
@@ -390,6 +410,16 @@
         enable = true;
         openFirewall = true; # 7878
         user="dalvescb";
+      };
+      services.prowlarr = {
+        enable = true;
+        openFirewall = true; # 9696
+      };
+      services.sabnzbd = {
+        enable = true;
+        openFirewall = true; # 8080
+        user="dalvescb";
+        configFile = "./sabnzbd/sabnzbd.ini";
       };
       nix.settings.trusted-public-keys = [
         "hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ=" # Binary Cache for Haskell.nix
