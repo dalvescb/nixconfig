@@ -474,6 +474,7 @@ environment.systemPackages = let
             }
         );
 in with pkgs; [
+  jdupes
   plex-media-player
   my-cookies
   wget
@@ -1143,7 +1144,6 @@ services.sabnzbd = {
   enable = true;
   openFirewall = true; # 8080
   user="dalvescb";
-  configFile = "./sabnzbd/sabnzbd.ini";
 };
 #+END_SRC
 

@@ -82,6 +82,7 @@
                   }
               );
       in with pkgs; [
+        jdupes
         plex-media-player
         my-cookies
         wget
@@ -419,7 +420,6 @@
         enable = true;
         openFirewall = true; # 8080
         user="dalvescb";
-        configFile = "./sabnzbd/sabnzbd.ini";
       };
       nix.settings.trusted-public-keys = [
         "hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ=" # Binary Cache for Haskell.nix
