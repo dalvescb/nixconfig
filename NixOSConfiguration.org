@@ -68,6 +68,7 @@
 - [[#shell-environment][Shell Environment]]
 - [[#users-management][Users Management]]
 - [[#emacs-daemon][Emacs Daemon]]
+- [[#nginx][Nginx]]
 - [[#plex-media-server][Plex Media Server]]
   - [[#nix-plex-services][Nix Plex Services]]
 - [[#jellyfin-media-server][Jellyfin Media Server]]
@@ -474,6 +475,8 @@ environment.systemPackages = let
             }
         );
 in with pkgs; [
+  openssl
+  jellyfin-ffmpeg
   jdupes
   plex-media-player
   my-cookies
@@ -750,6 +753,15 @@ Open TCP/UDP ports on which incoming connects are accepted:
   - *XRDP* ports: 3389
 #+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
 networking.firewall.allowedTCPPortRanges = [
+  # Nginx
+  {
+    from = 80;
+    to = 80;
+  }
+  {
+    from = 443;
+    to = 443;
+  }
   # KDE Connect
   {
     from = 1714;
@@ -793,6 +805,15 @@ networking.firewall.allowedTCPPortRanges = [
 ];
 
 networking.firewall.allowedUDPPortRanges = [
+  # Nginx
+  {
+    from = 80;
+    to = 80;
+  }
+  {
+    from = 443;
+    to = 443;
+  }
   # KDE Connect
   {
     from = 1714;
@@ -1087,6 +1108,54 @@ services.emacs.package = with pkgs; (
   )
 );
 services.emacs.defaultEditor = true;
+#+END_SRC
+
+* Nginx
+See [[https://nixos.wiki/wiki/Nginx][NixOS nginx configuration]] for information on how to use configure NGINX declaratively within NixOS.
+#+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
+# security.acme.server = "https://127.0.0.1";
+# security.acme.preliminarySelfsigned = true;
+security.acme.acceptTerms = true;
+security.acme.defaults.email = "curtis.dalves@gmail.com";
+# security.acme.defaults.server = "https://acme-staging-v02.api.letsencrypt.org/directory";
+
+security.acme.certs."dalveshome.duckdns.org" = {
+ dnsProvider = "duckdns";
+ environmentFile = "${pkgs.writeText "duckdns-creds" ''
+                 DUCKDNS_TOKEN=d399963b-9390-4938-9a0f-9d1e5fd2d7df
+                 ''}";
+ webroot = null;
+ # webroot = "/var/www/acme/challenges-com";
+ email = "curtis.dalves@gmail.com";
+ group = "nginx";
+};
+services.nginx = {
+  enable = true;
+  virtualHosts = {
+    "dalveshome.duckdns.org" = {
+      forceSSL = true;
+      enableACME = true;
+      # acmeRoot = "/var/www/acme/challenges-com/dalveshome.duckdns.org";
+      # All serverAliases will be added as extra domain names on the certificate.
+      # serverAliases = [ "bar.example.com" ];
+
+      locations."/" = {
+        root = "/var/www/dalveshome.duckdns.org/html/";
+      };
+    };
+
+    # We can also add a different vhost and reuse the same certificate
+    # but we have to append extraDomainNames manually beforehand:
+    # security.acme.certs."foo.example.com".extraDomainNames = [ "baz.example.com" ];
+    # "baz.example.com" = {
+    #   forceSSL = true;
+    #   useACMEHost = "foo.example.com";
+    #   locations."/" = {
+    #     root = "/var/www";
+    #   };
+    # };
+  };
+};
 #+END_SRC
 
 * Plex Media Server

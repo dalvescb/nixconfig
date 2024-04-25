@@ -82,6 +82,8 @@
                   }
               );
       in with pkgs; [
+        openssl
+        jellyfin-ffmpeg
         jdupes
         plex-media-player
         my-cookies
@@ -268,6 +270,15 @@
       services.openssh.enable = true;
       networking.networkmanager.enable = true;
       networking.firewall.allowedTCPPortRanges = [
+        # Nginx
+        {
+          from = 80;
+          to = 80;
+        }
+        {
+          from = 443;
+          to = 443;
+        }
         # KDE Connect
         {
           from = 1714;
@@ -311,6 +322,15 @@
       ];
       
       networking.firewall.allowedUDPPortRanges = [
+        # Nginx
+        {
+          from = 80;
+          to = 80;
+        }
+        {
+          from = 443;
+          to = 443;
+        }
         # KDE Connect
         {
           from = 1714;
@@ -397,6 +417,49 @@
         )
       );
       services.emacs.defaultEditor = true;
+      # security.acme.server = "https://127.0.0.1";
+      # security.acme.preliminarySelfsigned = true;
+      security.acme.acceptTerms = true;
+      security.acme.defaults.email = "curtis.dalves@gmail.com";
+      # security.acme.defaults.server = "https://acme-staging-v02.api.letsencrypt.org/directory";
+      
+      security.acme.certs."dalveshome.duckdns.org" = {
+       dnsProvider = "duckdns";
+       environmentFile = "${pkgs.writeText "duckdns-creds" ''
+                       DUCKDNS_TOKEN=d399963b-9390-4938-9a0f-9d1e5fd2d7df
+                       ''}";
+       webroot = null;
+       # webroot = "/var/www/acme/challenges-com";
+       email = "curtis.dalves@gmail.com";
+       group = "nginx";
+      };
+      services.nginx = {
+        enable = true;
+        virtualHosts = {
+          "dalveshome.duckdns.org" = {
+            forceSSL = true;
+            enableACME = true;
+            # acmeRoot = "/var/www/acme/challenges-com/dalveshome.duckdns.org";
+            # All serverAliases will be added as extra domain names on the certificate.
+            # serverAliases = [ "bar.example.com" ];
+      
+            locations."/" = {
+              root = "/var/www/dalveshome.duckdns.org/html/";
+            };
+          };
+      
+          # We can also add a different vhost and reuse the same certificate
+          # but we have to append extraDomainNames manually beforehand:
+          # security.acme.certs."foo.example.com".extraDomainNames = [ "baz.example.com" ];
+          # "baz.example.com" = {
+          #   forceSSL = true;
+          #   useACMEHost = "foo.example.com";
+          #   locations."/" = {
+          #     root = "/var/www";
+          #   };
+          # };
+        };
+      };
       services.jellyfin = {
         enable = true;
         openFirewall = true; # 8096
