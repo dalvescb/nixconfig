@@ -319,6 +319,11 @@
           from = 8090;
           to = 8090;
         }
+        # jellyfin https
+        {
+          from = 8920;
+          to = 8920;
+        }
       ];
       
       networking.firewall.allowedUDPPortRanges = [
@@ -370,6 +375,11 @@
         {
           from = 8090;
           to = 8090;
+        }
+        # jellyfin https
+        {
+          from = 8920;
+          to = 8920;
         }
       ];
       services.xserver.enable = true;
@@ -423,41 +433,50 @@
       security.acme.defaults.email = "curtis.dalves@gmail.com";
       # security.acme.defaults.server = "https://acme-staging-v02.api.letsencrypt.org/directory";
       
-      security.acme.certs."dalveshome.duckdns.org" = {
-       dnsProvider = "duckdns";
-       environmentFile = "${pkgs.writeText "duckdns-creds" ''
+      security.acme.certs =
+        let
+          sslcert = {
+            dnsProvider = "duckdns";
+            environmentFile = "${pkgs.writeText "duckdns-creds" ''
                        DUCKDNS_TOKEN=d399963b-9390-4938-9a0f-9d1e5fd2d7df
                        ''}";
-       webroot = null;
-       # webroot = "/var/www/acme/challenges-com";
-       email = "curtis.dalves@gmail.com";
-       group = "nginx";
-      };
+            webroot = null;
+            # webroot = "/var/www/acme/challenges-com";
+            email = "curtis.dalves@gmail.com";
+            group = "nginx"; };
+         in {  "curtojellyfin.duckdns.org" = sslcert;
+               "curtoradarr.duckdns.org" = sslcert;
+               "curtosonarr.duckdns.org" = sslcert;
+            };
       services.nginx = {
         enable = true;
+        recommendedGzipSettings = true;
+        recommendedOptimisation = true;
+        recommendedProxySettings = true;
+        recommendedTlsSettings = true;
+      
         virtualHosts = {
-          "dalveshome.duckdns.org" = {
+          "curtojellyfin.duckdns.org" = {
             forceSSL = true;
             enableACME = true;
-            # acmeRoot = "/var/www/acme/challenges-com/dalveshome.duckdns.org";
-            # All serverAliases will be added as extra domain names on the certificate.
-            # serverAliases = [ "bar.example.com" ];
-      
             locations."/" = {
-              root = "/var/www/dalveshome.duckdns.org/html/";
+              proxyPass = "http://127.0.0.1:8096";
             };
           };
-      
-          # We can also add a different vhost and reuse the same certificate
-          # but we have to append extraDomainNames manually beforehand:
-          # security.acme.certs."foo.example.com".extraDomainNames = [ "baz.example.com" ];
-          # "baz.example.com" = {
-          #   forceSSL = true;
-          #   useACMEHost = "foo.example.com";
-          #   locations."/" = {
-          #     root = "/var/www";
-          #   };
-          # };
+          "curtoradarr.duckdns.org" = {
+            forceSSL = true;
+            enableACME = true;
+            locations."/" = {
+              proxyPass = "http://127.0.0.1:7878";
+            };
+          };
+          "curtosonarr.duckdns.org" = {
+            forceSSL = true;
+            enableACME = true;
+            locations."/" = {
+              proxyPass = "http://127.0.0.1:8989";
+            };
+          };
         };
       };
       services.jellyfin = {
@@ -482,6 +501,11 @@
       services.sabnzbd = {
         enable = true;
         openFirewall = true; # 8080
+        user="dalvescb";
+      };
+      services.bazarr = {
+        enable = true;
+        openFirewall = true; # 6767
         user="dalvescb";
       };
       nix.settings.trusted-public-keys = [
