@@ -463,18 +463,26 @@
               proxyPass = "http://127.0.0.1:8096";
             };
           };
-          "curtoradarr.duckdns.org" = {
+          "curtohome.duckdns.org" = {
             forceSSL = true;
             enableACME = true;
             locations."/" = {
-              proxyPass = "http://127.0.0.1:7878";
+              proxyPass = "http://127.0.0.1";
             };
-          };
-          "curtosonarr.duckdns.org" = {
-            forceSSL = true;
-            enableACME = true;
-            locations."/" = {
-              proxyPass = "http://127.0.0.1:8989";
+            locations."/radarr" = {
+              proxyPass = "http://127.0.0.1:7878/radarr";
+            };
+            locations."/sonarr" = {
+              proxyPass = "http://127.0.0.1:8989/sonarr";
+            };
+            locations."/prowlarr" = {
+              proxyPass = "http://127.0.0.1:9696/prowlarr";
+            };
+            locations."/sabnzbd" = {
+              proxyPass = "http://127.0.0.1:8080/sabnzbd";
+            };
+            locations."/bazarr" = {
+              proxyPass = "http://127.0.0.1:6767/bazarr";
             };
           };
         };
