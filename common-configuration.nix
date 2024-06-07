@@ -260,12 +260,23 @@
                           DefaultTimeoutStopSec=5s
                           DefaultTimeoutStartSec=5s
                           '';
-      services.cron = {
-        enable = true;
-        systemCronJobs = [
-            # updates ip for duckdns
-            "*/5 * * * * root /home/dalvescb/duckdns/duck.sh >/dev/null 2>&1"
-          ];
+      systemd.timers."duckdns-update" = {
+        wantedBy = [ "timers.target" ];
+          timerConfig = {
+            OnBootSec = "5m";
+            OnUnitActiveSec = "5m";
+            Unit = "duckdns-update.service";
+          };
+      };
+      systemd.services."duckdns-update" = {
+        script = ''
+        curl https://www.duckdns.org/update?domains=curtohome&token=d399963b-9390-4938-9a0f-9d1e5fd2d7df&ip=
+        curl https://www.duckdns.org/update?domains=curtojellyfin&token=d399963b-9390-4938-9a0f-9d1e5fd2d7df&ip=
+        '';
+        serviceConfig = {
+          Type = "oneshot";
+          User = "root";
+        };
       };
       services.openssh.enable = true;
       networking.networkmanager.enable = true;

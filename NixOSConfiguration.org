@@ -49,6 +49,7 @@
   - [[#swap-control-and-caps][Swap Control and Caps]]
   - [[#global-environment-variables][Global Environment Variables]]
   - [[#systemd][Systemd]]
+- [[#systemd-timers][Systemd Timers]]
 - [[#cron][Cron]]
 - [[#openssh][OpenSSH]]
 - [[#networking][Networking]]
@@ -719,9 +720,34 @@ systemd.extraConfig = ''
                     '';
 #+END_SRC
 
+* Systemd Timers
+See https://nixos.wiki/wiki/Systemd/Timers for details on configuring timers
+This timer will send a request every 5 minutes to duckdns to update my current ip
+#+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
+systemd.timers."duckdns-update" = {
+  wantedBy = [ "timers.target" ];
+    timerConfig = {
+      OnBootSec = "5m";
+      OnUnitActiveSec = "5m";
+      Unit = "duckdns-update.service";
+    };
+};
+systemd.services."duckdns-update" = {
+  script = ''
+  curl https://www.duckdns.org/update?domains=curtohome&token=d399963b-9390-4938-9a0f-9d1e5fd2d7df&ip=
+  curl https://www.duckdns.org/update?domains=curtojellyfin&token=d399963b-9390-4938-9a0f-9d1e5fd2d7df&ip=
+  '';
+  serviceConfig = {
+    Type = "oneshot";
+    User = "root";
+  };
+};
+#+END_SRC
+
 * Cron
 See [[https://nixos.wiki/wiki/Cron]] for details on configuring NixOS for cron
-#+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
+NOTE not in used (notice its not being tangled) using systemd timers instead
+#+BEGIN_SRC nix :tangle no
 services.cron = {
   enable = true;
   systemCronJobs = [
