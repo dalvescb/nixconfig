@@ -734,8 +734,8 @@ systemd.timers."duckdns-update" = {
 };
 systemd.services."duckdns-update" = {
   script = ''
-  curl https://www.duckdns.org/update?domains=curtohome&token=d399963b-9390-4938-9a0f-9d1e5fd2d7df&ip=
-  curl https://www.duckdns.org/update?domains=curtojellyfin&token=d399963b-9390-4938-9a0f-9d1e5fd2d7df&ip=
+  /run/current-system/sw/bin/curl https://www.duckdns.org/update?domains=curtohome&token=d399963b-9390-4938-9a0f-9d1e5fd2d7df&ip=
+  /run/current-system/sw/bin/curl https://www.duckdns.org/update?domains=curtojellyfin&token=d399963b-9390-4938-9a0f-9d1e5fd2d7df&ip=
   '';
   serviceConfig = {
     Type = "oneshot";
@@ -1168,8 +1168,9 @@ security.acme.certs =
       email = "curtis.dalves@gmail.com";
       group = "nginx"; };
    in {  "curtojellyfin.duckdns.org" = sslcert;
-         "curtoradarr.duckdns.org" = sslcert;
-         "curtosonarr.duckdns.org" = sslcert;
+         "curtohome.duckdns.org" = sslcert;
+         # "curtoradarr.duckdns.org" = sslcert;
+         # "curtosonarr.duckdns.org" = sslcert;
       };
 services.nginx = {
   enable = true;
