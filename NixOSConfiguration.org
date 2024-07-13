@@ -474,6 +474,7 @@ environment.systemPackages = let
             }
         );
 in with pkgs; [
+  screen
   plex-media-player
   aircrack-ng
   crunch
@@ -512,8 +513,8 @@ in with pkgs; [
   snapper
   python312Packages.setuptools
   # emacs26Packages.agda2-mode
-  agda
-  agda-pkg
+  # agda
+  # agda-pkg
   texlive.combined.scheme-full
   # alacritty
   libsForQt5.ark
@@ -552,7 +553,7 @@ in with pkgs; [
   vulkan-tools
   vulkan-loader
   vulkan-validation-layers
-  python311Packages.pygments
+  python312Packages.pygments
   ipopt
   docker
   # haskell.packages.ghc883.haskell-language-server
@@ -594,7 +595,7 @@ in with pkgs; [
   libsForQt5.konqueror
   spotify
   webtorrent_desktop
-  transmission-qt
+  # transmission-qt
   kgraphviewer
   libgtop
   # etcher
@@ -634,7 +635,7 @@ in with pkgs; [
   # gnomeExtensions.freon
   gnomeExtensions.dash-to-panel
   gnomeExtensions.sound-output-device-chooser
-  gnomeExtensions.gtk-title-bar
+  # gnomeExtensions.gtk-title-bar
 ];
 #+END_SRC
 
@@ -812,7 +813,12 @@ networking.firewall.allowedTCPPortRanges = [
   {
     from = 22;
     to = 22;
-  } 
+  }
+  # Plex
+  {
+    from = 32400;
+    to = 32400;
+  }
 ];
 
 networking.firewall.allowedUDPPortRanges = [
@@ -831,6 +837,11 @@ networking.firewall.allowedUDPPortRanges = [
     from = 22;
     to = 22;
   }
+  # Plex
+  {
+    from = 32400;
+    to = 32400;
+  }
 ];
 #+END_SRC
 
@@ -844,10 +855,12 @@ rest of this document generates. The two main configurations I have are
 A simple setup for a dedicated nvidia MXM card can be done via the following
 configuration
 #+BEGIN_SRC nix :tangle nvidia.nix
-{pkgs, ... }:
+{pkgs, config,  ... }:
 
 {
   services.xserver.videoDrivers = [ "nvidia" ];
+  hardware.nvidia.package = config.boot.kernelPackages.nvidiaPackages.stable;
+
   # services.xserver.dpi = 96;
   hardware.opengl = {
     enable = true;
@@ -856,9 +869,9 @@ configuration
         vaapiVdpau
         libvdpau-va-gl
       ];
-    setLdLibraryPath = true;
-    driSupport = true;
-    driSupport32Bit = true;
+    # setLdLibraryPath = true;
+    # driSupport = true;
+    # driSupport32Bit = true;
   };
 }
 #+END_SRC

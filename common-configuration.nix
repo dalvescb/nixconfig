@@ -82,6 +82,7 @@
                   }
               );
       in with pkgs; [
+        screen
         plex-media-player
         aircrack-ng
         crunch
@@ -120,8 +121,8 @@
         snapper
         python312Packages.setuptools
         # emacs26Packages.agda2-mode
-        agda
-        agda-pkg
+        # agda
+        # agda-pkg
         texlive.combined.scheme-full
         # alacritty
         libsForQt5.ark
@@ -160,7 +161,7 @@
         vulkan-tools
         vulkan-loader
         vulkan-validation-layers
-        python311Packages.pygments
+        python312Packages.pygments
         ipopt
         docker
         # haskell.packages.ghc883.haskell-language-server
@@ -202,7 +203,7 @@
         libsForQt5.konqueror
         spotify
         webtorrent_desktop
-        transmission-qt
+        # transmission-qt
         kgraphviewer
         libgtop
         # etcher
@@ -242,7 +243,7 @@
         # gnomeExtensions.freon
         gnomeExtensions.dash-to-panel
         gnomeExtensions.sound-output-device-chooser
-        gnomeExtensions.gtk-title-bar
+        # gnomeExtensions.gtk-title-bar
       ];
        # Use the GRUB 2 boot loader (with EFI support)
        boot.loader.grub.enable = true;
@@ -323,7 +324,12 @@
         {
           from = 22;
           to = 22;
-        } 
+        }
+        # Plex
+        {
+          from = 32400;
+          to = 32400;
+        }
       ];
       
       networking.firewall.allowedUDPPortRanges = [
@@ -341,6 +347,11 @@
         {
           from = 22;
           to = 22;
+        }
+        # Plex
+        {
+          from = 32400;
+          to = 32400;
         }
       ];
       services.xserver.enable = true;

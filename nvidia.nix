@@ -1,8 +1,10 @@
 # [[file:NixOSConfiguration.org::*Nvidia][Nvidia:1]]
-{pkgs, ... }:
+{pkgs, config,  ... }:
 
 {
   services.xserver.videoDrivers = [ "nvidia" ];
+  hardware.nvidia.package = config.boot.kernelPackages.nvidiaPackages.stable;
+
   # services.xserver.dpi = 96;
   hardware.opengl = {
     enable = true;
@@ -11,9 +13,9 @@
         vaapiVdpau
         libvdpau-va-gl
       ];
-    setLdLibraryPath = true;
-    driSupport = true;
-    driSupport32Bit = true;
+    # setLdLibraryPath = true;
+    # driSupport = true;
+    # driSupport32Bit = true;
   };
 }
 # Nvidia:1 ends here
