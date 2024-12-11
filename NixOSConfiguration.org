@@ -477,6 +477,7 @@ environment.systemPackages = let
             }
         );
 in with pkgs; [
+  certbot
   openssl
   jellyfin-ffmpeg
   jdupes
@@ -533,7 +534,7 @@ in with pkgs; [
   pandoc
   vulkan-tools
   vulkan-loader
-  vulkan-validation-layers
+  # vulkan-validation-layers
   python311Packages.pygments
   ipopt
   docker
@@ -554,8 +555,8 @@ in with pkgs; [
   mkvtoolnix
   niv
   shotcut
-  gnome.nautilus
-  gnome.sushi
+  nautilus
+  sushi
   scrot
   btop
   lm_sensors
@@ -586,9 +587,8 @@ in with pkgs; [
   cmake
   silver-searcher
   gnome-icon-theme
-  gnome.gnome-tweaks
-  gnome.dconf-editor
-  gnome.gnome-remote-desktop
+  gnome-tweaks
+  dconf-editor
   gnomeExtensions.appindicator
   # gnomeExtensions.notes
   gnomeExtensions.just-perfection
@@ -676,7 +676,7 @@ fonts = {
   fonts = with pkgs; [
       dejavu_fonts
       # (nerdfonts.override { fonts = [ "DejaVuSansMono" ]; } )
-      nerdfonts
+      # nerdfonts
       source-code-pro
       emacs-all-the-icons-fonts
       jetbrains-mono
@@ -908,6 +908,7 @@ configuration
 
 {
   services.xserver.videoDrivers = [ "nvidia" ];
+  hardware.nvidia.open = false;
   # services.xserver.dpi = 96;
   hardware.opengl = {
     enable = true;
@@ -934,6 +935,7 @@ integrated) using Nvidia Optimus via the following configuration
   # environment.systemPackages = [ nvidia-offload ]; 
   # services.xserver.videoDrivers = [ "intel" "modesetting" "nvidia" ];
   services.xserver.videoDrivers = [ "nvidia" ];
+  hardware.nvidia.open = false;
   services.xserver.dpi = 96;
   hardware.nvidia.prime = {
     # offload.enable = true;
@@ -1067,7 +1069,7 @@ Standard sound support is enabled through [[https://nixos.wiki/wiki/PulseAudio][
 However, I have switched to [[https://nixos.wiki/wiki/PipeWire][Pipewire]] as it seems to be less buggy with bluetooth
 headsets. I've left my previous pulse audio configuration commented out
  #+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
- sound.enable = true;
+ # sound.enable = true;
  # hardware.pulseaudio = {
  #    enable = true;
  #    support32Bit = true;
@@ -1311,6 +1313,10 @@ Add any packages marked as insecure that you want to build here anyways
 #+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
 nixpkgs.config.permittedInsecurePackages = [
                 "electron-19.1.9"
+                "aspnetcore-runtime-6.0.36"
+                "aspnetcore-runtime-wrapped-6.0.36"
+                "dotnet-sdk-wrapped-6.0.428"
+                "dotnet-sdk-6.0.428"
               ];
 #+END_SRC
 * System Upgrades
@@ -1524,7 +1530,7 @@ need the [[https://rycee.gitlab.io/home-manager/][Home Manager]] add on
     #   name = "bin/dmenu";
     #   path = "${pkgs.rofi}/bin/rofi";
     # } ])
-    gnome.adwaita-icon-theme
+    # gnome.adwaita-icon-theme
     # dunst
     arc-icon-theme
     steam-run

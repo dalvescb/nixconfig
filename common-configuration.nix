@@ -82,6 +82,7 @@
                   }
               );
       in with pkgs; [
+        certbot
         openssl
         jellyfin-ffmpeg
         jdupes
@@ -138,7 +139,7 @@
         pandoc
         vulkan-tools
         vulkan-loader
-        vulkan-validation-layers
+        # vulkan-validation-layers
         python311Packages.pygments
         ipopt
         docker
@@ -159,8 +160,8 @@
         mkvtoolnix
         niv
         shotcut
-        gnome.nautilus
-        gnome.sushi
+        nautilus
+        sushi
         scrot
         btop
         lm_sensors
@@ -191,9 +192,8 @@
         cmake
         silver-searcher
         gnome-icon-theme
-        gnome.gnome-tweaks
-        gnome.dconf-editor
-        gnome.gnome-remote-desktop
+        gnome-tweaks
+        dconf-editor
         gnomeExtensions.appindicator
         # gnomeExtensions.notes
         gnomeExtensions.just-perfection
@@ -233,7 +233,7 @@
         fonts = with pkgs; [
             dejavu_fonts
             # (nerdfonts.override { fonts = [ "DejaVuSansMono" ]; } )
-            nerdfonts
+            # nerdfonts
             source-code-pro
             emacs-all-the-icons-fonts
             jetbrains-mono
@@ -409,7 +409,7 @@
           Enable = "Source,Sink,Media,Socket";
           };
       };
-       sound.enable = true;
+       # sound.enable = true;
        # hardware.pulseaudio = {
        #    enable = true;
        #    support32Bit = true;
@@ -545,6 +545,10 @@
                        '';
       nixpkgs.config.permittedInsecurePackages = [
                       "electron-19.1.9"
+                      "aspnetcore-runtime-6.0.36"
+                      "aspnetcore-runtime-wrapped-6.0.36"
+                      "dotnet-sdk-wrapped-6.0.428"
+                      "dotnet-sdk-6.0.428"
                     ];
       # enables auto-updating
       system.autoUpgrade.enable = false;

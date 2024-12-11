@@ -3,6 +3,7 @@
 
 {
   services.xserver.videoDrivers = [ "nvidia" ];
+  hardware.nvidia.open = false;
   # services.xserver.dpi = 96;
   hardware.opengl = {
     enable = true;

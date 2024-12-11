@@ -5,6 +5,7 @@
   # environment.systemPackages = [ nvidia-offload ]; 
   # services.xserver.videoDrivers = [ "intel" "modesetting" "nvidia" ];
   services.xserver.videoDrivers = [ "nvidia" ];
+  hardware.nvidia.open = false;
   services.xserver.dpi = 96;
   hardware.nvidia.prime = {
     # offload.enable = true;

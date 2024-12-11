@@ -24,7 +24,7 @@
     #   name = "bin/dmenu";
     #   path = "${pkgs.rofi}/bin/rofi";
     # } ])
-    gnome.adwaita-icon-theme
+    # gnome.adwaita-icon-theme
     # dunst
     arc-icon-theme
     steam-run
