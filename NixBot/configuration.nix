@@ -14,12 +14,11 @@
     ];
 
   networking.hostName = "NixBot";
-  nix.nixPath = [
-    "home-manager=/home/dalvescb/home-manager"
-    # "nixpkgs=/nix/var/nix/profiles/per-user/root/channels/nixos/nixpkgs"
-    "nixpkgs=/home/dalvescb/nixpkgs"
-    "nixos-config=/home/dalvescb/nixconfig/${config.networking.hostName}/configuration.nix"
-  ];
+  #nix.nixPath = [
+  #  # "nixpkgs=/nix/var/nix/profiles/per-user/root/channels/nixos/nixpkgs"
+  #  "nixpkgs=/home/dalvescb/nixpkgs"
+  #  "nixos-config=/home/dalvescb/nixconfig/${config.networking.hostName}/configuration.nix"
+  #];
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
   networking.useDHCP = false;
@@ -40,14 +39,14 @@
       DPI = "192";
     };
   # need to set this statically when using opt-in state on a btrfs root subvolume
-  environment.etc."machine-id".text = "b7665d1914cd41dc93406d8488004eb0";
+#  environment.etc."machine-id".text = "b7665d1914cd41dc93406d8488004eb0";
 
   # needed to persist logging during boot
-  fileSystems."/var/log".neededForBoot = true;
+  # fileSystems."/var/log".neededForBoot = true;
 
   # mount hdd - sda1 ext4 partition
   fileSystems."/mnt/sda1" =
-    { device = "/dev/disk/by-uuid/0ad58a6a-f45e-455c-b8d6-7ce939d53694";
-      fsType = "ext4";
-    };
+   { device = "/dev/disk/by-uuid/0ad58a6a-f45e-455c-b8d6-7ce939d53694";
+     fsType = "ext4";
+   };
 }

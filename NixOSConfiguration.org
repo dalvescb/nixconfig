@@ -224,7 +224,7 @@ at ~/mnt~ of course)
     };
 
     services.xserver.enable = true;
-    services.xserver.displayManager.sddm.enable = true;
+    services.displayManager.sddm.enable = true;
     services.xserver.desktopManager.plasma5.enable = true;
 
     sound.enable = true;
@@ -985,7 +985,7 @@ programs.kdeconnect.package = pkgs.gnomeExtensions.gsconnect;
 
 #+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
 services.xserver.enable = true;
-services.xserver.displayManager.sddm.enable = true;
+services.displayManager.sddm.enable = true;
 services.xserver.desktopManager.plasma5.enable = true;
 
 services.xrdp.enable = true;

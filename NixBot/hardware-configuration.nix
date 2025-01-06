@@ -14,47 +14,19 @@
   boot.extraModulePackages = [ ];
 
   fileSystems."/" =
-    { device = "/dev/disk/by-uuid/2f192c6d-5471-41ab-8593-c90bf144550c";
-      fsType = "btrfs";
-      options = [ "subvol=root" ];
-    };
-
-  boot.initrd.luks.devices."enc".device = "/dev/disk/by-uuid/8cc913cf-f5c1-4e3a-9ea3-2b9564d2a7ef";
-
-  fileSystems."/home" =
-    { device = "/dev/disk/by-uuid/2f192c6d-5471-41ab-8593-c90bf144550c";
-      fsType = "btrfs";
-      options = [ "subvol=home" ];
-    };
-
-  fileSystems."/nix" =
-    { device = "/dev/disk/by-uuid/2f192c6d-5471-41ab-8593-c90bf144550c";
-      fsType = "btrfs";
-      options = [ "subvol=nix" ];
-    };
-
-  fileSystems."/persist" =
-    { device = "/dev/disk/by-uuid/2f192c6d-5471-41ab-8593-c90bf144550c";
-      fsType = "btrfs";
-      options = [ "subvol=persist" ];
-    };
-
-  fileSystems."/var/log" =
-    { device = "/dev/disk/by-uuid/2f192c6d-5471-41ab-8593-c90bf144550c";
-      fsType = "btrfs";
-      options = [ "subvol=log" ];
+    { device = "/dev/disk/by-label/NIXROOT";
+      fsType = "ext4";
     };
 
   fileSystems."/boot" =
-    { device = "/dev/disk/by-uuid/8B79-BB30";
+    { device = "/dev/disk/by-label/NIXBOOT";
       fsType = "vfat";
+      options = [ "fmask=0022" "dmask=0022" ];
     };
 
   swapDevices =
-    [ { device = "/dev/disk/by-uuid/1531f51c-46a6-46f8-aa10-61836636c1c3"; }
-    ];
+    [ ];
 
-  powerManagement.cpuFreqGovernor = lib.mkDefault "powersave";
   # high-resolution display
   # hardware.video.hidpi.enable = lib.mkDefault true;
 }

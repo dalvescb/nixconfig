@@ -58,6 +58,7 @@
           inherit system;
           modules = [ ./NixBot/configuration.nix
                       home-manager.nixosModules.home-manager {
+                        home-manager.backupFileExtension = "backup";
                         home-manager.useGlobalPkgs = true;
                         home-manager.useUserPackages = true;
                         home-manager.users.dalvescb = {
