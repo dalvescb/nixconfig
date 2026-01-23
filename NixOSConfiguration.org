@@ -227,9 +227,9 @@ at ~/mnt~ of course)
     services.xserver.desktopManager.plasma5.enable = true;
 
     sound.enable = true;
-    hardware.pulseaudio.enable = true;
+    services.pulseaudio.enable = true;
 
-    services.xserver.libinput.enable = true;
+    services.libinput.enable = true;
 
     users.users.dalvescb = {
       isNormalUser = true;
@@ -500,7 +500,6 @@ in with pkgs; [
   # plasma5.sddm-kcm
   # (haskell-language-server.override { supportedGhcVersions = [ "902" "924" ]; })
   # haskellPackages.Cabal-syntax
-  python3Full
   python312Packages.setuptools
   # emacs26Packages.agda2-mode
   # alacritty
@@ -568,7 +567,6 @@ in with pkgs; [
   # libsForQt5.sddm-kcm
   # libsForQt5.konqueror
   webtorrent_desktop
-  transmission-qt
   kgraphviewer
   libgtop
   # etcher
@@ -605,7 +603,6 @@ in with pkgs; [
  #+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
  # Use the GRUB 2 boot loader (with EFI support)
  boot.loader.grub.enable = true;
- boot.loader.grub.version = 2;
  boot.loader.grub.device = "nodev";
  boot.loader.grub.efiSupport = true;
  boot.loader.grub.useOSProber = true;
@@ -671,7 +668,7 @@ Install fonts by adding them to ~fonts.fonts.pkgs~ (use override to select fonts
 from a big package) see [[https://nixos.wiki/wiki/Fonts][NixOS Wiki Fonts]] for details
 #+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
 fonts = {
-  fonts = with pkgs; [
+  packages = with pkgs; [
       dejavu_fonts
       # (nerdfonts.override { fonts = [ "DejaVuSansMono" ]; } )
       # nerdfonts
@@ -681,18 +678,18 @@ fonts = {
       font-awesome
       hack-font
       inconsolata
-      inconsolata-nerdfont
+      nerd-fonts.inconsolata
     ];
 };
 #+END_SRC
 
 ** Keyboard Layout
 #+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
-services.xserver.layout = "us";
+services.xserver.xkb.layout = "us";
 #+END_SRC
 ** Swap Control and Caps
 #+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
-services.xserver.xkbOptions = "ctrl:swapcaps"; # this stopped working on home-manager update. needs to be set through home.keyboard.options now?
+services.xserver.xkb.options = "ctrl:swapcaps"; # this stopped working on home-manager update. needs to be set through home.keyboard.options now?
 #+END_SRC
 ** Global Environment Variables
 Set global environment variables (to be initialized in /etc/profile) here
@@ -900,11 +897,11 @@ configuration
   services.xserver.videoDrivers = [ "nvidia" ];
   hardware.nvidia.open = false;
   # services.xserver.dpi = 96;
-  hardware.opengl = {
+  hardware.graphics = {
     enable = true;
     extraPackages = with pkgs; [
-        vaapiIntel
-        vaapiVdpau
+        intel-vaapi-driver
+        libva-vdpau-driver
         libvdpau-va-gl
       ];
     setLdLibraryPath = true;
@@ -936,15 +933,15 @@ integrated) using Nvidia Optimus via the following configuration
     # Bus ID of the NVIDIA GPU. You can find it using lspci, either under 3D or VGA
     nvidiaBusId = "PCI:1:0:0";
   };
-  hardware.opengl = {
+  hardware.graphics = {
     enable = true;
     extraPackages = with pkgs; [
-        vaapiIntel
-        vaapiVdpau
+        intel-vaapi-driver
+        libva-vdpau-driver
         libvdpau-va-gl
       ];
   };
-  hardware.opengl.driSupport32Bit = true;
+  hardware.graphics.enable32Bit = true;
 }
 #+END_SRC
 *NOTE* it requires ~nixpkgs.config.allowUnfree~ enabled (see [[#allow-proprietary-software][Allow Proprietary Software]])
@@ -954,15 +951,15 @@ integrated) using Nvidia Optimus via the following configuration
 #+BEGIN_SRC nix :tangle no
 services.xserver.enable = true;
 # services.xserver.displayManager.gdm.enable = true;
-services.xserver.displayManager.lightdm.enable = true;
-services.xserver.desktopManager.gnome.enable = true;
+services.displayManager.lightdm.enable = true;
+services.desktopManager.gnome.enable = true;
 
 services.xrdp.enable = true;
 services.xrdp.port = 3389;
 services.xrdp.defaultWindowManager = "gnome-remote-desktop";
 services.xrdp.openFirewall = true;
 
-services.logind.lidSwitchExternalPower = "ignore";
+services.logind.settings.Login.HandleLidSwitchExternalPower = "ignore";
 
 services.dbus.packages = [ pkgs.dconf ];
 services.udev.packages = with pkgs; [ gnome.gnome-settings-daemon ];
@@ -976,13 +973,13 @@ programs.kdeconnect.package = pkgs.gnomeExtensions.gsconnect;
 #+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
 services.xserver.enable = true;
 services.displayManager.sddm.enable = true;
-services.xserver.desktopManager.plasma6.enable = true;
+services.desktopManager.plasma6.enable = true;
 
 services.xrdp.enable = true;
 services.xrdp.defaultWindowManager = "startplasma-x11";
 services.xrdp.openFirewall = true;
 
-services.logind.lidSwitchExternalPower = "ignore";
+services.logind.settings.Login.HandleLidSwitchExternalPower = "ignore";
 #+END_SRC
 
 ** KDE Plasma5 + XMONAD
@@ -990,7 +987,7 @@ services.logind.lidSwitchExternalPower = "ignore";
 services.xserver.enable = true;
 # services.xserver.displayManager.lightdm.enable = true;
 services.xserver.displayManager.sddm.enable = true;
-services.xserver.desktopManager.plasma5.enable = true;
+services.desktopManager.plasma5.enable = true;
 
 # services.xserver.displayManager.defaultSession = "none+xmonad";
 # services.xserver.windowManager.xmonad = {
@@ -1060,14 +1057,14 @@ However, I have switched to [[https://nixos.wiki/wiki/PipeWire][Pipewire]] as it
 headsets. I've left my previous pulse audio configuration commented out
  #+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
  # sound.enable = true;
- # hardware.pulseaudio = {
+ # services.pulseaudio = {
  #    enable = true;
  #    support32Bit = true;
  #    # NixOS allows either a lightweight build (default) or full build of PulseAudio to be installed.
  #    # Only the full build has Bluetooth support, so it must be selected here.
  #    package = pkgs.pulseaudioFull;
  # };
- hardware.pulseaudio.enable = false;
+ services.pulseaudio.enable = false;
  security.rtkit.enable = true;
  services.pipewire = {
   enable = true;
@@ -1083,7 +1080,7 @@ headsets. I've left my previous pulse audio configuration commented out
 * TouchPad support
 To enable touchpad support through [[https://wiki.archlinux.org/index.php/Libinput][LibInput]] add
 #+BEGIN_SRC nix :tangle no :noweb-ref insert-config-here
-services.xserver.libinput.enable = true;
+services.libinput.enable = true;
 #+END_SRC
 
 ** Xbox controller support

@@ -5,11 +5,11 @@
   services.xserver.videoDrivers = [ "nvidia" ];
   hardware.nvidia.open = false;
   # services.xserver.dpi = 96;
-  hardware.opengl = {
+  hardware.graphics = {
     enable = true;
     extraPackages = with pkgs; [
-        vaapiIntel
-        vaapiVdpau
+        intel-vaapi-driver
+        libva-vdpau-driver
         libvdpau-va-gl
       ];
     setLdLibraryPath = true;

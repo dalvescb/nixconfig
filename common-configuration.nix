@@ -106,7 +106,6 @@
         # plasma5.sddm-kcm
         # (haskell-language-server.override { supportedGhcVersions = [ "902" "924" ]; })
         # haskellPackages.Cabal-syntax
-        python3Full
         python312Packages.setuptools
         # emacs26Packages.agda2-mode
         # alacritty
@@ -174,7 +173,6 @@
         # libsForQt5.sddm-kcm
         # libsForQt5.konqueror
         webtorrent_desktop
-        transmission-qt
         kgraphviewer
         libgtop
         # etcher
@@ -206,7 +204,6 @@
       ];
        # Use the GRUB 2 boot loader (with EFI support)
        boot.loader.grub.enable = true;
-       boot.loader.grub.version = 2;
        boot.loader.grub.device = "nodev";
        boot.loader.grub.efiSupport = true;
        boot.loader.grub.useOSProber = true;
@@ -229,7 +226,7 @@
       };
       nixpkgs.config.allowUnfree = true;
       fonts = {
-        fonts = with pkgs; [
+        packages = with pkgs; [
             dejavu_fonts
             # (nerdfonts.override { fonts = [ "DejaVuSansMono" ]; } )
             # nerdfonts
@@ -239,11 +236,11 @@
             font-awesome
             hack-font
             inconsolata
-            inconsolata-nerdfont
+            nerd-fonts.inconsolata
           ];
       };
-      services.xserver.layout = "us";
-      services.xserver.xkbOptions = "ctrl:swapcaps"; # this stopped working on home-manager update. needs to be set through home.keyboard.options now?
+      services.xserver.xkb.layout = "us";
+      services.xserver.xkb.options = "ctrl:swapcaps"; # this stopped working on home-manager update. needs to be set through home.keyboard.options now?
       environment.variables =
         {
           # In firefox in about:config I switched gfx.webrender.all to true to fix bug causing
@@ -390,13 +387,13 @@
       ];
       services.xserver.enable = true;
       services.displayManager.sddm.enable = true;
-      services.xserver.desktopManager.plasma6.enable = true;
+      services.desktopManager.plasma6.enable = true;
       
       services.xrdp.enable = true;
       services.xrdp.defaultWindowManager = "startplasma-x11";
       services.xrdp.openFirewall = true;
       
-      services.logind.lidSwitchExternalPower = "ignore";
+      services.logind.settings.Login.HandleLidSwitchExternalPower = "ignore";
       hardware.bluetooth.enable = true;
       services.blueman.enable = true;
       hardware.bluetooth.settings = {
@@ -405,14 +402,14 @@
           };
       };
        # sound.enable = true;
-       # hardware.pulseaudio = {
+       # services.pulseaudio = {
        #    enable = true;
        #    support32Bit = true;
        #    # NixOS allows either a lightweight build (default) or full build of PulseAudio to be installed.
        #    # Only the full build has Bluetooth support, so it must be selected here.
        #    package = pkgs.pulseaudioFull;
        # };
-       hardware.pulseaudio.enable = false;
+       services.pulseaudio.enable = false;
        security.rtkit.enable = true;
        services.pipewire = {
         enable = true;
@@ -422,7 +419,7 @@
         # If you want to use JACK applications, uncomment this
         #jack.enable = true;
        };
-      services.xserver.libinput.enable = true;
+      services.libinput.enable = true;
       hardware.xpadneo.enable = true;
       programs.zsh.enable = true;
       programs.fish.enable = true;
